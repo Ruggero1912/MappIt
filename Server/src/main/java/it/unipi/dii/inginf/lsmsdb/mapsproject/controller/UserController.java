@@ -23,29 +23,29 @@ public class UserController {
 		users.add(new User(4, "Gigi","Blu","User4", "pw4", "user4@test.com", User.Role.ADMIN));
 	}
 
-	@RequestMapping(value = "/user/all", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping(value = "/user/all", produces = "application/json")
 	//@ApiOperation(value = "Get information of every users", notes = "This method retrieve information about all the users")
 	public List<User> getUsers() {
 		return users;
 	}
 
-	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = "application/json")
-	public User getUserById(@PathVariable(value = "id") int employeeId) {
-		return users.stream().filter(x -> x.getId()==(employeeId)).collect(Collectors.toList()).get(0);
+	@GetMapping(value = "/user/{id}", produces = "application/json")
+	public User getUserById(@PathVariable(value = "id") int userId) {
+		return users.stream().filter(x -> x.getId()==(userId)).collect(Collectors.toList()).get(0);
 	}
 
-	@RequestMapping(value = "/user/role/{role}", method = RequestMethod.GET, produces = "application/json")
+	@GetMapping(value = "/user/role/{role}", produces = "application/json")
 	public List<User> getUserByRole(@PathVariable(value = "role") String role) {
 		return users.stream().filter(x -> x.getRole().toString().equalsIgnoreCase(role))
 				.collect(Collectors.toList());
 	}
 
-	@RequestMapping(value={"/user/{id}"}, method = RequestMethod.DELETE, produces = "application/json")
+	@DeleteMapping(value={"/user/{id}"}, produces = "application/json")
 	public List<User> removeUser(@PathVariable(value = "id") int userId)
 	{
 		try{
 			users.remove(users.stream().filter(x -> x.getId()==(userId)).collect(Collectors.toList()).get(0));
-			System.out.println("Employee successfully deleted!");
+			System.out.println("User successfully deleted!");
 		}catch (Exception e) {
 			System.out.println("Error: could not delete Employee (id=" + userId + ")");
 		}
