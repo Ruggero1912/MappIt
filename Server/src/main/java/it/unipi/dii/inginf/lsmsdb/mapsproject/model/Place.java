@@ -10,15 +10,15 @@ public class Place {
     private List<String> alternativeNames;
     private GeoLocation position;
     private List<PlaceType> placeTypes;
-    private String imagePath;
+    private Image image;
 
-    public Place(int id, String name, GeoLocation pos, List<String> aliases, List<PlaceType> pTypes, String imgPath) {
+    public Place(int id, String name, GeoLocation pos, List<String> aliases, List<PlaceType> pTypes, Image img) {
         this.id = id;
         this.name = name;
         this.position = pos;
         this.alternativeNames = aliases;
         this.placeTypes = pTypes;
-        this.imagePath = imgPath;
+        this.image = img;
     }
 
     public int getId() {
@@ -61,12 +61,12 @@ public class Place {
         return this.placeTypes;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Image getImagePath() {
+        return image;
     }
 
-    public void setImagePath(String path) {
-        this.imagePath = path;
+    public void setImagePath(Image path) {
+        this.image = path;
     }
 
     @Override

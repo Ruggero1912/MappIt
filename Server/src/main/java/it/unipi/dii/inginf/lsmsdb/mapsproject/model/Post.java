@@ -3,9 +3,9 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
 import java.util.Date;
 import java.util.List;
 
-public class Trip {
+public class Post {
 
-    public enum TripType {URBEX, NATURALISTIC, HIKING, BIKING}
+    public enum Category {URBEX, NATURALISTIC, HIKING, BIKING}
     public enum Season {WINTER, SPRING, SUMMER, AUTUMN}
     public enum Weather {SUNNY, CLOUDY, RAINY, FOGGY, SNOWY, STORMY}
     public enum Difficulty {EASY, INTERMEDIATE, HARD}
@@ -13,9 +13,10 @@ public class Trip {
     private int id;
     private User author;
     private String title;
+    private Place location;
     private Date date;
     private String description;
-    private List<TripType> category;
+    private List<Category> category;
     private Season suggestedSeason;
     private Weather tripWeather;
     private Weather suggestedWeather;
@@ -25,7 +26,7 @@ public class Trip {
     //private List<Image> images;
 
 
-    public Trip(int id, User u, String t, Date d, String des, Season s, Weather tw, Weather sw, Difficulty diff, String link) {
+    public Post(int id, User u, String t, Date d, String des, Season s, Weather tw, Weather sw, Difficulty diff, String link) {
         this.id = id;
         this.author = u;
         this.title= t;
@@ -77,6 +78,14 @@ public class Trip {
 
     public void setDescription(String des) {
         this.description = des;
+    }
+
+    public List<Category> getCategory() {
+        return category;
+    }
+
+    public void addCategory(Category cat) {
+        this.category.add(cat);
     }
 
     public Season getSuggestedSeason() {

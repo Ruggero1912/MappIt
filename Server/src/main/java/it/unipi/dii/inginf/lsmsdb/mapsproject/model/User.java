@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class User {
 
+	public enum Role {USER,MODERATOR,ADMIN}
+
 	private int id;
 	private String username;
 	private String email;
@@ -12,15 +14,16 @@ public class User {
 	private String name;
 	private String surname;
 	private Date birthDate;
-	private String role;
-	private String pathProfilePic;
+	private Role role;
+	private Image rofilePic;
+	private List<Post> publishedPost;
 	private List<User> followedUsers;
 	private List<Place> favouritePlaces;
-	private List<Trip> likedTrips;
-	private int totalTrips;
+	private List<Post> likedPosts;
+	private int totalPost;
 
 
-	public User(int id, String nm, String snm, String uname, String psw, String email, String role) {
+	public User(int id, String nm, String snm, String uname, String psw, String email, Role role) {
 		this.id = id;
 		this.name = nm;
 		this.surname = snm;
@@ -86,15 +89,15 @@ public class User {
 		this.birthDate = birthDate;
 	}
 
-	public String getRole() {
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 
-	// write methods to retrive: pathProfilePic, followedUsers, favouriteTrips, likedTrips, totalTrips
+	// write methods to retrive: pathProfilePic, followedUsers, favouritePosts, likedPosts, totalPosts
 
 	@Override
 	public String toString() {

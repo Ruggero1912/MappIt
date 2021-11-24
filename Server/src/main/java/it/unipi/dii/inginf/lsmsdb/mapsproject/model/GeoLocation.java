@@ -5,14 +5,21 @@ public class GeoLocation {
     private int id;
     private double latitude;
     private double longitude;
-    // maybe we could use a Map to distinguish fields inside the address
-    private String address;
+    private String houseNumber;
+    private String street;
+    private String countryCode;
+    private int postCode;
 
-    public GeoLocation(int id, double lat, double lon, String addr) {
+    private String county;      //province
+    private String city;
+    private String district;    //fraction of the province
+
+
+    public GeoLocation(int id, double lat, double lon, String street) {
         this.id = id;
         this.latitude = lat;
         this.longitude = lon;
-        this.address = addr;
+        this.street = street;
     }
 
     public int getId() {
@@ -40,11 +47,11 @@ public class GeoLocation {
     }
 
     public String getAddress() {
-        return address;
+        return street;
     }
 
-    public void setAddress(String addr) {
-        this.address = addr;
+    public void setAddress(String street) {
+        this.street = street;
     }
 
     @Override

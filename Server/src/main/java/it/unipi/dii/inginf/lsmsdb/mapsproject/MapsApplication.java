@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.GeoLocation;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Marker;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -34,7 +31,8 @@ public class MapsApplication {
 		aliases.add("Trep");
 		aliases.add("Treppo");
 		System.out.println(aliases);
-		Place p = new Place(1, "Tre Ponti", g, aliases, pt, "path");
+		Image img = new Image();
+		Place p = new Place(1, "Tre Ponti", g, aliases, pt, img);
 		System.out.println(p);
 		/*
 
