@@ -1,61 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Server/HELP.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/mapsproject.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/EndpointController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/GeoLocation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Marker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Place.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/EndpointController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/GeoLocation.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Marker.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Place$PlaceTypes.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Place.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip$Difficulty.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip$Season.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip$TripTypes.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip$Weather.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/classes/it/unipi/dii/inginf/lsmsdb/mapsproject/model/User.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/mapsproject-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/mapsproject-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/surefire-reports/TEST-it.unipi.dii.inginf.lsmsdb.mapsproject.MapsApplicationTests.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/surefire-reports/it.unipi.dii.inginf.lsmsdb.mapsproject.MapsApplicationTests.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/target/test-classes/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplicationTests.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/.mvn/wrapper/MavenWrapperDownloader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/EndpointController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/GeoLocation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Marker.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Place.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/Trip.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/model/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/mapsproject/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +28,14 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="ProgettoDB" type="Application" factoryName="Application">
+      <module name="LargeScaleProject" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

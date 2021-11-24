@@ -24,18 +24,19 @@ public class MapsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MapsApplication.class, args);
 
-		/*GeoLocation g = new GeoLocation(1, 134.2, -122.399, "via ambrosiana 23, livorno LI 57100");
+		GeoLocation g = new GeoLocation(1, 134.2, -122.399, "via ambrosiana 23, livorno LI 57100");
 		System.out.println(g);
 
-		List<Place.PlaceTypes> pt = new ArrayList<>();
-		pt.add(Place.PlaceTypes.COUNTRYSIDE);
-		pt.add(Place.PlaceTypes.URBAN);
+		List<Place.PlaceType> pt = new ArrayList<>();
+		pt.add(Place.PlaceType.COUNTRYSIDE);
+		pt.add(Place.PlaceType.URBAN);
 		List<String> aliases = new ArrayList<>();
 		aliases.add("Trep");
 		aliases.add("Treppo");
+		System.out.println(aliases);
 		Place p = new Place(1, "Tre Ponti", g, aliases, pt, "path");
 		System.out.println(p);
-
+		/*
 
 		User u = new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", "USER");
 		System.out.println(u);

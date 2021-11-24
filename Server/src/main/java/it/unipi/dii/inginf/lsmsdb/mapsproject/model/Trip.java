@@ -1,24 +1,27 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Trip {
 
-    public enum TripTypes {URBEX, NATURALISTIC, HIKING, BIKING};
-    public enum Season {WINTER, SPRING, SUMMER, AUTUMN};
-    public enum Weather {SUNNY, CLOUDY, RAINY, FOGGY, SNOWY, STORMY};
-    public enum Difficulty {EASY, INTERMEDIATE, HARD};
+    public enum TripType {URBEX, NATURALISTIC, HIKING, BIKING}
+    public enum Season {WINTER, SPRING, SUMMER, AUTUMN}
+    public enum Weather {SUNNY, CLOUDY, RAINY, FOGGY, SNOWY, STORMY}
+    public enum Difficulty {EASY, INTERMEDIATE, HARD}
 
     private int id;
-    public User author;
-    public String title;
-    public Date date;
-    public String description;
-    public Season suggestedSeason;
-    public Weather tripWeather;
-    public Weather suggestedWeather;
-    public Difficulty difficulty;
-    public String videoLink;
+    private User author;
+    private String title;
+    private Date date;
+    private String description;
+    private List<TripType> category;
+    private Season suggestedSeason;
+    private Weather tripWeather;
+    private Weather suggestedWeather;
+    private Difficulty difficulty;
+    private String videoLink;
+    private int likeCounter;
     //private List<Image> images;
 
 
@@ -42,6 +45,14 @@ public class Trip {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User user) {
+        this.author = user;
     }
 
     public String getTitle() {
@@ -88,7 +99,7 @@ public class Trip {
         return suggestedWeather;
     }
 
-    public void setSuggestedWeatherWeather(Weather w) {
+    public void setSuggestedWeather(Weather w) {
         this.suggestedWeather = w;
     }
 
@@ -121,10 +132,11 @@ public class Trip {
     @Override
     public String toString() {
 
-        String ret = "User{" +
+        String ret =
+                "User{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", author='" + author.username + '\'' +
+                ", author='" + author.getUsername() + '\'' +
                 ", date='" + date.toString() + '\'' +
                 ", description='" + description + '\'' +
                 '}';

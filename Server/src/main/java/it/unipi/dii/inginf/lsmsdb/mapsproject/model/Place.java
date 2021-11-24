@@ -3,16 +3,16 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
 import java.util.List;
 
 public class Place {
-    public enum PlaceTypes {WOODLAND, URBAN, MOUNTAIN, SEASIDE, MONUMENT, COUNTRYSIDE, ABANDONED};
+    public enum PlaceType {WOODLAND, URBAN, MOUNTAIN, SEASIDE, MONUMENT, COUNTRYSIDE, ABANDONED}
 
     private int id;
-    public String name;
-    public GeoLocation position;
-    public List<String> alternativeNames;
-    public List<PlaceTypes> placeTypes;
-    public String imagePath;
+    private String name;
+    private List<String> alternativeNames;
+    private GeoLocation position;
+    private List<PlaceType> placeTypes;
+    private String imagePath;
 
-    public Place(int id, String name, GeoLocation pos, List<String> aliases, List<PlaceTypes> pTypes, String imgPath) {
+    public Place(int id, String name, GeoLocation pos, List<String> aliases, List<PlaceType> pTypes, String imgPath) {
         this.id = id;
         this.name = name;
         this.position = pos;
@@ -45,11 +45,19 @@ public class Place {
         this.alternativeNames = aliases;
     }
 
-    public void setPlaceTypes(List<PlaceTypes> pTypes) {
+    public GeoLocation getPosition(){
+        return position;
+    }
+
+    public void setPosition(GeoLocation g){
+        this.position = g;
+    }
+
+    public void setPlaceTypes(List<PlaceType> pTypes) {
         this.placeTypes = pTypes;
     }
 
-    public List<PlaceTypes> getPlaceTypes() {
+    public List<PlaceType> getPlaceTypes() {
         return this.placeTypes;
     }
 
@@ -59,14 +67,6 @@ public class Place {
 
     public void setImagePath(String path) {
         this.imagePath = path;
-    }
-
-    public GeoLocation getPosition(){
-        return position;
-    }
-
-    public void setPosition(GeoLocation g){
-        this.position = g;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class Place {
                     if(this.placeTypes != null) {
                         ret += " place types='";
 
-                        for (PlaceTypes pt : placeTypes) {
+                        for (PlaceType pt : placeTypes) {
                             ret += pt.toString() + ", ";
                         }
                     }

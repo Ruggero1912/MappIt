@@ -3,9 +3,10 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
 public class GeoLocation {
 
     private int id;
-    public double latitude;
-    public double longitude;
-    public String address;
+    private double latitude;
+    private double longitude;
+    // maybe we could use a Map to distinguish fields inside the address
+    private String address;
 
     public GeoLocation(int id, double lat, double lon, String addr) {
         this.id = id;

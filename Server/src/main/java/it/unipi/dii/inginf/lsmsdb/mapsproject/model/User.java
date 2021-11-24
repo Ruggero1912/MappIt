@@ -1,21 +1,23 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
 
 import java.util.List;
+import java.util.Date;
 
 public class User {
 
 	private int id;
+	private String username;
+	private String email;
+	private String password;
 	private String name;
 	private String surname;
-	public String username;
-	private String password;
-	private String email;
+	private Date birthDate;
 	private String role;
-	private String profilePicture;
-	public int totalTrips;
-	public List<User> followedUsers;
-	public List<Place> favouritePlaces;
-	public List<Trip> likedTrips;
+	private String pathProfilePic;
+	private List<User> followedUsers;
+	private List<Place> favouritePlaces;
+	private List<Trip> likedTrips;
+	private int totalTrips;
 
 
 	public User(int id, String nm, String snm, String uname, String psw, String email, String role) {
@@ -36,6 +38,30 @@ public class User {
 		this.id = id;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String uname) {
+		this.username = uname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String psw) {
+		this.password = psw;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -52,28 +78,12 @@ public class User {
 		this.surname = sname;
 	}
 
-	public String getUsername() {
-		return username;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setUsername(String uname) {
-		this.username = uname;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String psw) {
-		this.password = psw;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getRole() {
@@ -83,6 +93,8 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	// write methods to retrive: pathProfilePic, followedUsers, favouriteTrips, likedTrips, totalTrips
 
 	@Override
 	public String toString() {
