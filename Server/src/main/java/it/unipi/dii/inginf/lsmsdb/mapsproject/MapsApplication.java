@@ -21,6 +21,7 @@ public class MapsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MapsApplication.class, args);
 
+		/*
 		GeoLocation g = new GeoLocation(1, 134.2, -122.399, "via ambrosiana 23, livorno LI 57100");
 		System.out.println(g);
 
@@ -34,15 +35,9 @@ public class MapsApplication {
 		Image img = new Image();
 		Place p = new Place(1, "Tre Ponti", g, aliases, pt, img);
 		System.out.println(p);
-		/*
 
-		User u = new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", "USER");
-		System.out.println(u);
-		//costruttore 1
-		Marker m = new Marker(1, u, g);
-		//costruttore 2
-		Marker m2 = new Marker(1, u, p);
-		System.out.println("\nmarker 2 costruito tramite un geoLocation: \n"+m);
-		System.out.println("\nmarker 2 costruito tramite un Place: \n"+m2);*/
+
+		User u = new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.MODERATOR);
+		System.out.println(u);*/
 	}
 }

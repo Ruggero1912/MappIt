@@ -1,7 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
+import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.GeoLocation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 @RestController
 @SecurityRequirement(name = "bearerAuth")
+
 public class UserController {
 
 	List<User> users = new ArrayList<User>();
@@ -23,8 +24,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/user/all", method = RequestMethod.GET, produces = "application/json")
-	//@ApiOperation(value = "Create user",
-	//		notes = "This method creates a new user")
+	//@ApiOperation(value = "Get information of every users", notes = "This method retrieve information about all the users")
 	public List<User> getUsers() {
 		return users;
 	}
