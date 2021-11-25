@@ -1,4 +1,8 @@
-package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
+package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
+
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Post;
 
 import java.util.List;
 import java.util.Date;
@@ -15,7 +19,7 @@ public class User {
 	private String surname;
 	private Date birthDate;
 	private Role role;
-	private Image rofilePic;
+	private Image profilePic;
 	private List<Post> publishedPost;
 	private List<User> followedUsers;
 	private List<Place> favouritePlaces;

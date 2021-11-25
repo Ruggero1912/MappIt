@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
+import java.util.Date;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,9 @@ public class JwtAuthenticationController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        final Date expires = jwtTokenUtil.getExpirationDateFromToken(token);
+
+        return ResponseEntity.ok(new JwtResponse(token, expires));
     }
 
     private void authenticate(String username, String password) throws Exception {

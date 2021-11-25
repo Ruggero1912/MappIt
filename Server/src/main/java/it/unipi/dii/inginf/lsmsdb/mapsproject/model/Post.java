@@ -1,5 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+
 import java.util.Date;
 import java.util.List;
 

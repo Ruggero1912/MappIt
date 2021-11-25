@@ -1,8 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
