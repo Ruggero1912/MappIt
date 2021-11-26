@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-import it.unipi.dii.inginf.lsmsdb.mapsproject.config.JwtTokenUtil;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.JwtTokenUtil;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.JwtRequest;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.JwtResponse;
 

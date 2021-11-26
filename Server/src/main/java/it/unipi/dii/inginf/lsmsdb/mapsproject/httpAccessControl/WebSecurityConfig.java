@@ -1,4 +1,4 @@
-package it.unipi.dii.inginf.lsmsdb.mapsproject.config;
+package it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
