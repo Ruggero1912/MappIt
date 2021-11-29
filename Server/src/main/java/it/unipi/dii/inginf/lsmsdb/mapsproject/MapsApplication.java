@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.FileNotFoundException;
@@ -16,7 +17,7 @@ import java.io.FileNotFoundException;
 public class MapsApplication {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		//SpringApplication.run(MapsApplication.class, args);
+		SpringApplication.run(MapsApplication.class, args);
 
 		/*
 		GeoLocation g = new GeoLocation(1, 134.2, -122.399, "via ambrosiana 23, livorno LI 57100");
@@ -37,6 +38,6 @@ public class MapsApplication {
 		User u = new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.MODERATOR);
 		System.out.println(u);*/
 
-		System.out.println(PropertyPicker.getProperty("matteo"));
+		//System.out.println(PropertyPicker.getProperty("matteo"));
 	}
 }

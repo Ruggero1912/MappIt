@@ -4,10 +4,11 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Post;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Date;
 
-public class User {
+public class User implements Serializable {
 
 	public enum Role {USER,MODERATOR,ADMIN}
 
@@ -26,6 +27,11 @@ public class User {
 	private List<Post> likedPosts;
 	private int totalPost;
 
+	//need default constructor for JSON Parsing
+	public User(){
+
+	}
+
 
 	public User(int id, String nm, String snm, String uname, String psw, String email, Role role) {
 		this.id = id;
@@ -35,6 +41,13 @@ public class User {
 		this.password = psw;
 		this.email = email;
 		this.role = role;
+	}
+
+	//used in login auth
+	public User(String uname, String psw){
+		this.username = uname;
+		this.password = psw;
+		this.id = -1;
 	}
 
 	public int getId() {

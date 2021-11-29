@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,19 +49,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 System.out.println("JWT Token has expired");
             }
         } else {
-            logger.warn("JWT Token not initialized yet or does not begin with Bearer String");
+            logger.warn("JWT Token has not been initialized yet or does not begin with Bearer String");
         }
 
         //Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+            //UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+            User u = new User("username", "password");
 
             // if token is valid configure Spring Security to manually set authentication
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+            if (jwtTokenUtil.validateToken(jwtToken, u)) {
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                        u, null, null);
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 // After setting the Authentication in the context, we specify
