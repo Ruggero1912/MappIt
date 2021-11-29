@@ -1,0 +1,37 @@
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject;\r\n\r\nimport io.swagger.v3.oas.annotations.OpenAPIDefinition;\r\nimport io.swagger.v3.oas.annotations.enums.SecuritySchemeType;\r\nimport io.swagger.v3.oas.annotations.info.Info;\r\nimport io.swagger.v3.oas.annotations.security.SecurityScheme;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;\r\nimport org.springframework.boot.autoconfigure.SpringBootApplication;\r\n\r\nimport java.io.FileNotFoundException;\r\n\r\n@SpringBootApplication\r\n@OpenAPIDefinition(info = @Info(title = \"MapsProject\", version = \"1.0\", description = \"Simple API by TroiAIDE\"))\r\n@SecurityScheme(name = \"bearerAuth\", type = SecuritySchemeType.HTTP, bearerFormat = \"JWT\", scheme = \"bearer\")\r\n\r\npublic class MapsApplication {\r\n\r\n\tpublic static void main(String[] args) throws FileNotFoundException {\r\n\t\t//SpringApplication.run(MapsApplication.class, args);\r\n\r\n\t\t/*\r\n\t\tGeoLocation g = new GeoLocation(1, 134.2, -122.399, \"via ambrosiana 23, livorno LI 57100\");\r\n\t\tSystem.out.println(g);\r\n\r\n\t\tList<Place.PlaceType> pt = new ArrayList<>();\r\n\t\tpt.add(Place.PlaceType.COUNTRYSIDE);\r\n\t\tpt.add(Place.PlaceType.URBAN);\r\n\t\tList<String> aliases = new ArrayList<>();\r\n\t\taliases.add(\"Trep\");\r\n\t\taliases.add(\"Treppo\");\r\n\t\tSystem.out.println(aliases);\r\n\t\tImage img = new Image();\r\n\t\tPlace p = new Place(1, \"Tre Ponti\", g, aliases, pt, img);\r\n\t\tSystem.out.println(p);\r\n\r\n\r\n\t\tUser u = new User(1, \"Marco\",\"Bianchi\",\"User1\", \"pw1\", \"user1@test.com\", User.Role.MODERATOR);\r\n\t\tSystem.out.println(u);*/\r\n\r\n\t\tSystem.out.println(PropertyPicker.getProperty(\"matteo\"));\r\n\t}\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java	
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java	
+@@ -5,6 +5,7 @@
+ import io.swagger.v3.oas.annotations.info.Info;
+ import io.swagger.v3.oas.annotations.security.SecurityScheme;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
++import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+ 
+ import java.io.FileNotFoundException;
+@@ -16,7 +17,8 @@
+ public class MapsApplication {
+ 
+ 	public static void main(String[] args) throws FileNotFoundException {
+-		//SpringApplication.run(MapsApplication.class, args);
++
++		SpringApplication.run(MapsApplication.class, args);
+ 
+ 		/*
+ 		GeoLocation g = new GeoLocation(1, 134.2, -122.399, "via ambrosiana 23, livorno LI 57100");
+@@ -37,6 +39,6 @@
+ 		User u = new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.MODERATOR);
+ 		System.out.println(u);*/
+ 
+-		System.out.println(PropertyPicker.getProperty("matteo"));
++		//System.out.println(PropertyPicker.getProperty("matteo"));
+ 	}
+ }
+\ No newline at end of file

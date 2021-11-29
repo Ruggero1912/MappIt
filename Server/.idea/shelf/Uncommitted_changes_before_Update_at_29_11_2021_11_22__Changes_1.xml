@@ -1,0 +1,14 @@
+<changelist name="Uncommitted_changes_before_Update_at_29_11_2021_11_22_[Changes]1" date="1638181510264" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_11_2021_11_22_[Changes]1/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 29/11/2021 11.22 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="target/mapsproject-0.0.1-SNAPSHOT.jar" />
+    <option name="AFTER_PATH" value="target/mapsproject-0.0.1-SNAPSHOT.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_11_2021_11_22_[Changes]1/mapsproject-0.0.1-SNAPSHOT.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="target/mapsproject-0.0.1-SNAPSHOT.jar.original" />
+    <option name="AFTER_PATH" value="target/mapsproject-0.0.1-SNAPSHOT.jar.original" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_11_2021_11_22_[Changes]1/mapsproject-0.0.1-SNAPSHOT.jar.original" />
+  </binary>
+</changelist>

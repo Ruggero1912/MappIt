@@ -38,6 +38,6 @@ public class MapsApplication {
 		User u = new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.MODERATOR);
 		System.out.println(u);*/
 
-		//System.out.println(PropertyPicker.getProperty("matteo"));
+		System.out.println(PropertyPicker.getProperty("matteo"));
 	}
 }
