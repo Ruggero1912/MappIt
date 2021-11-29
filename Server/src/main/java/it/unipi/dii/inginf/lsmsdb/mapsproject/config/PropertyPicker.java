@@ -15,6 +15,9 @@ public class PropertyPicker {
     public static final String documentDBkey = "persistence.db.kind.information";
     public static final String documentDbMongoKey = "mongodb";
 
+    public static final String MongoURI = "persistence.db.mongo.URI";
+    public static final String MongoDBName = "persistence.db.mongo.dbName";
+
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();
 

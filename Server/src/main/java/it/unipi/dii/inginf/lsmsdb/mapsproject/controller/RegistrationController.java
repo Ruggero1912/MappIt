@@ -19,7 +19,7 @@ public class RegistrationController {
         users.add(new User(3, "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
     }
 
-    @PostMapping(value = "/register", produces = "application/json")
+    @PostMapping(value = "/api/register", produces = "application/json")
     public ResponseEntity<?> registerNewUser(@RequestBody User newUser) {
 
         //method for checking duplicate user
