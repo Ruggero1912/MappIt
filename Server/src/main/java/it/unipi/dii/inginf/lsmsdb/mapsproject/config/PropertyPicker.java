@@ -12,6 +12,7 @@ public class PropertyPicker {
     private static final Logger LOGGER = Logger.getLogger( PropertyPicker.class.getName() );
     Properties properties = new Properties();
     final String fileName = "application.properties";
+    public static final String defaultPicKey = "defaults.user.profilepic";
     public static final String documentDBkey = "persistence.db.kind.information";
     public static final String documentDbMongoKey = "mongodb";
 

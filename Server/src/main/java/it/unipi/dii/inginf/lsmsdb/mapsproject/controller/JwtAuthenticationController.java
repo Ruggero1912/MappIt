@@ -2,9 +2,13 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserCredentialChecker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +28,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.model.JwtResponse;
 @CrossOrigin
 public class JwtAuthenticationController {
 
+
+    private static final Logger LOGGER = Logger.getLogger( JwtAuthenticationController.class.getName() );
+
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -34,17 +41,16 @@ public class JwtAuthenticationController {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();
 
-        User u;
-        //check validity of user credential and eventually create new user
-        if(UserCredentialChecker.checkCredential(username, password)){
-             u = new User(username, password);
-        }
-        else
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: wrong credentials!");
+        User u = UserService.login(username, password);
+        if(u == null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"wrong credentials!\"}");
 
         final String token = jwtTokenUtil.generateToken(u);
         final Date expires = jwtTokenUtil.getExpirationDateFromToken(token);
+        final String id = u.getId();
 
-        return ResponseEntity.ok(new JwtResponse(token, expires, u.getId()));
+        LOGGER.log(Level.SEVERE, "login request accepted for the user: " + u.toString());
+
+        return ResponseEntity.ok(new JwtResponse(token, expires, id));
     }
 }
