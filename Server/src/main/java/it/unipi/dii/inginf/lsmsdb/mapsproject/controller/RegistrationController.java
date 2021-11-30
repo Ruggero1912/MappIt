@@ -29,7 +29,10 @@ public class RegistrationController {
         String username = newUser.getUsername();
         String password = newUser.getPassword();
 
-        if(UserService.save(newUser)) {
+        //TODO: decide if combining some controllers
+        //TODO: update the controller properly
+
+        if(UserService.register(username,password)) {
             users.add(newUser);
             System.out.println(users);
             return ResponseEntity.ok(newUser);
