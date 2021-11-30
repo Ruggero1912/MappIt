@@ -1,9 +1,13 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
+import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Post;
+import org.bson.Document;
 
+
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Date;
@@ -12,7 +16,7 @@ public class User implements Serializable {
 
 	public enum Role {USER,MODERATOR,ADMIN}
 
-	private int id;
+	private String _id;
 	private String username;
 	private String email;
 	private String password;
@@ -32,9 +36,22 @@ public class User implements Serializable {
 
 	}
 
+	public User(Document doc){
+		this._id = doc.get("_id").toString();
+		this.username = doc.get("username").toString();
+		this.email = doc.get("email").toString();
+		this.name = doc.get("name").toString();
+		this.surname = doc.get("surname").toString();
+	}
 
-	public User(int id, String nm, String snm, String uname, String psw, String email, Role role) {
-		this.id = id;
+	public static User buildUser(@NotNull Document doc){
+		Gson g = new Gson();
+		User u = g.fromJson(doc.toJson(), User.class);
+		return u;
+	}
+
+	public User(String _id, String nm, String snm, String uname, String psw, String email, Role role) {
+		this._id = _id;
 		this.name = nm;
 		this.surname = snm;
 		this.username = uname;
@@ -43,19 +60,9 @@ public class User implements Serializable {
 		this.role = role;
 	}
 
-	//used in login auth
-	public User(String uname, String psw){
-		this.username = uname;
-		this.password = psw;
-		this.id = -1;
-	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+	public String getId() {
+		return _id;
 	}
 
 	public String getUsername() {
@@ -119,7 +126,7 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "User{" +
-				"id=" + id +
+				"id=" + _id +
 				", name='" + name + '\'' +
 				", surname='" + surname + '\'' +
 				", username='" + username + '\'' +

@@ -16,10 +16,10 @@ public class UserController {
 
 	List<User> users = new ArrayList<User>();
 	{
-		users.add(new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.USER));
-		users.add(new User(2, "Luca","Rossi","User2", "pw2", "user2@test.com", User.Role.ADMIN));
-		users.add(new User(3, "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
-		users.add(new User(4, "Gigi","Blu","User4", "pw4", "user4@test.com", User.Role.ADMIN));
+		users.add(new User("1", "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.USER));
+		users.add(new User("2", "Luca","Rossi","User2", "pw2", "user2@test.com", User.Role.ADMIN));
+		users.add(new User("3", "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
+		users.add(new User("4", "Gigi","Blu","User4", "pw4", "user4@test.com", User.Role.ADMIN));
 	}
 
 	@GetMapping(value = "/user/all", produces = "application/json")
@@ -29,7 +29,7 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/user/{id}", produces = "application/json")
-	public User getUserById(@PathVariable(value = "id") int userId) {
+	public User getUserById(@PathVariable(value = "id") String userId) {
 		return users.stream().filter(x -> x.getId()==(userId)).collect(Collectors.toList()).get(0);
 	}
 
@@ -40,7 +40,7 @@ public class UserController {
 	}
 
 	@DeleteMapping(value={"/user/{id}"}, produces = "application/json")
-	public List<User> removeUser(@PathVariable(value = "id") int userId)
+	public List<User> removeUser(@PathVariable(value = "id") String userId)
 	{
 		try{
 			users.remove(users.stream().filter(x -> x.getId()==(userId)).collect(Collectors.toList()).get(0));

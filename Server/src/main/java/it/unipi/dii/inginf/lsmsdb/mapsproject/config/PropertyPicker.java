@@ -38,6 +38,7 @@ public class PropertyPicker {
 
     public static String getProperty(String propertyName){
         PropertyPicker p = new PropertyPicker();
+        LOGGER.log(Level.FINEST, "getProperty on " + propertyName);
         return p.getPropertyPriv(propertyName);
     }
 }

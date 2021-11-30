@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
@@ -12,9 +13,11 @@ public class UserService {
      * //@exception Any exception
      * @return User object or null if not found
      */
-    public User login(String username, String password){
+    public static User login(String username, String password){
         UserManager um = UserManagerFactory.getUserManager();
-        User u = um.login(username, password);
+        //here we should cypher the password
+        String encryptedPwd = password;
+        User u = um.login(username, encryptedPwd);
         return u;
     }
 

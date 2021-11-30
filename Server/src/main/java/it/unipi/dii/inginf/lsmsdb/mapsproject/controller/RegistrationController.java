@@ -14,9 +14,9 @@ public class RegistrationController {
 
     List<User> users = new ArrayList<User>();
     {
-        users.add(new User(1, "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.USER));
-        users.add(new User(2, "Luca","Rossi","User2", "pw2", "user2@test.com", User.Role.ADMIN));
-        users.add(new User(3, "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
+        users.add(new User("1", "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.USER));
+        users.add(new User("2", "Luca","Rossi","User2", "pw2", "user2@test.com", User.Role.ADMIN));
+        users.add(new User("3", "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
     }
 
     @PostMapping(value = "/api/register", produces = "application/json")
