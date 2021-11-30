@@ -1,7 +1,10 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
+import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,9 +26,23 @@ public class UserController {
 	}
 
 	@GetMapping(value = "/user/all", produces = "application/json")
-	//@ApiOperation(value = "Get information of every users", notes = "This method retrieve information about all the users")
+	/**
+	 * return all the Users in the database
+	 * @param username A string containing the given username from the user
+	 * //@ApiOperation(value = "Get information of every users", notes = "This method retrieve information about all the users")
+	 */
 	public List<User> getUsers() {
+		// here we should check if the current User can access to this information
+		// we need to access to the object of the current user
 		return users;
+	}
+
+	@GetMapping(value = "/user", produces = "application/json")
+	public User getCurrentUserInfo() {
+		//we return the information about the current logged in user
+		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+		User currentUser = (User) upat.getPrincipal();
+		return currentUser;
 	}
 
 	@GetMapping(value = "/user/{id}", produces = "application/json")

@@ -40,4 +40,14 @@ public class UserService {
         //User u = um.register(params..);
         return null;
     }
+
+    /**
+     * return null if it does not exists an user with that id, otherwise returns the associated user
+     * @param id the id of the requested user
+     * @return associated User object or null if not found
+     */
+    public static User getUserFromId(String id){
+        UserManager um = UserManagerFactory.getUserManager();
+        return um.getUserFromId(id);
+    }
 }

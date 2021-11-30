@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -22,11 +23,17 @@ public class JwtTokenUtil implements Serializable {
 
     public static final long JWT_TOKEN_VALIDITY = 5*60*60;
 
+    public static final String ID_KEY = "userID";
+
     @Value("${jwt.secret}")
     private String secret;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
+    }
+
+    public String getIdFromToken(String token){
+        return getClaimFromToken(token, claims -> (String) claims.get(ID_KEY));
     }
 
     public Date getIssuedAtDateFromToken(String token) {
@@ -58,6 +65,7 @@ public class JwtTokenUtil implements Serializable {
 
     public String generateToken(User userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put(ID_KEY, userDetails.getId());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

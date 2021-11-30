@@ -32,6 +32,7 @@ public class RegistrationController {
         //TODO: decide if combining some controllers
         //TODO: update the controller properly
 
+        /*
         if(UserService.register(username,password)) {
             users.add(newUser);
             System.out.println(users);
@@ -39,5 +40,7 @@ public class RegistrationController {
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error during registration process");
         }
+         */
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error during registration process");
     }
 }

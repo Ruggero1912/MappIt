@@ -18,6 +18,7 @@ public class UserManagerMongoDB implements UserManager{
 
     private static final String USERCOLLECTIONKEY = "user";
 
+    private static final String IDKEY = "_id";
     private static final String USERNAMEKEY = "username";
     private static final String PASSWORDKEY = "password";
 
@@ -43,5 +44,19 @@ public class UserManagerMongoDB implements UserManager{
         }
         else
             return null;
+    }
+
+    @Override
+    public User getUserFromId(String id){
+        Bson idFilter = Filters.eq(IDKEY, id);
+        MongoCursor<Document> cursor = userCollection.find(idFilter).cursor();
+        if(!cursor.hasNext()){
+            return null;
+        }
+        else{
+            Document userDoc = cursor.next();
+            User ret = new User(userDoc);
+            return ret;
+        }
     }
 }

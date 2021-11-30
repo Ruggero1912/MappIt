@@ -12,4 +12,12 @@ public interface UserManager {
      */
     public User login(String username, String encryptedPassword);
 
+
+    /**
+     * return null if it does not exists an user with that id, otherwise returns the associated user
+     * @param id the id of the requested user
+     * @return associated User object or null if not found
+     */
+    public User getUserFromId(String id);
+
 }

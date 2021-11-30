@@ -16,6 +16,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     private static final long serialVersionUID = -7858869558953243875L;
 
     @Override
+    /**
+     *this method is called by Spring when an AuthenticationException is raised from a request
+     * (it happens inside a Controller or inside a Filter that is executed during the request processing)
+     *
+     * it prevents the normal behaviour that would return a html document containing the error (this would be unuseful for a RESTful backend)
+     */
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
