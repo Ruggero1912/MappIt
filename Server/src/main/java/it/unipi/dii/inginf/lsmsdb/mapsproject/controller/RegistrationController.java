@@ -6,41 +6,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 public class RegistrationController {
 
-    List<User> users = new ArrayList<User>();
-    {
-        users.add(new User("1", "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.USER));
-        users.add(new User("2", "Luca","Rossi","User2", "pw2", "user2@test.com", User.Role.ADMIN));
-        users.add(new User("3", "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
-    }
-
-    @PostMapping(value = "/api/register", produces = "application/json")
+    @PostMapping(value = "/api/register")
     public ResponseEntity<?> registerNewUser(@RequestBody User newUser) {
 
-        //method for checking duplicate user
-        //...
-        //if username id unique then save into user mongodb collection
-
         String username = newUser.getUsername();
-        String password = newUser.getPassword();
+        String passwordHash = newUser.getPassword();
+        String name = newUser.getName();
+        String surname = newUser.getSurname();
+        String email = newUser.getEmail();
+        LocalDate birthDate = newUser.getBirthDate();
+
+        // checks on username and password duplicates are done inside UserService.register()
+        User insertedUser = UserService.register(username, passwordHash, name, surname, email, birthDate);
 
         //TODO: decide if combining some controllers
         //TODO: update the controller properly
 
-        /*
-        if(UserService.register(username,password)) {
-            users.add(newUser);
-            System.out.println(users);
-            return ResponseEntity.ok(newUser);
+        if(insertedUser != null) {
+            return ResponseEntity.ok(insertedUser);
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error during registration process");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or Email already taken");
         }
-         */
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error during registration process");
     }
 }
