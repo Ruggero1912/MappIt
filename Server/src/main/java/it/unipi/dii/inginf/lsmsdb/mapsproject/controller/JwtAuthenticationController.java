@@ -43,7 +43,7 @@ public class JwtAuthenticationController {
         final Date expires = jwtTokenUtil.getExpirationDateFromToken(token);
         final String id = u.getId();
 
-        LOGGER.log(Level.SEVERE, "login request accepted for the user: " + u.toString());
+        LOGGER.log(Level.INFO, "login request accepted for the user: " + u.toString());
 
         /*
          * UsernamePasswordAuthenticationToken is a class that implements Authentication and that lets you
