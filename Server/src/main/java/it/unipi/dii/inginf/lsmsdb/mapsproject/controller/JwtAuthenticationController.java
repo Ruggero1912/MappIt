@@ -51,8 +51,11 @@ public class JwtAuthenticationController {
          * NOTE: TODO: maybe it is better to store in this object the password as already hashed for security purposes...
          *      it is unuseful to store the password in the authentication token, so we use null as second parameter
          */
-        UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, null);
+        //UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, null);
          //the call to setAuthentication stores in the session the authentication information for the current user
+        //SecurityContextHolder.getContext().setAuthentication(upat);
+
+        UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, "STATIC");
         SecurityContextHolder.getContext().setAuthentication(upat);
 
 

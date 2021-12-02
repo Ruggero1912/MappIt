@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,31 +26,42 @@ public class JwtTokenUtil implements Serializable {
 
     public static final String ID_KEY = "userID";
 
-    @Value("${jwt.secret}")
-    private String secret;
+    public static final String secret = PropertyPicker.getProperty("jwt.secret");
+
+    //@Value("${jwt.secret}")
+    //private String secret;
+
+    public static String parseTokenFromAuthorizationHeader(String authorizationToken){
+        if (authorizationToken != null && authorizationToken.startsWith("Bearer ")) {
+            return authorizationToken.substring(7);
+        }
+        else{
+            return null;
+        }
+    }
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public String getIdFromToken(String token){
+    public static String getIdFromToken(String token){
         return getClaimFromToken(token, claims -> (String) claims.get(ID_KEY));
     }
 
-    public Date getIssuedAtDateFromToken(String token) {
+    public static Date getIssuedAtDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }
 
-    public Date getExpirationDateFromToken(String token) {
+    public static Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    public static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    private static Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 

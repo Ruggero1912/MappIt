@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -25,19 +26,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    private UserDetailsService jwtUserDetailsService;
-
-    @Autowired
     private JwtRequestFilter jwtRequestFilter;
+
+    /*
+    @Autowired
+    private UserDetailsService jwtUserDetailsService;
+    */
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         // configure AuthenticationManager so that it knows from where to load
         // user for matching credentials
         // Use BCryptPasswordEncoder
-        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
-    }
+        //auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        //TODO: set a proper UserDetailsService class in order to make it work the UsernamePasswordAuthenticationToken.getUserByUsername method
 
+    }
+    /*
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -48,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+     */
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -56,14 +62,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // don't authenticate this particular request
                 .authorizeRequests().antMatchers("/api/login", "/api/register", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll().
                 // all other requests need to be authenticated
-                        anyRequest().authenticated().and().
+                //        anyRequest().authenticated(). //TODO: uncomment this line to re-enable authentication mechanism
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                        and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
                 //.and().sessionManagement()
                 //.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Add a filter to validate the tokens with every request
-        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        //httpSecurity.addFilterAt(new JwtRequestFilter(), BasicAuthenticationFilter.class);
+        httpSecurity.addFilter(new JwtRequestFilter());
     }
 }

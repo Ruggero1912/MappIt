@@ -2,6 +2,8 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
+    private static final Logger LOGGER = Logger.getLogger( JwtAuthenticationEntryPoint.class.getName() );
     private static final long serialVersionUID = -7858869558953243875L;
 
     @Override
@@ -25,6 +28,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
+        LOGGER.log(Level.INFO, "sending 401 unauthorized. authException: " + authException.toString());
+
+        //authException.printStackTrace();
 
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }

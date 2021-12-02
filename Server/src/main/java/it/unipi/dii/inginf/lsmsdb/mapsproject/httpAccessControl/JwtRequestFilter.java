@@ -69,19 +69,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 //NOTE: generate the session starting from the given token so that the server has access to the currentUser instance
                 User currentUser = UserService.getUserFromId(userID);
 
-                assert currentUser.getId() == userID;
+                //assert currentUser.getId() == userID;
 
                 /* NOTE: generate the session starting from the given token so that the server has access to the currentUser instance
                  * UsernamePasswordAuthenticationToken is a class that implements Authentication and that lets you
                  * store the principal object (in this case, the current logged in User instance) and the credentials used to login
                  * NOTE: it is unuseful to store the password in the authentication token, so we use null as second parameter
                  */
-                UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(currentUser, null);
+                //UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(currentUser, null);
                 //the call to setAuthentication stores in the session the authentication information for the current user
+                //SecurityContextHolder.getContext().setAuthentication(upat);
+                //TODO: instead of an User object, pass as first parameter a class that implements UserDetails and that also has the user informations
+                UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(currentUser, "STATIC");
                 SecurityContextHolder.getContext().setAuthentication(upat);
 
                 /*
-                TODO: what it does?
+                TODO: what does it do?
                 upat.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 */
             }else{
