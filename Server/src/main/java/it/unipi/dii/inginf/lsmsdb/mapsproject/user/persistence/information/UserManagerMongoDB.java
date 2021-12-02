@@ -7,6 +7,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnec
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import java.awt.*;
 import java.util.List;
@@ -48,7 +49,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public User getUserFromId(String id){
-        Bson idFilter = Filters.eq(IDKEY, id);
+        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
         MongoCursor<Document> cursor = userCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
             return null;
