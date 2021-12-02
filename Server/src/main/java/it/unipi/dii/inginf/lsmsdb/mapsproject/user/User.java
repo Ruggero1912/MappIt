@@ -9,6 +9,9 @@ import org.bson.Document;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Date;
 
@@ -22,7 +25,7 @@ public class User implements Serializable {
 	private String password;
 	private String name;
 	private String surname;
-	private Date birthDate;
+	private LocalDate birthDate;
 	private Role role;
 	private Image profilePic;
 	private List<Post> publishedPost;
@@ -39,9 +42,13 @@ public class User implements Serializable {
 	public User(Document doc){
 		this._id = doc.get("_id").toString();
 		this.username = doc.get("username").toString();
+		this.password = doc.get("password").toString();
 		this.email = doc.get("email").toString();
 		this.name = doc.get("name").toString();
 		this.surname = doc.get("surname").toString();
+		this.role = User.Role.valueOf(doc.get("role").toString());
+		String birthDate = doc.get("birthDate").toString();
+		this.birthDate = LocalDate.parse(birthDate);
 	}
 
 	public static User buildUser(@NotNull Document doc){
@@ -105,11 +112,11 @@ public class User implements Serializable {
 		this.surname = sname;
 	}
 
-	public Date getBirthDate() {
+	public LocalDate getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
 	}
 
