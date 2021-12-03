@@ -25,7 +25,7 @@ public class User implements Serializable {
 	private String password;
 	private String name;
 	private String surname;
-	private LocalDate birthDate;
+	private Date birthDate;
 	private Role role;
 	private Image profilePic;
 	private List<Post> publishedPost;
@@ -47,8 +47,7 @@ public class User implements Serializable {
 		this.name = doc.get("name").toString();
 		this.surname = doc.get("surname").toString();
 		this.role = User.Role.valueOf(doc.get("role").toString());
-		String birthDate = doc.get("birthDate").toString();
-		this.birthDate = LocalDate.parse(birthDate);
+		this.birthDate = (Date) doc.get("birthDate");
 	}
 
 	public static User buildUser(@NotNull Document doc){
@@ -112,11 +111,11 @@ public class User implements Serializable {
 		this.surname = sname;
 	}
 
-	public LocalDate getBirthDate() {
+	public Date getBirthDate() {
 		return birthDate;
 	}
 
-	public void setBirthDate(LocalDate birthDate) {
+	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
 

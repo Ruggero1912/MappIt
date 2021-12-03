@@ -10,19 +10,23 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.security.SecureRandom;
 
 @RestController
 public class RegistrationController {
+
+    //TODO: add a new class registrationUser to manage only required registration fields, it will be used inside HTTP Request
 
     @PostMapping(value = "/api/register")
     public ResponseEntity<?> registerNewUser(@RequestBody User newUser) {
 
         String username = newUser.getUsername();
-        String passwordHash = newUser.getPassword();
+        String passwordHash =  UserService.passwordEncryption(newUser.getPassword());
         String name = newUser.getName();
         String surname = newUser.getSurname();
         String email = newUser.getEmail();
-        LocalDate birthDate = newUser.getBirthDate();
+        Date birthDate = newUser.getBirthDate();
+
 
         // checks on username and password duplicates are done inside UserService.register()
         User insertedUser = UserService.register(username, passwordHash, name, surname, email, birthDate);
