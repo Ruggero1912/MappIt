@@ -4,6 +4,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.InsertOneResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
@@ -12,6 +13,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -34,13 +36,10 @@ public class UserManagerMongoDB implements UserManager{
         userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
     }
 
-
     @Override
-    public User login(String username, String encryptedPassword){
+    public User getUserFromUsername(String username){
         Bson usernameFilter = Filters.eq(USERNAMEKEY, username);
-        Bson passwordFilter = Filters.eq(PASSWORDKEY, encryptedPassword);
-        Bson finalFilter = Filters.or(usernameFilter, passwordFilter);  //TODO: when the password encryption method is done, change or with and
-        MongoCursor<Document> cursor = userCollection.find(finalFilter).cursor();
+        MongoCursor<Document> cursor = userCollection.find(usernameFilter).cursor();
 
         if(cursor.hasNext()){
             Document userDoc = cursor.next();
@@ -53,28 +52,36 @@ public class UserManagerMongoDB implements UserManager{
     }
 
     @Override
-    public boolean checkDuplicateUser(String username, String email) {
+    public boolean checkDuplicateUsername(String username) {
         Bson usernameFilter = Filters.eq(USERNAMEKEY, username);
-        Bson emailFilter = Filters.eq(EMAILKEY, email);
-        Bson finalFilter = Filters.or(usernameFilter, emailFilter);
-
-        MongoCursor<Document> cursor = userCollection.find(finalFilter).cursor();
+        MongoCursor<Document> cursor = userCollection.find(usernameFilter).cursor();
         return cursor.hasNext();
     }
 
     @Override
-    public User storeUser(String username, String passwordHash, String name, String surname, String email, LocalDate birthDate, User.Role defRole, Image defPic){
+    public boolean checkDuplicateEmail(String email) {
+        Bson emailFilter = Filters.eq(EMAILKEY, email);
+        MongoCursor<Document> cursor = userCollection.find(emailFilter).cursor();
+        return cursor.hasNext();
+    }
+
+    @Override
+    public User storeUser(String username, String passwordHash, String name, String surname, String email, Date birthDate, User.Role role, Image profilePic){
+
         Document userDoc = new Document("username",username)
                 .append("password", passwordHash)
                 .append("name",name)
                 .append("surname", surname)
                 .append("email", email)
                 .append("birthDate", birthDate)
-                .append("role", defRole.toString())
-                .append("profilePic", defPic.getPath());
+                .append("role", role.toString())
+                .append("profilePic", profilePic.getPath());
 
         try{
             userCollection.insertOne(userDoc);
+            //add inserted object id to the document
+            String id = userDoc.getObjectId("_id").toString();
+            userDoc.append("_id", id);
             return new User(userDoc);
         } catch(MongoException me){
             return null;

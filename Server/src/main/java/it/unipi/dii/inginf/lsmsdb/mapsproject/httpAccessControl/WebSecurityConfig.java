@@ -65,13 +65,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //        anyRequest().authenticated(). //TODO: uncomment this line to re-enable authentication mechanism
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-                //.and().sessionManagement()
-                //.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                        and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Add a filter to validate the tokens with every request
         //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         //httpSecurity.addFilterAt(new JwtRequestFilter(), BasicAuthenticationFilter.class);
-        httpSecurity.addFilter(new JwtRequestFilter());
+        //httpSecurity.addFilter(new JwtRequestFilter());
     }
 }
