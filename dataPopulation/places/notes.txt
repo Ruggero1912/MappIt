@@ -1,0 +1,21 @@
+Filter by geocodeArea:
+https://stackoverflow.com/questions/52236655/how-to-get-a-geocodearea-xxx-query-to-work-in-python-using-overpy
+
+ITALY COUNTRY CODE FILTER: 
+    area["ISO3166-1:alpha2"="IT"]->.searchArea;
+
+Historic tag possible values:
+https://wiki.openstreetmap.org/wiki/Key:historic
+
+NOTES:
+the format of the responses given by overpass is OSM data, that is not standard GeoJSON.
+We want to convert it to GeoJSON in order to make it more accessible.
+We want also to mantain all the information that are present in OSM data (! also the OSM id for the nodes / ways !)
+
+
+Convert from OverPass to GeoJSON:
+    https://gis.stackexchange.com/questions/220577/is-it-possible-to-get-osm-data-in-geojson-via-overpass-api-using-ipython
+
+
+Tool to convert from OSM data to GeoJSON:
+    https://github.com/tyrasd/osmtogeojson
