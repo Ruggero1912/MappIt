@@ -7,6 +7,10 @@ ITALY COUNTRY CODE FILTER:
 Historic tag possible values:
 https://wiki.openstreetmap.org/wiki/Key:historic
 
+Other useful keys:
+- geological
+- tourism ( : attraction)
+
 NOTES:
 the format of the responses given by overpass is OSM data, that is not standard GeoJSON.
 We want to convert it to GeoJSON in order to make it more accessible.

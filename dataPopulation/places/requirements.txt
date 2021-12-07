@@ -1,3 +1,4 @@
 overpy
 geojson
 requests
+shapely

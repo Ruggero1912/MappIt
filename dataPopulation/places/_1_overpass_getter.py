@@ -92,15 +92,22 @@ def open_resultset(file_name):
 
 #run_query_on_place("PISA", True)
 
-result = open_resultset("responses/PISA.geojson")
+exit()
 
-if False:
-    for node in result.nodes:
-        assert isinstance(node, overpy.Node)
-        node.id
-        tags = node.tags
-        print(type(tags), tags)
-        exit()
+#--------------- USE CASES EXAMPLES ----------------
+
+result = open_resultset("responses/PISA.osm")
+
+counter = 0
+
+for node in result.nodes:
+    assert isinstance(node, overpy.Node)
+    node.id
+    tags = node.tags
+    print(type(tags), tags)
+    counter += 1
+    if counter > 4:
+        break
 
 counter = 0
 
