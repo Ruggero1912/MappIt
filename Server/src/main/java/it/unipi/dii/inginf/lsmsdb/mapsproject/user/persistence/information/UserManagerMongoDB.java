@@ -4,19 +4,13 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.InsertOneResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-
-import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 
 public class UserManagerMongoDB implements UserManager{
@@ -66,16 +60,9 @@ public class UserManagerMongoDB implements UserManager{
     }
 
     @Override
-    public User storeUser(String username, String passwordHash, String name, String surname, String email, Date birthDate, User.Role role, Image profilePic){
-
-        Document userDoc = new Document("username",username)
-                .append("password", passwordHash)
-                .append("name",name)
-                .append("surname", surname)
-                .append("email", email)
-                .append("birthDate", birthDate)
-                .append("role", role.toString())
-                .append("profilePic", profilePic.getPath());
+    public User storeUser(RegistrationUser newUser){
+        // RegistrationUser.createDocument() also add a default role and default profile pic
+        Document userDoc = newUser.createDocument();
 
         try{
             userCollection.insertOne(userDoc);

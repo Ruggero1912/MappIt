@@ -48,6 +48,8 @@ public class User implements Serializable {
 		this.surname = doc.get("surname").toString();
 		this.role = User.Role.valueOf(doc.get("role").toString());
 		this.birthDate = (Date) doc.get("birthDate");
+		this.profilePic = new Image();
+		this.profilePic.setPath(doc.get("profilePic").toString());
 	}
 
 	public static User buildUser(@NotNull Document doc){
