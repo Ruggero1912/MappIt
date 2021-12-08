@@ -90,7 +90,7 @@ def open_resultset(file_name):
     result = overpy.Result.from_json(jsondata)
     return result
 
-#run_query_on_place("PISA", True)
+run_query_on_place("ITALY", True)
 
 exit()
 
