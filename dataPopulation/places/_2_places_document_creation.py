@@ -1,5 +1,4 @@
-import os
-
+#import os
 #from pygeos.constructive import centroid
 #os.add_dll_directory(os.getcwd())
 
