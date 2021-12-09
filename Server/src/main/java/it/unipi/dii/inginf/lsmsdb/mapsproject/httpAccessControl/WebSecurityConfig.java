@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /*
     @Autowired
     private UserDetailsService jwtUserDetailsService;
-    */
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -72,6 +72,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Add a filter to validate the tokens with every request
         //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         //httpSecurity.addFilterAt(new JwtRequestFilter(), BasicAuthenticationFilter.class);
-        httpSecurity.addFilter(new JwtRequestFilter());
+        //httpSecurity.addFilter(new JwtRequestFilter());
     }
 }
