@@ -1,7 +1,7 @@
 import os
 
-from pygeos.constructive import centroid
-os.add_dll_directory(os.getcwd())
+#from pygeos.constructive import centroid
+#os.add_dll_directory(os.getcwd())
 
 import geojson
 
@@ -160,16 +160,46 @@ geojson_infos = geojson.loads(POSTO)    #use geojson.load to load from file, use
 
 name = geojson_infos["properties"]["name"]
 
-"""
+import shapely
+from shapely import geometry
+
 s = shapely.geometry.shape(geojson_infos["geometry"])
 point = s.centroid
 print(point)
-"""
 
-import pygeos
+lon = point.x
+lat = point.y
 
-geom = (geojson_infos["geometry"])
+#loc : { type: "Point", coordinates: [ -76.703347, 30.710459 ] },
 
-print(type(geom))
+import requests
 
-print(centroid(geom))
+S = requests.Session()
+
+URL = "https://en.wikipedia.org/w/api.php"
+
+PARAMS = {
+    "action": "query",
+    "format": "json",
+    "titles": "Albert Einstein",
+    "prop": "images"
+}
+
+R = S.get(url=URL, params=PARAMS)
+DATA = R.json()
+
+PAGES = DATA['query']['pages']
+
+for k, v in PAGES.items():
+    for img in v['images']:
+        print(img["title"])
+
+place_doc = {
+    "name"  : name,
+    "loc"   : {"type" : "Point", "coordinates" : [lon, lat]},
+    "osm"   : geojson_infos
+}
+
+print(place_doc)
+
+
