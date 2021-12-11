@@ -6,8 +6,7 @@ STEPS:
     The place document should have this field:
     - "_id"     : /*given by MongoDB*/
     - "name"    : /*it is the same that is present in the GeoJSON document, but it has a its own field just in case the OSM name will not be used*/
-    - "lon"     :
-    - "lat"     :
+    - "loc"     : { "type": "Point", coordinates: [ lon, lat ] }
         //the polygon's (or point's) centroid (to be extracted using Python Library shapely (or similiar))
         //it is useful to perform searches by distance 
     - "type"    : /**/
