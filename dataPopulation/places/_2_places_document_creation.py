@@ -1,204 +1,165 @@
-#import os
-#from pygeos.constructive import centroid
-#os.add_dll_directory(os.getcwd())
-
 import geojson
-
 import pymongo
-
-
-#import shapely.geometry
-#from shapely.geometry import shape
-#from shapely.geometry import Point
-
-POSTO = """
-{
-            "type": "Feature",
-            "id": "way/34262137",
-            "properties": {
-                "building": "yes",
-                "historic": "ruins",
-                "historic:civilization": "medieval",
-                "name": "Rocca della Verruca",
-                "ruins": "castle",
-                "wikidata": "Q3939451",
-                "wikipedia": "it:Rocca della Verruca",
-                "id": "way/34262137"
-            },
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [
-                    [
-                        [
-                            10.5333396,
-                            43.7072802
-                        ],
-                        [
-                            10.5333165,
-                            43.7072632
-                        ],
-                        [
-                            10.5333207,
-                            43.7072421
-                        ],
-                        [
-                            10.5334133,
-                            43.7071993
-                        ],
-                        [
-                            10.5335419,
-                            43.7071541
-                        ],
-                        [
-                            10.5335914,
-                            43.7071248
-                        ],
-                        [
-                            10.5336277,
-                            43.707096
-                        ],
-                        [
-                            10.5336503,
-                            43.7070343
-                        ],
-                        [
-                            10.5336245,
-                            43.7069297
-                        ],
-                        [
-                            10.5339046,
-                            43.706992
-                        ],
-                        [
-                            10.5341599,
-                            43.7070579
-                        ],
-                        [
-                            10.5341929,
-                            43.7070441
-                        ],
-                        [
-                            10.5342622,
-                            43.7070582
-                        ],
-                        [
-                            10.5342721,
-                            43.7070961
-                        ],
-                        [
-                            10.5342507,
-                            43.7071275
-                        ],
-                        [
-                            10.5342204,
-                            43.70714
-                        ],
-                        [
-                            10.5341894,
-                            43.7071433
-                        ],
-                        [
-                            10.5341858,
-                            43.7071776
-                        ],
-                        [
-                            10.5341937,
-                            43.7072149
-                        ],
-                        [
-                            10.5341846,
-                            43.7072688
-                        ],
-                        [
-                            10.5341279,
-                            43.7073795
-                        ],
-                        [
-                            10.5341661,
-                            43.7073993
-                        ],
-                        [
-                            10.5341728,
-                            43.7074304
-                        ],
-                        [
-                            10.5341257,
-                            43.7074614
-                        ],
-                        [
-                            10.5340565,
-                            43.7074682
-                        ],
-                        [
-                            10.534008,
-                            43.7074651
-                        ],
-                        [
-                            10.5339754,
-                            43.7074374
-                        ],
-                        [
-                            10.5337398,
-                            43.7073798
-                        ],
-                        [
-                            10.5333396,
-                            43.7072802
-                        ]
-                    ]
-                ]
-            }
-        }
-"""
-
-CONNECTION_STRING = ""
-DATABASE_NAME = ""
-COLLECTION_NAME = "places"
-
-geojson_infos = geojson.loads(POSTO)    #use geojson.load to load from file, use .loads to load from string variable
-
-name = geojson_infos["properties"]["name"]
 
 import shapely
 from shapely import geometry
 
-s = shapely.geometry.shape(geojson_infos["geometry"])
-point = s.centroid
-print(point)
-
-lon = point.x
-lat = point.y
-
-#loc : { type: "Point", coordinates: [ -76.703347, 30.710459 ] },
+import os
+from dotenv import load_dotenv
 
 import requests
 
-S = requests.Session()
+load_dotenv()   #By default loads .env configuration variables from current directory, searching in the file ".env"
+#print(os.getenv("COLLECTION_NAME_PLACES"))
 
-URL = "https://en.wikipedia.org/w/api.php"
+PLACES_SOURCE_FILE = "responses/PISA.geojson"
 
-PARAMS = {
-    "action": "query",
-    "format": "json",
-    "titles": "Albert Einstein",
-    "prop": "images"
-}
+DEBUG = False
+STORE_IN_MONGO = True
 
-R = S.get(url=URL, params=PARAMS)
-DATA = R.json()
+CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
+DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
+COLLECTION_NAME_PLACES  = os.getenv("COLLECTION_NAME_PLACES")
 
-PAGES = DATA['query']['pages']
+def check_if_already_exists_in_mongo(document : dict, collection : str) -> str:
+    """
+    returns the _id if a document that is the same as the one given already exists in the given collection, else returns None
+    """
+    myclient = pymongo.MongoClient(CONNECTION_STRING)
+    mydb = myclient[DATABASE_NAME]
+    mycol = mydb[collection]
+    myquery = document  #{NAME_KEY : document[NAME_KEY]}
+    cur = mycol.find(myquery)
+    if(len(list(cur))):
+        cur.rewind()
+        existing_doc = cur.next()
+        return existing_doc['_id']
+    else:
+        return None
 
-for k, v in PAGES.items():
-    for img in v['images']:
-        print(img["title"])
+def store_into_mongo(document : dict, collection=COLLECTION_NAME_PLACES):
+    """
+    returns the _id of the inserted document or False if it already exists
+    """
+    myclient = pymongo.MongoClient(CONNECTION_STRING)
+    mydb = myclient[DATABASE_NAME]
+    mycol = mydb[collection]
+    existing_doc_id = check_if_already_exists_in_mongo(document, collection)
+    if(existing_doc_id is not None):
+        print("[!] it already exists an instance for the given doc whose name is {name}. The _id of the existing doc is {id}".format(name=document["name"], id=existing_doc_id))
+        return False
+    x = mycol.insert_one(document)
+    return x.inserted_id
 
-place_doc = {
-    "name"  : name,
-    "loc"   : {"type" : "Point", "coordinates" : [lon, lat]},
-    "osm"   : geojson_infos
-}
 
-print(place_doc)
+
+def load_centroid(geometry_value):  #geojson_infos["geometry"]
+    """
+    calculate the centroid given a polygon (/shape in general)
+    it expects to receive the geojson_infos["geometry"] from the geojson object
+    returns a dict in the form:
+    - loc : { type: "Point", coordinates: [ -76.703347, 30.710459 ] }
+    """
+    s = shapely.geometry.shape(geometry_value)
+    point = s.centroid
+    lon = point.x
+    lat = point.y
+    return {"type" : "Point", "coordinates" : [lon, lat]}
+
+def load_img_link_from_wikipedia(wikipedia_page_name : str) -> str:
+    """
+    given a valid Wikipedia page title, returns an image resource URI associated with that page
+    NOTES:
+        firstly it queries Wikipedia for images associated to a given page, then, 
+        once it has the title of the image, it can retrieve it using this path:
+        #https://commons.wikimedia.org/wiki/Special:FilePath/{img_name}?width=200   (width is optional)
+    returns a string or None in case no image found
+    """
+    S = requests.Session()
+    WIKIPEDIA_API_URL = "https://{country}.wikipedia.org/w/api.php"
+    DEFAULT_WIKIPEDIA_API_COUNTRY_CODE = os.getenv("DEFAULT_WIKIPEDIA_API_COUNTRY_CODE")
+
+    if(':' in wikipedia_page_name):
+        country_code = wikipedia_page_name.split(':')[0]
+        if(DEBUG): print("detected country_code: {cc} for the given wikipedia resource".format(cc=country_code))
+        WIKIPEDIA_API_URL = WIKIPEDIA_API_URL.format(country=country_code)
+    else:
+        if(DEBUG): print("resource's country code not detected, using default country code '{cc}' for wikipedia API url".format(cc=DEFAULT_WIKIPEDIA_API_COUNTRY_CODE))
+        WIKIPEDIA_API_URL=WIKIPEDIA_API_URL.format(country=DEFAULT_WIKIPEDIA_API_COUNTRY_CODE)
+
+    img_link = None
+    img_name = None
+
+    PARAMS = {
+        "action": "query",
+        "format": "json",
+        "titles": wikipedia_page_name,
+        "prop": "images"
+    }
+
+    R = S.get(url=WIKIPEDIA_API_URL, params=PARAMS)
+    DATA = R.json()
+    PAGES = DATA['query']['pages']
+
+    for k, v in PAGES.items():
+        if('images' not in v): continue
+        for img in v['images']:
+            #if(DEBUG): print(img)
+            img_name = img['title']
+            assert isinstance(img_name, str)
+            if("File:" in img_name):
+                img_name = img_name.replace("File:", "")
+            if(not img_name.endswith((".jpg", ".jpeg", ".png"))):
+                #skip the file if it is not a valid image
+                continue
+            else:
+                #in the case we have a valid image File name from wikipedia
+                img_link = "https://commons.wikimedia.org/wiki/Special:FilePath/{img_name}".format(img_name = img_name)
+                break
+        if(img_link is not None):
+            break
+    return img_link
+
+
+with open(PLACES_SOURCE_FILE, mode='r', encoding="UTF-8") as file_pointer:
+    
+    geoj = geojson.load(file_pointer)
+    geojson_array = geoj["features"]
+
+total_places = len(geojson_array)
+print(total_places)
+
+counter = 0
+wiki_images_found = 0
+sym = '\\'
+
+for geojson_infos in geojson_array:
+    name = geojson_infos["properties"]["name"]
+    centroid_location_attribute = load_centroid(geojson_infos["geometry"])
+    if("wikipedia" in geojson_infos["properties"]):
+        img_link = load_img_link_from_wikipedia(geojson_infos["properties"]["wikipedia"])
+        if(img_link is not None): wiki_images_found += 1
+    #---------- Place document definition ----------------
+    place_doc = {
+        "name"  : name,
+        "loc"   : centroid_location_attribute,
+        "fits"  : [],
+        "image" : img_link,
+        "osm"   : geojson_infos
+    }
+    if(DEBUG): print(place_doc)
+
+    if(STORE_IN_MONGO): 
+        id_doc = store_into_mongo(place_doc)
+        if(id_doc): print("[+] stored inside mongo the place '{name}' | given _id: {id}".format(name=name, id=id_doc))
+
+    counter += 1
+
+    sym='-' if (sym=='\\') else '\\' if (sym=='/') else '/' if (sym=='|') else '|'
+    print("[{sym}] Analyzed place number {counter} out of {total_places}".format(counter=counter, total_places=total_places, sym=sym))
+
+    #if counter > 9: break
+
+print("[+] analyzed {c} places, found {wiki_imgs_counter} images from wikipedia".format(c=counter, wiki_imgs_counter=wiki_images_found))
 
 

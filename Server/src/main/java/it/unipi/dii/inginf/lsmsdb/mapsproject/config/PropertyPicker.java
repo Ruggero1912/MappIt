@@ -19,6 +19,8 @@ public class PropertyPicker {
     public static final String MongoURI = "persistence.db.mongo.URI";
     public static final String MongoDBName = "persistence.db.mongo.dbName";
 
+    public final static String userCollectionName = "persistence.db.mongo.collection.user.collectionname";
+
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();
 

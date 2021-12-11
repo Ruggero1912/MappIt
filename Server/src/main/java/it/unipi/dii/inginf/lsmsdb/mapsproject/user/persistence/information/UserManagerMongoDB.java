@@ -21,7 +21,7 @@ public class UserManagerMongoDB implements UserManager{
 
     private static final UserManagerMongoDB obj = new UserManagerMongoDB(); //TODO
 
-    private static final String USERCOLLECTIONKEY = "user";
+    private static final String USERCOLLECTIONKEY = "user"; //PropertyPicker.getProperty(PropertyPicker.userCollectionName);
 
     private static final String IDKEY = "_id";
     private static final String USERNAMEKEY = "username";
