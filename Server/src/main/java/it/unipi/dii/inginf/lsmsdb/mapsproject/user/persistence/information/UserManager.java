@@ -3,6 +3,8 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
+import java.util.List;
+
 public interface UserManager {
 
     /**
@@ -11,6 +13,12 @@ public interface UserManager {
      * @return User object or null if not found
      */
     User getUserFromUsername(String username);
+
+    /**
+     * return all the Users in database
+     * @return User List or null if there are no users
+     */
+    List<User> getAllUser();
 
     /**
      * return true if the User with given username already exists, else return false
@@ -39,5 +47,12 @@ public interface UserManager {
      * @return associated User object or null if not found
      */
     User getUserFromId(String id);
+
+    /**
+     * return true if the user deletion process is successful, else return false
+     * @param id is the id of the user to be deleted
+     * @return true if the deletion is successful, false otherwise
+     */
+    boolean deleteUserFromId(String id);
 
 }

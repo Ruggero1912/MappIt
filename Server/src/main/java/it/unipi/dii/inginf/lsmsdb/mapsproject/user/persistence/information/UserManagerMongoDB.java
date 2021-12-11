@@ -1,16 +1,20 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
+import com.mongodb.client.result.DeleteResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UserManagerMongoDB implements UserManager{
@@ -43,6 +47,14 @@ public class UserManagerMongoDB implements UserManager{
         }
         else
             return null;
+    }
+
+    @Override
+    public List<User> getAllUser(){
+        List<User> users = new ArrayList<>();
+        FindIterable<Document> iterable = userCollection.find();
+        iterable.forEach(doc -> users.add(new User(doc)));
+        return users;
     }
 
     @Override
@@ -87,5 +99,12 @@ public class UserManagerMongoDB implements UserManager{
             User ret = new User(userDoc);
             return ret;
         }
+    }
+
+    @Override
+    public boolean deleteUserFromId(String id){
+        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+        DeleteResult ret = userCollection.deleteOne(idFilter);
+        return ret.wasAcknowledged();
     }
 }
