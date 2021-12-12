@@ -1,4 +1,7 @@
-package it.unipi.dii.inginf.lsmsdb.mapsproject.model;
+package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
+
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.GeoLocation;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 
 import java.util.List;
 
