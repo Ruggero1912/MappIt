@@ -55,4 +55,11 @@ public interface UserManager {
      */
     boolean deleteUserFromId(String id);
 
+    /**
+     * return true if given password hash match stored hash, else return false
+     * @param id of the current user
+     * @param newPassword
+     * @return true if password change has been successful, false otherwise
+     */
+    boolean changePassword(String id, String newPassword);
 }

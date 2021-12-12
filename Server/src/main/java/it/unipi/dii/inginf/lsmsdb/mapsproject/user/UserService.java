@@ -100,10 +100,22 @@ public class UserService {
      * @param userToDelete is the user to be deleted
      * @return true if deletion has been successful, false otherwise
      */
-    public static boolean deleteUser(User userToDelete){
+    public static boolean delete(User userToDelete){
         UserManager um = UserManagerFactory.getUserManager();
         String userId = userToDelete.getId();
         boolean ret = um.deleteUserFromId(userId);
+        return ret;
+    }
+
+    /**
+     * return true if given password hash match stored hash, else return false
+     * @param userID is the ID of the current user
+     * @param newPassword
+     * @return true if password change has been successful, false otherwise
+     */
+    public static boolean updatePassword(String userID, String newPassword){
+        UserManager um = UserManagerFactory.getUserManager();
+        boolean ret = um.changePassword(userID, newPassword);
         return ret;
     }
 }

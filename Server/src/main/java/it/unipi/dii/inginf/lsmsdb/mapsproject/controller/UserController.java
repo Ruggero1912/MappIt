@@ -51,11 +51,9 @@ public class UserController {
 			userID = JwtTokenUtil.getIdFromToken(token);
 		} catch (IllegalArgumentException e) {
 			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
-			//return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
 			return null;
 		} catch (ExpiredJwtException e) {
 			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
-			//return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
 			return null;
 		}
 		User currentUser = UserService.getUserFromId(userID);
@@ -84,22 +82,59 @@ public class UserController {
 	 * notes = "This method deletes a specific user")
 	 */
 	//TODO: only an admin can delete a user, we need to check role level
-	@DeleteMapping(value={"/user/{id}"}, produces = "application/json")
+	@DeleteMapping(value={"/user/{id}"})
 	public ResponseEntity<?> deleteUser(@PathVariable(value = "id") String id){
 		ResponseEntity<?> result;
 		try{
 			User userToDelete = UserService.getUserFromId(id);
 			if(userToDelete != null) {
-				UserService.deleteUser(userToDelete);
+				UserService.delete(userToDelete);
 				result = ResponseEntity.ok("User successfully deleted (id="+id+ ")");
-				LOGGER.log(Level.INFO, "User successfully deleted: " + id);
+				LOGGER.log(Level.INFO, "User successfully deleted: (id="+id+ ")");
 			} else {
-				result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete employee (id=" + id + ")");
+				result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find employee (id=" + id + ")");
 			}
 		}
 		catch (Exception e){
 			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete employee (id=" + id + ")");
 			LOGGER.log(Level.WARNING, "Error: could not delete Employee, an exception has occurred: " + e);
+		}
+
+		return result;
+	}
+
+	@PutMapping(value = "/user/password")
+	public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String authToken, String newPassword) {
+
+		if(newPassword.equals("") || newPassword.length() < 4){ //password constrains need to be established
+			LOGGER.log(Level.INFO, "{\"Error\" : \"Password must be at least 4 characters long\"}");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Password must be at least 4 characters long\"}");
+		}
+
+		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
+		String userID;
+		try {
+			userID = JwtTokenUtil.getIdFromToken(token);
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
+		} catch (ExpiredJwtException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
+		}
+
+		User currentUser = UserService.getUserFromId(userID);
+		if(currentUser == null){
+			LOGGER.log(Level.WARNING, "Could not find user with ID: " + userID);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find user with ID: " + userID);
+		}
+
+		ResponseEntity<?> result;
+		if(UserService.updatePassword(userID, newPassword)) {
+			result = ResponseEntity.ok("Password successfully updated");
+		}
+		else{
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not update password");
 		}
 
 		return result;

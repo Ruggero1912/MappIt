@@ -1,14 +1,16 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
+import static com.mongodb.client.model.Updates.set;
+
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -106,5 +108,13 @@ public class UserManagerMongoDB implements UserManager{
         Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
         DeleteResult ret = userCollection.deleteOne(idFilter);
         return ret.wasAcknowledged();
+    }
+
+    @Override
+    public boolean changePassword(String id, String newPassword){
+        String newEncryptedPassword = UserService.passwordEncryption(newPassword);
+        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+        UpdateResult res = userCollection.updateOne(idFilter, set("password", newEncryptedPassword));
+        return res.wasAcknowledged();
     }
 }
