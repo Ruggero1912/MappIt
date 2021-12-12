@@ -23,8 +23,7 @@ public class UserManagerMongoDB implements UserManager{
 
     private static final UserManagerMongoDB obj = new UserManagerMongoDB(); //TODO
 
-    private static final String USERCOLLECTIONKEY = "user"; //PropertyPicker.getProperty(PropertyPicker.userCollectionName);
-
+    //private static final String USERCOLLECTIONKEY = "user"; //PropertyPicker.getProperty(PropertyPicker.userCollectionName);
     private static final String IDKEY = "_id";
     private static final String USERNAMEKEY = "username";
     private static final String PASSWORDKEY = "password";
@@ -44,7 +43,6 @@ public class UserManagerMongoDB implements UserManager{
         if(cursor.hasNext()){
             Document userDoc = cursor.next();
             User ret = new User(userDoc);
-            //User ret = User.buildUser(userDoc);
             return ret;
         }
         else
