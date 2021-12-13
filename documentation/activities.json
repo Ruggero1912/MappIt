@@ -1,0 +1,91 @@
+ {
+    "activites" : [
+    {
+        "activity"  : "drone",
+        "tags"      : ["drone"],
+        "category"  : "drone"
+    },
+    {
+        "activity"  : "photography",
+        "tags"      : ["photography"],
+        "category": "photography",
+        "comments"  : "//TODO: is not it too generic?"
+    },
+    {
+        "activity"  : "cinematic",
+        "tags"      : [],
+        "category": "",
+        "comments": "//TODO: is not it too generic? Choose if keep it or not, and choose the category for it in case"
+    },
+    {
+        "activity"  : "skiing",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "surfing",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "trekking",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "climbing",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "trailing",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "paragliding",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "canoeing",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "cycling",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "running",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "hiking",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "kayaking",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "skydiving",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "triathlon",
+        "tags"      : [],
+        "category": "sport"
+    },
+    {
+        "activity"  : "windsurfing",
+        "tags"      : [],
+        "category": "sport"
+    }
+    ]
+}

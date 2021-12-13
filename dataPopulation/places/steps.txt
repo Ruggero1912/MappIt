@@ -18,4 +18,4 @@ STEPS:
         //https://serpapi.com/images-results
         //filter parameter tbs=iar:s to obtain only square aspect ratio images
         //wikipedia images API
-    - "geoJSON" : {/*a document containing the geojson feature obtained for that place*/}
+    - "osm" : {/*a document containing the geojson feature obtained for that place by OpenStreetMap*/}
