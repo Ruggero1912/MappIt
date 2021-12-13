@@ -1,0 +1,5 @@
+google-api-python-client
+pymongo
+pymongo[srv]
+python-dotenv
+json
