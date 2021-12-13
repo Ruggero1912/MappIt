@@ -19,7 +19,11 @@ public class PropertyPicker {
     public static final String MongoURI = "persistence.db.mongo.URI";
     public static final String MongoDBName = "persistence.db.mongo.dbName";
 
-    public final static String userCollectionName = "persistence.db.mongo.collection.user.collectionname";
+    public static final String Neo4jURI = "persistence.db.neo4j.URI";
+    public static final String Neo4jUsername = "persistence.db.neo4j.username";
+    public static final String Neo4jPassword = "persistence.db.neo4j.password";
+
+    //public final static String userCollectionName = "persistence.db.mongo.collection.user.collectionname";
 
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();

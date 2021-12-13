@@ -1,24 +1,29 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
+import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
+import static com.mongodb.client.model.Updates.set;
+
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class UserManagerMongoDB implements UserManager{
 
     private static final UserManagerMongoDB obj = new UserManagerMongoDB(); //TODO
 
-    private static final String USERCOLLECTIONKEY = "user"; //PropertyPicker.getProperty(PropertyPicker.userCollectionName);
-
+    //private static final String USERCOLLECTIONKEY = "user"; //PropertyPicker.getProperty(PropertyPicker.userCollectionName);
     private static final String IDKEY = "_id";
     private static final String USERNAMEKEY = "username";
     private static final String PASSWORDKEY = "password";
@@ -38,11 +43,18 @@ public class UserManagerMongoDB implements UserManager{
         if(cursor.hasNext()){
             Document userDoc = cursor.next();
             User ret = new User(userDoc);
-            //User ret = User.buildUser(userDoc);
             return ret;
         }
         else
             return null;
+    }
+
+    @Override
+    public List<User> getAllUser(){
+        List<User> users = new ArrayList<>();
+        FindIterable<Document> iterable = userCollection.find();
+        iterable.forEach(doc -> users.add(new User(doc)));
+        return users;
     }
 
     @Override
@@ -87,5 +99,20 @@ public class UserManagerMongoDB implements UserManager{
             User ret = new User(userDoc);
             return ret;
         }
+    }
+
+    @Override
+    public boolean deleteUserFromId(String id){
+        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+        DeleteResult ret = userCollection.deleteOne(idFilter);
+        return ret.wasAcknowledged();
+    }
+
+    @Override
+    public boolean changePassword(String id, String newPassword){
+        String newEncryptedPassword = UserService.passwordEncryption(newPassword);
+        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+        UpdateResult res = userCollection.updateOne(idFilter, set("password", newEncryptedPassword));
+        return res.wasAcknowledged();
     }
 }
