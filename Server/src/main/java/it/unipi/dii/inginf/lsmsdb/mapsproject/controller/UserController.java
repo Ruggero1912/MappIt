@@ -26,26 +26,22 @@ public class UserController {
 
 	private static final Logger LOGGER = Logger.getLogger( UserController.class.getName() );
 
-	List<User> users = new ArrayList<User>();
-	{
-		users.add(new User("1", "Marco","Bianchi","User1", "pw1", "user1@test.com", User.Role.USER));
-		users.add(new User("2", "Luca","Rossi","User2", "pw2", "user2@test.com", User.Role.ADMIN));
-		users.add(new User("3", "Mario","Verdi","User3", "pw3", "user3@test.com", User.Role.USER));
-		users.add(new User("4", "Gigi","Blu","User4", "pw4", "user4@test.com", User.Role.ADMIN));
-	}
-
-	@GetMapping(value = "/user/all", produces = "application/json")
 	/**
 	 * return all the Users in the database
-	 * @param username A string containing the given username from the user
-	 * //@ApiOperation(value = "Get information of every users", notes = "This method retrieve information about all the users")
+	 * //@ApiOperation(value = "Get information of every users",
+	 * notes = "This method retrieve information about all the users")
 	 */
+	@GetMapping(value = "/user/all", produces = "application/json")
 	public List<User> getUsers() {
 		// here we should check if the current User can access to this information
 		// we need to access to the object of the current user
-		return users;
+		return UserService.getAllUsers();
 	}
 
+	/**
+	 * //@ApiOperation(value = "Get information of the current user",
+	 * notes = "This method retrieve information of the current user")
+	 */
 	@GetMapping(value = "/user", produces = "application/json")
 	public User getCurrentUserInfo(@RequestHeader("Authorization") String authToken) {
 		//we return the information about the current logged in user
@@ -55,11 +51,9 @@ public class UserController {
 			userID = JwtTokenUtil.getIdFromToken(token);
 		} catch (IllegalArgumentException e) {
 			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
-			//return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
 			return null;
 		} catch (ExpiredJwtException e) {
 			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
-			//return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
 			return null;
 		}
 		User currentUser = UserService.getUserFromId(userID);
@@ -73,27 +67,76 @@ public class UserController {
 		return currentUser;
 	}
 
+	/**
+	 * //@ApiOperation(value = "Get information of a specific user",
+	 * notes = "This method retrieve information of a specific user, given its _id")
+	 */
 	@GetMapping(value = "/user/{id}", produces = "application/json")
 	public User getUserById(@PathVariable(value = "id") String userId) {
-		return users.stream().filter(x -> x.getId()==(userId)).collect(Collectors.toList()).get(0);
+		return UserService.getUserFromId(userId);
 	}
 
-	@GetMapping(value = "/user/role/{role}", produces = "application/json")
-	public List<User> getUserByRole(@PathVariable(value = "role") String role) {
-		return users.stream().filter(x -> x.getRole().toString().equalsIgnoreCase(role))
-				.collect(Collectors.toList());
-	}
-
-	@DeleteMapping(value={"/user/{id}"}, produces = "application/json")
-	public List<User> removeUser(@PathVariable(value = "id") String userId)
-	{
+	/**
+	 * lets an admin delete a user, given its _id
+	 * //@ApiOperation(value = "Delete users having _id=id",
+	 * notes = "This method deletes a specific user")
+	 */
+	//TODO: only an admin can delete a user, we need to check role level
+	@DeleteMapping(value={"/user/{id}"})
+	public ResponseEntity<?> deleteUser(@PathVariable(value = "id") String id){
+		ResponseEntity<?> result;
 		try{
-			users.remove(users.stream().filter(x -> x.getId()==(userId)).collect(Collectors.toList()).get(0));
-			System.out.println("User successfully deleted!");
-		}catch (Exception e) {
-			System.out.println("Error: could not delete Employee (id=" + userId + ")");
+			User userToDelete = UserService.getUserFromId(id);
+			if(userToDelete != null) {
+				UserService.delete(userToDelete);
+				result = ResponseEntity.ok("User successfully deleted (id="+id+ ")");
+				LOGGER.log(Level.INFO, "User successfully deleted: (id="+id+ ")");
+			} else {
+				result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find employee (id=" + id + ")");
+			}
 		}
-		return users;
+		catch (Exception e){
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete employee (id=" + id + ")");
+			LOGGER.log(Level.WARNING, "Error: could not delete Employee, an exception has occurred: " + e);
+		}
+
+		return result;
 	}
 
+	@PutMapping(value = "/user/password")
+	public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String authToken, String newPassword) {
+
+		if(newPassword.equals("") || newPassword.length() < 4){ //password constrains need to be established
+			LOGGER.log(Level.INFO, "{\"Error\" : \"Password must be at least 4 characters long\"}");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Password must be at least 4 characters long\"}");
+		}
+
+		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
+		String userID;
+		try {
+			userID = JwtTokenUtil.getIdFromToken(token);
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
+		} catch (ExpiredJwtException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
+		}
+
+		User currentUser = UserService.getUserFromId(userID);
+		if(currentUser == null){
+			LOGGER.log(Level.WARNING, "Could not find user with ID: " + userID);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find user with ID: " + userID);
+		}
+
+		ResponseEntity<?> result;
+		if(UserService.updatePassword(userID, newPassword)) {
+			result = ResponseEntity.ok("Password successfully updated");
+		}
+		else{
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not update password");
+		}
+
+		return result;
+	}
 }

@@ -31,7 +31,6 @@ public class MongoConnection {
         //LOGGER.log(Level.FINEST, "using {0} as MongoURI", new Object[]{MongoURI});
         mongoClient = MongoClients.create((MongoURI));
         database = mongoClient.getDatabase(DatabaseName);
-
     }
 
     public static MongoConnection getObj(){

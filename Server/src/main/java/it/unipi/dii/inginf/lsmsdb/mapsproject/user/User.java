@@ -2,16 +2,13 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Post;
 import org.bson.Document;
 
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Date;
 

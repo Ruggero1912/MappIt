@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -18,7 +19,7 @@ import java.io.FileNotFoundException;
 public class MapsApplication {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		SpringApplication.run(MapsApplication.class, args);
+		//SpringApplication.run(MapsApplication.class, args);
 
 		/*
 		GeoLocation g = new GeoLocation(1, 134.2, -122.399, "via ambrosiana 23, livorno LI 57100");
@@ -40,6 +41,13 @@ public class MapsApplication {
 		System.out.println(u);*/
 
 		//MongoConnection.mongoDBFirstTest();
+
+		try ( Neo4jConnection greeter = new Neo4jConnection() )
+		{
+			greeter.neo4jFirstTest( "hello, world" );
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 }

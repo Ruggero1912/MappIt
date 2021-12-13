@@ -1,0 +1,119 @@
+ {
+    "activites" : [
+    {
+        "activity"  : "drone",
+        "tags"      : ["drone"],
+        "category"  : "drone"
+    },
+    {
+        "activity"  : "street photography",
+        "tags"      : ["photography", "photographer", "streetphotographer", "streetphotography", "streetphotos"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "portrait photography",
+        "tags"      : ["photography", "photographer", "portraitphotographer", "portraitphotography", "portraitphoto"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "sport photography",
+        "tags"      : ["photography", "photographer", "sportphotographer", "sportphotography", "sportphoto", "actionphotography"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "landscape photography",
+        "tags"      : ["photography", "photographer", "landscapephotographer", "landscapephotography", "landscapephoto", "landscapelover", "landscapeview"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "architectural photography",
+        "tags"      : ["photography", "photographer", "architecturalphotographer","architecturalphotography", "architecturalphoto", "architecturalshoots"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "event photography",
+        "tags"      : ["photography", "weddingphotography", "weddingphotographer", "weddingphoto", "photographer", "eventphotography", "eventphoto", "eventshoots", "marriagephotography", "eventphotographer"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "wildlife photography",
+        "tags"      : ["photography", "photographer", "wildlifephotography", "wildlifephoto", "wildlifeshoots", "wildlifemoments", "wildlifephotographer"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "aerial photography",
+        "tags"      : ["photography", "photographer", "aerialphotography", "aerialphoto", "aerialshoots", "aerialmoments", "aerialphotographer"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "astrophotography",
+        "tags"      : ["photography", "photographer", "astrophotography", "astrophoto", "astroshoots", "astrophotos", "astrophotographer"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "commercial photography",
+        "tags"      : ["photography", "photographer", "commercialphotography", "productphotography", "commercialshoots", "commercialphotos", "commercialphotographer"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "macro photography",
+        "tags"      : ["photography", "photographer", "macrophotography", "macroshoots", "macrophotos", "macrophotographer"],
+        "category": "photography"
+    },
+    {
+        "activity"  : "skiing",
+        "tags"      : ["mountainskiing", "skiing", "ski", "snow", "winterskiing", "skimountains", "skiingislife", "powderskier", "powderski", "skier", "backcountryskiing", "freerideski", "powderskiing", "freeski", "skiingisfun", "skilife", "skialps", "alpineskiing"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "surfing",
+        "tags"      : ["waves", "shortboard", "surfing", "surf", "surftrip", "surflife", "surfer", "surfinglife", "surfphoto", "surfboard", "surfculture"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "trekking",
+        "tags"      : ["trekking", "naturetrekking", "hiking", "trekkingmountains"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "climbing",
+        "tags"      : ["indoorclimbing", "climbing",  "sportclimbing", "climbinggym", "bouldering", "mountainsclimb", "rockclimbing"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "paragliding",
+        "tags"      : ["paragliding", "parapente", "paraglider", "paraglidinglife", "paraglidingfly", "paraglidinglove", "paraglidingworld", "paragliders", "voolivre", "paraglidinggirls", "paraglide"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "canoeing",
+        "tags"      : ["canoeing","canoe","canoepaddling","adventurecanoeing","canoeingwatersports","rivercanoeing"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "cycling",
+        "tags"      : ["cycling","cyclinglife","bike","mtb","cyclingphotos","bikelife","roadbike","cyclist","ciclismo","bicycle","roadcycling","mountainbike","instacycling","cyclingshots","mtblife","cycle","cyclingpics"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "running",
+        "tags"      : ["running","run","runner","fitness","runningmotivation","runnersofinstagram","runtraining","runners","instarunners","trailrunning","runworkout","runningsport","runhappy","marathon","instarun","instarunner"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "kayaking",
+        "tags"      : ["kayak", "kayaking", "kayaklovers", "kayakriver", "kayakers"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "triathlon",
+        "tags"      : ["triathloncoach","trilifestyle","runbikerun","triatlon","duathlon","triathlonmotivation","triathletes","triathlon_in_the_world","triathlete","swimbikerun"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "windsurfing",
+        "tags"      : ["windsurf", "windsurfing", "windsurflovers", "windsurfpassion", "windsurfaddicted", "windsurfer"],
+        "category": "sport"
+    }
+    ]
+}
