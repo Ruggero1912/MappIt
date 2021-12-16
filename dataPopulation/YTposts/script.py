@@ -86,6 +86,8 @@ for place in places:
     lon  = loc["coordinates"][0]
     lat  = loc["coordinates"][1]
 
+    print("PLACE '{place}' | lon = {lon} ; lat = {lat}".format(place=name, lon=lon, lat=lat))
+
     for activity in activities:
         assert isinstance(activity, dict)
         activity_name = activity[ACTIVITY_NAME_KEY]
@@ -98,6 +100,23 @@ for place in places:
             yt_videos = youtube_query(place_name=name, activity_tag=activity_tag, lon=lon, lat=lat)
             
             for yt_video in yt_videos:
+                #retrieve useful infos for the post
+                yt_infos      = {
+                    "title"             : yt_video['snippet']['title'],
+                    "desc"              : yt_video['snippet']['description'],
+                    "thumbnail"         : yt_video['snippet']['thumbnails']['medium']['url'],    #320 x 180px
+                    "publish_date"      : yt_video['snippet']['publishedAt'],
+                    "channel_id"        : yt_video['snippet']['channelId'],
+                    "channel_name"      : yt_video['snippet']['channelTitle']
+                }
+                #TODO: 
+                # - the date attribute (the one which states when the experience took place) will be empty if we do not execute another API call to YT to obtain this info (but we do not have enough credits)
+                # - tags : what should it contain? the activity_tag that was used to find this video? if it is found more than with only one query (and so with different tags), the other should be added? 
+                # - determine the id of the activity for this post
+                # - the thumbnail for the video which key should have? is it useful (I think that could be useful to use it as preview during posts listing)
+                # - the YT video link which key should have? 
+                # - all the other YT infos should be stored? in case, where? inside an attribute 'yt'? or in a different collection to prevent the document to become too big?
+
                 pass
 
             print( yt_videos )

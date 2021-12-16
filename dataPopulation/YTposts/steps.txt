@@ -17,6 +17,7 @@ STEPS:
                         "place"     : "", //the _id of the place of the post
                         "activity"  : "", //the name (TODO: or _id if we decide to add it to MongoDB) of the kind of activity related to this post
                         "tags"      : [], //an (optional) array of strings useful for better categorization and indexing
-                        "YTlink"    : "", //the link to the YT video (this attribute is present only if the post contains a video from YT)
-                        "GAccount"  : ""  //the ID of the Google Account associated to the given YT video (this attribute is present only if the post contains a video from YT)
+                        "yt"        : {}, //YT infos
+                        [x]"YTlink"    : "", //the link to the YT video (this attribute is present only if the post contains a video from YT)
+                        [x]"GAccount"  : ""  //the ID of the Google Account associated to the given YT video (this attribute is present only if the post contains a video from YT)
                     }
