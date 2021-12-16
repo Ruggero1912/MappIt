@@ -10,7 +10,7 @@ import json
 import os
 from dotenv import load_dotenv
 
-load_dotenv("../places/.env")   #By default loads .env configuration variables from current directory, searching in the file ".env"
+load_dotenv("../.env")   #By default loads .env configuration variables from current directory, searching in the file ".env"
 
 CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
 DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")

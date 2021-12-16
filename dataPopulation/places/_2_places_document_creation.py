@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 import requests
 
-load_dotenv()   #By default loads .env configuration variables from current directory, searching in the file ".env"
+load_dotenv("../.env")   #By default loads .env configuration variables from current directory, searching in the file ".env"
 #print(os.getenv("COLLECTION_NAME_PLACES"))
 
 PLACES_SOURCE_FILE = "responses/PISA.geojson"
