@@ -1,0 +1,57 @@
+from faker import Faker
+from datetime import datetime, date
+
+import os
+from dotenv import load_dotenv, find_dotenv
+
+def start():
+    load_dotenv(find_dotenv())
+    return True
+
+class User:
+
+    BEGIN               = start()
+
+    LOCALIZATION        = os.getenv("LOCALIZATION")
+
+    KEY_YT_CHANNEL      = os.getenv("USER_YT_CHANNEL_ID_KEY")
+    KEY_ID              = os.getenv("USER_ID_KEY")
+    KEY_USERNAME        = os.getenv("USER_USERNAME_KEY")
+    KEY_NAME            = os.getenv("USER_NAME_KEY")
+    KEY_SURNAME         = os.getenv("USER_SURNAME_KEY")
+    KEY_MAIL            = os.getenv("USER_MAIL_KEY")
+    KEY_BIRTH_DATE      = os.getenv("USER_BIRTH_DATE_KEY")
+    KEY_PASSWORD        = os.getenv("USER_PASSWORD_KEY")
+    KEY_ROLE            = os.getenv("USER_ROLE_KEY")
+    KEY_PROFILE_PIC     = os.getenv("USER_PROFILE_PIC_KEY")
+
+    DEFAULT_PROFILE_PIC = os.getenv("USER_DEFAULT_PROFILE_PIC")
+    DEFAULT_HASHED_PWD  = os.getenv("USER_DEFAULT_HASHED_PWD")
+    DEFAULT_USER_ROLE   = os.getenv("USER_DEFAULT_USER_ROLE")
+
+    fake                = Faker(LOCALIZATION)
+
+    def __init__(self, username=None, name=None, surname=None, mail=None, profile_pic=None) -> None:
+        """
+        generates a random user object using given parameter if any, or the faker generator
+        """
+        #setattr(object, field_name, value)
+        #sets the attribute of object of name 'field_name' to value
+        setattr(self, User.KEY_USERNAME    , username if username is not None else User.fake.user_name()                )
+        setattr(self, User.KEY_NAME        , name if name is not None else User.fake.first_name()                       )
+        setattr(self, User.KEY_SURNAME     , surname if surname is not None else User.fake.last_name()                  )
+        setattr(self, User.KEY_MAIL        , mail if mail is not None else User.fake.safe_email()                       )
+        setattr(self, User.KEY_BIRTH_DATE  , User.fake.date_of_birth(minimum_age=20, maximum_age=75)                    )
+        setattr(self, User.KEY_PASSWORD    , User.DEFAULT_HASHED_PWD                                                    )
+        setattr(self, User.KEY_ROLE        , User.DEFAULT_USER_ROLE                                                     )
+        setattr(self, User.KEY_PROFILE_PIC , profile_pic if profile_pic is not None else User.DEFAULT_PROFILE_PIC       )
+
+    def get_dict(self) -> dict:
+        ret_dict = self.__dict__
+        birth_date = ret_dict[User.KEY_BIRTH_DATE]
+        assert isinstance(birth_date, date)
+        ret_dict[User.KEY_BIRTH_DATE] = birth_date.isoformat()
+        return ret_dict
+
+    def get_birth_date(self):
+        return getattr(self, User.KEY_BIRTH_DATE)
