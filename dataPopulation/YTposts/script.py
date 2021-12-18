@@ -10,6 +10,7 @@ import json
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv("../.env")   #By default loads .env configuration variables from current directory, searching in the file ".env"
 
 CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
@@ -17,6 +18,9 @@ DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
 COLLECTION_NAME_PLACES  = os.getenv("COLLECTION_NAME_PLACES")
 YT_API_KEY              = os.getenv("YT_API_KEY")   #TODO: create an API key with organization account?
 
+from users.userFactory import UserFactory
+
+from YTClient import YTClient
 
 ACTIVITES_JSON_FILE_PATH = "../../documentation/activities.json"
 ACTIVITY_NAME_KEY       = "activity"
@@ -45,32 +49,6 @@ def load_activities_list() -> list:
         ret = ret["activities"]
     return ret
 
-#import google_auth_oauthlib.flow
-import googleapiclient
-
-import googleapiclient.discovery
-import googleapiclient.errors
-
-api_service_name = "youtube"
-api_version = "v3"
-
-youtube = googleapiclient.discovery.build(
-    api_service_name, api_version, developerKey=YT_API_KEY)
-
-def youtube_query(place_name, activity_tag, lon, lat) -> list:
-    """
-    return a list containing the videos that respects the specified filters
-    """
-    request = youtube.search().list(
-        part="snippet",
-        maxResults=25,
-        q="{name} {tag}".format(name=place_name, tag=activity_tag),
-        location="{lat},{lon}".format(lon=lon, lat=lat),
-        locationRadius="1mi",
-        type="video"
-    )
-    response = request.execute()
-    return response['items']
 
 
 places = load_places_list_from_mongo()
@@ -97,9 +75,10 @@ for place in places:
 
         for activity_tag in activity_tags:
             #query YT
-            yt_videos = youtube_query(place_name=name, activity_tag=activity_tag, lon=lon, lat=lat)
-            
+            yt_videos = YTClient.youtube_search_query(place_name=name, activity_tag=activity_tag, lon=lon, lat=lat)
+
             for yt_video in yt_videos:
+                
                 #retrieve useful infos for the post
                 yt_infos      = {
                     "title"             : yt_video['snippet']['title'],
@@ -116,7 +95,8 @@ for place in places:
                 # - the thumbnail for the video which key should have? is it useful (I think that could be useful to use it as preview during posts listing)
                 # - the YT video link which key should have? 
                 # - all the other YT infos should be stored? in case, where? inside an attribute 'yt'? or in a different collection to prevent the document to become too big?
-
+                author_id = UserFactory.get_author_id_from_YTchannel(channel_id=yt_infos["channel_id"], channel_name=yt_infos["channel_name"])
+                store_in_mongo(details=yt_infos, yt_all_details=yt_video)
                 pass
 
             print( yt_videos )
