@@ -1,118 +1,93 @@
  {
     "activities" : [
     {
-        "activity"  : "drone",
-        "tags"      : ["drone"],
-        "category"  : "drone"
-    },
-    {
         "activity"  : "street photography",
-        "tags"      : ["photography", "photographer", "streetphotographer", "streetphotography", "streetphotos"],
+        "tags"      : ["street photographer", "street photography"],
         "category": "photography"
     },
     {
         "activity"  : "portrait photography",
-        "tags"      : ["photography", "photographer", "portraitphotographer", "portraitphotography", "portraitphoto"],
+        "tags"      : ["portrait photography", "portrait"],
         "category": "photography"
     },
     {
         "activity"  : "sport photography",
-        "tags"      : ["photography", "photographer", "sportphotographer", "sportphotography", "sportphoto", "actionphotography"],
+        "tags"      : ["sport photographer", "sport photography", "action photography"],
         "category": "photography"
     },
     {
         "activity"  : "landscape photography",
-        "tags"      : ["photography", "photographer", "landscapephotographer", "landscapephotography", "landscapephoto", "landscapelover", "landscapeview"],
-        "category": "photography"
-    },
-    {
-        "activity"  : "architectural photography",
-        "tags"      : ["photography", "photographer", "architecturalphotographer","architecturalphotography", "architecturalphoto", "architecturalshoots"],
+        "tags"      : ["landscape photographer", "landscape photography"],
         "category": "photography"
     },
     {
         "activity"  : "event photography",
-        "tags"      : ["photography", "weddingphotography", "weddingphotographer", "weddingphoto", "photographer", "eventphotography", "eventphoto", "eventshoots", "marriagephotography", "eventphotographer"],
+        "tags"      : ["wedding photography", "wedding photographer", "wedding photo"],
         "category": "photography"
     },
     {
         "activity"  : "wildlife photography",
-        "tags"      : ["photography", "photographer", "wildlifephotography", "wildlifephoto", "wildlifeshoots", "wildlifemoments", "wildlifephotographer"],
+        "tags"      : ["wildlife photography", "wildlife photographer"],
         "category": "photography"
     },
     {
         "activity"  : "aerial photography",
-        "tags"      : ["photography", "photographer", "aerialphotography", "aerialphoto", "aerialshoots", "aerialmoments", "aerialphotographer"],
+        "tags"      : ["drone", "aerial photography", "aerial photo", "aerial shots"],
         "category": "photography"
     },
     {
         "activity"  : "astrophotography",
-        "tags"      : ["photography", "photographer", "astrophotography", "astrophoto", "astroshoots", "astrophotos", "astrophotographer"],
-        "category": "photography"
-    },
-    {
-        "activity"  : "commercial photography",
-        "tags"      : ["photography", "photographer", "commercialphotography", "productphotography", "commercialshoots", "commercialphotos", "commercialphotographer"],
+        "tags"      : ["astrophotography", "astrophoto", "astroshoots", "astrophotographer"],
         "category": "photography"
     },
     {
         "activity"  : "macro photography",
-        "tags"      : ["photography", "photographer", "macrophotography", "macroshoots", "macrophotos", "macrophotographer"],
+        "tags"      : ["macro photography", "macro shoots"],
         "category": "photography"
     },
     {
         "activity"  : "skiing",
-        "tags"      : ["mountainskiing", "skiing", "ski", "snow", "winterskiing", "skimountains", "skiingislife", "powderskier", "powderski", "skier", "backcountryskiing", "freerideski", "powderskiing", "freeski", "skiingisfun", "skilife", "skialps", "alpineskiing"],
+        "tags"      : ["skiing", "ski", "snow", "powderski", "skier", "backcountry", "freeski"],
         "category": "sport"
     },
     {
         "activity"  : "surfing",
-        "tags"      : ["waves", "shortboard", "surfing", "surf", "surftrip", "surflife", "surfer", "surfinglife", "surfphoto", "surfboard", "surfculture"],
+        "tags"      : ["waves", "surfing", "surf", "surftrip", "surfer", "surfboard", "surf culture"],
         "category": "sport"
     },
     {
         "activity"  : "trekking",
-        "tags"      : ["trekking", "naturetrekking", "hiking", "trekkingmountains"],
+        "tags"      : ["trekking", "hiking"],
         "category": "sport"
     },
     {
         "activity"  : "climbing",
-        "tags"      : ["indoorclimbing", "climbing",  "sportclimbing", "climbinggym", "bouldering", "mountainsclimb", "rockclimbing"],
+        "tags"      : ["climbing", "bouldering", "climb"],
         "category": "sport"
     },
     {
         "activity"  : "paragliding",
-        "tags"      : ["paragliding", "parapente", "paraglider", "paraglidinglife", "paraglidingfly", "paraglidinglove", "paraglidingworld", "paragliders", "voolivre", "paraglidinggirls", "paraglide"],
+        "tags"      : ["paragliding", "paragliders", "voolivre", "paraglide"],
         "category": "sport"
     },
     {
         "activity"  : "canoeing",
-        "tags"      : ["canoeing","canoe","canoepaddling","adventurecanoeing","canoeingwatersports","rivercanoeing"],
+        "tags"      : ["canoeing","canoe"],
         "category": "sport"
     },
     {
         "activity"  : "cycling",
-        "tags"      : ["cycling","cyclinglife","bike","mtb","cyclingphotos","bikelife","roadbike","cyclist","ciclismo","bicycle","roadcycling","mountainbike","instacycling","cyclingshots","mtblife","cycle","cyclingpics"],
+        "tags"      : ["cycling","bike","mtb","cyclist","bicycle","mountainbike"],
         "category": "sport"
     },
     {
         "activity"  : "running",
-        "tags"      : ["running","run","runner","fitness","runningmotivation","runnersofinstagram","runtraining","runners","instarunners","trailrunning","runworkout","runningsport","runhappy","marathon","instarun","instarunner"],
-        "category": "sport"
-    },
-    {
-        "activity"  : "kayaking",
-        "tags"      : ["kayak", "kayaking", "kayaklovers", "kayakriver", "kayakers"],
+        "tags"      : ["running","run","runners","marathon"],
         "category": "sport"
     },
     {
         "activity"  : "triathlon",
-        "tags"      : ["triathloncoach","trilifestyle","runbikerun","triatlon","duathlon","triathlonmotivation","triathletes","triathlon_in_the_world","triathlete","swimbikerun"],
-        "category": "sport"
-    },
-    {
-        "activity"  : "windsurfing",
-        "tags"      : ["windsurf", "windsurfing", "windsurflovers", "windsurfpassion", "windsurfaddicted", "windsurfer"],
+        "tags"      : ["triatlon", "triathletes"],
         "category": "sport"
     }
     ]
