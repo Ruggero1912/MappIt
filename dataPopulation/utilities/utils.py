@@ -1,3 +1,4 @@
+from typing import Tuple
 import pymongo
 import json
 import os
@@ -18,6 +19,9 @@ class Utils:
     DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
     COLLECTION_NAME_PLACES  = os.getenv("COLLECTION_NAME_PLACES")
 
+    PLACE_NAME_KEY          = "name"
+    PLACE_LOC_KEY           = "loc"
+
     ACTIVITES_JSON_FILE_PATH = "../documentation/activities.json"
 
     def load_places_list_from_mongo() -> list:
@@ -31,6 +35,16 @@ class Utils:
         cur = mycol.find()
         
         return list(cur)
+
+    def load_coordinates(place : dict) -> Tuple:
+        """
+        :param place dict
+        :return a tuple (lon, lat)
+        """
+
+        lon = place[Utils.PLACE_LOC_KEY]["coordinates"][0]
+        lat = place[Utils.PLACE_LOC_KEY]["coordinates"][1]
+        return lon, lat
 
     def load_activities_list() -> list:
         with open(Utils.ACTIVITES_JSON_FILE_PATH, "r") as jf:
