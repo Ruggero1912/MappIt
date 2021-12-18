@@ -4,6 +4,8 @@ from datetime import datetime, date
 import os
 from dotenv import load_dotenv, find_dotenv
 
+from utilities.utils import Utils
+
 def start():
     load_dotenv(find_dotenv())
     return True
@@ -11,8 +13,6 @@ def start():
 class User:
 
     BEGIN               = start()
-
-    LOCALIZATION        = os.getenv("LOCALIZATION")
 
     KEY_YT_CHANNEL      = os.getenv("USER_YT_CHANNEL_ID_KEY")
     KEY_ID              = os.getenv("USER_ID_KEY")
@@ -29,7 +29,7 @@ class User:
     DEFAULT_HASHED_PWD  = os.getenv("USER_DEFAULT_HASHED_PWD")
     DEFAULT_USER_ROLE   = os.getenv("USER_DEFAULT_USER_ROLE")
 
-    fake                = Faker(LOCALIZATION)
+    fake                = Utils.fake
 
     def __init__(self, username=None, name=None, surname=None, mail=None, profile_pic=None) -> None:
         """

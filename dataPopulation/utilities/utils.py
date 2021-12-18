@@ -1,6 +1,8 @@
 from typing import Tuple
 import pymongo
 import json
+from faker import Faker
+
 import os
 from dotenv import load_dotenv, find_dotenv
 
@@ -18,6 +20,10 @@ class Utils:
     CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
     DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
     COLLECTION_NAME_PLACES  = os.getenv("COLLECTION_NAME_PLACES")
+
+    FAKER_LOCALIZATION      = os.getenv("FAKER_LOCALIZATION")
+
+    fake                    = Faker(FAKER_LOCALIZATION)
 
     PLACE_NAME_KEY          = "name"
     PLACE_LOC_KEY           = "loc"
