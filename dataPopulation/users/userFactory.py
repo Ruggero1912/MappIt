@@ -22,7 +22,7 @@ class UserFactory:
     DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
     USERS_COLLECTION_NAME   = os.getenv("COLLECTION_NAME_USERS")
 
-    USER_YT_CHANNEL_ID_KEY  = os.getenv("USER_YT_CHANNEL_ID_KEY")
+    USER_YT_CHANNEL_ID_KEY  = os.getenv("YTPOST_USER_YT_CHANNEL_ID_KEY")
     USER_ID_KEY             = os.getenv("USER_ID_KEY")
 
     USERS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][USERS_COLLECTION_NAME]
@@ -78,16 +78,11 @@ class UserFactory:
 
     def find_user_by_YT_channel_id(channel_id) -> dict:
         """
-        return the user doc associated with the given channel if any in Mongo
+        return the user doc associated with the given channel if any in Mongo (else return None)
         """
-        cur = UserFactory.USERS_COLLECTION.find({UserFactory.USER_YT_CHANNEL_ID_KEY : channel_id})
+        user = UserFactory.USERS_COLLECTION.find_one({UserFactory.USER_YT_CHANNEL_ID_KEY : channel_id})
 
-        results = list(cur)
-
-        if len(results):
-            return results[0]   #if there is more than one user associated with that channel_id, we return the first one (this case should never happen)
-        else:
-            return None
+        return user
 
 
 

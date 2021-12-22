@@ -3,6 +3,8 @@ from datetime import datetime
 
 import os
 from dotenv import load_dotenv, find_dotenv
+import logging
+
 
 from utilities.utils import Utils
 
@@ -12,10 +14,15 @@ def start():
 
 class Post:
 
+    LOGGER = logging.getLogger("Post")
+
+    LOGGER.setLevel(level=logging.DEBUG)
+
     BEGIN               = start()
 
     DEFAULT_ACTIVITY    = os.getenv("POST_GENERIC_DEFAULT_ACTIVITY")
     DEFAULT_THUMBNAIL   = os.getenv("POST_DEFAULT_THUMBNAIL")
+    MAX_YEARS_BETWEEN_EXP_AND_POST = int( os.getenv("MAX_YEARS_BETWEEN_EXP_AND_POST") )   #MAXIMUM INTERVAL BETWEEN POST DATE AND EXPERIENCE DATE
 
     fake                = Utils.fake
 
@@ -36,12 +43,13 @@ class Post:
 
         setattr(self, Post.KEY_PICTURES         , pics_array    if len(pics_array)          else []                                    )
         pics = self.get_pics_array()
-        setattr(self, Post.KEY_THUMBNAIL        , thumbnail     if thumbnail    is not None else pics[0] if len(pics) else Post.DEFAULT_THUMBNAIL)                                    )
+        setattr(self, Post.KEY_THUMBNAIL        , thumbnail     if thumbnail    is not None else pics[0] if len(pics) else Post.DEFAULT_THUMBNAIL)
         setattr(self, Post.KEY_TAGS             , tags_array    if len(tags_array)          else []                                    )
         setattr(self, Post.KEY_ACTIVITY         , activity      if activity     is not None else self.determine_activity()             )
         setattr(self, Post.KEY_POST_DATE        , post_date     if post_date    is not None else datetime.now()                        )
         post_date = self.get_post_datetime().date()
-        setattr(self, Post.KEY_EXPERIENCE_DATE  , exp_date      if exp_date     is not None else Post.fake.date_between(end_date=post_date, start_date='-3y')                      )
+        setattr(self, Post.KEY_EXPERIENCE_DATE  , exp_date      if exp_date     is not None else Post.fake.date_between(end_date=post_date, start_date=(post_date - timedelta(days=365*Post.MAX_YEARS_BETWEEN_EXP_AND_POST)))                      )
+        
 
         #MANDATORY PARAMETERS:
         setattr(self, Post.KEY_AUTHOR           , author_id     )
@@ -61,5 +69,8 @@ class Post:
 
     def get_post_datetime(self) -> datetime:
         post_datetime = getattr(self, Post.KEY_POST_DATE)
-        assert isinstance(post_datetime, datetime)
+        Post.LOGGER.debug("[Post.get_post_datetime] the type of post_datetime is: {type}".format(type=type(post_datetime)))
+        if not isinstance(post_datetime, datetime):
+            post_datetime = parser.parse(post_datetime)
         return post_datetime
+
