@@ -122,10 +122,10 @@ class Post:
 
         post_date = self.get_post_datetime() #ret_dict[Post.KEY_POST_DATE]
         assert isinstance(post_date, datetime)
-        ret_dict[Post.KEY_POST_DATE] = post_date.isoformat()
+        ret_dict[Post.KEY_POST_DATE] = post_date #.isoformat()
 
         exp_date = ret_dict[Post.KEY_EXPERIENCE_DATE]
         assert isinstance(exp_date, date)
-        ret_dict[Post.KEY_EXPERIENCE_DATE] = exp_date.isoformat()
+        ret_dict[Post.KEY_EXPERIENCE_DATE] = datetime(exp_date.year, exp_date.month, exp_date.day) #.isoformat()
 
         return ret_dict

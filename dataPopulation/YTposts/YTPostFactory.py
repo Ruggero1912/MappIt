@@ -8,15 +8,21 @@ from users.userFactory import UserFactory
 from utilities.utils import Utils
 
 import logging
-default_logger = logging.getLogger()
-default_logger.setLevel(level=logging.CRITICAL)
 
+
+def start_logger(logger_name):
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(level=logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(level=logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - [%(levelname)s] - %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    return logger
 
 class YTPostFactory:
 
-    LOGGER = logging.getLogger("YTPostFactory")
-
-    LOGGER.setLevel(level=logging.DEBUG)
+    LOGGER = start_logger("YTPostFactory")
 
     ACTIVITY_NAME_KEY       = "activity"
     ACTIVITY_TAG_KEY        = "tags"
@@ -74,7 +80,7 @@ class YTPostFactory:
 
         yt_videos = YTClient.youtube_search_query(place_name=place_name, lon=place_lon, lat=place_lat)
 
-        YTPostFactory.LOGGER.info("found {num} videos for the place {place}".format(num=len(yt_videos), place=place_name))
+        YTPostFactory.LOGGER.info("found {num} videos for the place '{place}'".format(num=len(yt_videos), place=place_name))
 
         posts = []
 

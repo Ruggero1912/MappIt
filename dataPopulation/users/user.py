@@ -50,7 +50,7 @@ class User:
         ret_dict = self.__dict__
         birth_date = ret_dict[User.KEY_BIRTH_DATE]
         assert isinstance(birth_date, date)
-        ret_dict[User.KEY_BIRTH_DATE] = birth_date.isoformat()
+        ret_dict[User.KEY_BIRTH_DATE] = datetime(year=birth_date.year, month=birth_date.month, day=birth_date.day) #.isoformat()
         return ret_dict
 
     def get_birth_date(self):

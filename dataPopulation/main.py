@@ -1,6 +1,15 @@
 from YTposts.YTPostFactory import YTPostFactory
 from utilities.utils import *
 
+import logging
+
+def initilize_default_logger():
+    default_logger = logging.getLogger()
+    default_logger.setLevel(level=logging.CRITICAL)
+    return default_logger
+
+default_logger = initilize_default_logger()
+
 places = Utils.load_places_list_from_mongo()
 
 for place in places:
