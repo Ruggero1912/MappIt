@@ -1,10 +1,11 @@
 from faker import Faker
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 import os
 from dotenv import load_dotenv, find_dotenv
 import logging
 
+from dateutil import parser
 
 from utilities.utils import Utils
 
@@ -37,6 +38,8 @@ class Post:
     KEY_ACTIVITY        = os.getenv("POST_ACTIVITY_KEY")
     KEY_TAGS            = os.getenv("POST_TAGS_KEY")
 
+    DICT_IGNORED_ATTRIBUTES = []
+
     def __init__(self, author_id, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
         setattr(self, Post.KEY_TITLE            , title         if title        is not None else Post.fake.sentence(nb_words=4)        ) #short sentence as fake title
         setattr(self, Post.KEY_DESC             , description   if description  is not None else Post.fake.paragraph()                 )
@@ -59,8 +62,39 @@ class Post:
         """
         returns the activity that is supposed to happen in this post, based on title, description and tags
         """
-        #TODO: method to parse the activity from text (a call to a method or here inline)
+        activities = Utils.load_activities_list()
+        for activity in activities:
+            act_name = activity['activity']
+            act_tags = activity['tags']
+            for act_tag in act_tags:
+                assert isinstance(act_tag, str)
+                if(act_tag.lower() in self.get_title().lower() or act_tag.lower() in self.get_description().lower() or act_tag.lower() in self.get_tags_array()):
+                    return act_name
+
         return Post.DEFAULT_ACTIVITY
+
+    def get_title(self):
+        title = getattr(self, Post.KEY_TITLE)
+        assert isinstance(title, str)
+        return title
+
+    def get_description(self):
+        desc = getattr(self, Post.KEY_DESC)
+        assert isinstance(desc, str)
+        return desc
+
+    def get_tags_array(self):
+        """
+        return the tags array (in lower case)
+        """
+        tags = getattr(self, Post.KEY_TAGS)
+        assert isinstance(tags, list)
+        ret_tags = []
+        for tag in tags:
+            assert isinstance(tag, str)
+            tag = tag.lower()
+            ret_tags.append(tag)
+        return ret_tags
 
     def get_pics_array(self):
         pics = getattr(self, Post.KEY_PICTURES)
@@ -74,3 +108,24 @@ class Post:
             post_datetime = parser.parse(post_datetime)
         return post_datetime
 
+    def get_experience_date(self) -> date:
+        experience_date = getattr(self, Post.KEY_EXPERIENCE_DATE)
+        if not isinstance(experience_date, date) and experience_date is not None:
+            experience_date = parser.parse(experience_date).date()
+        return experience_date
+
+    def get_dict(self) -> dict:
+        ret_dict = self.__dict__
+
+        for ignored_attribute in self.DICT_IGNORED_ATTRIBUTES:
+            del ret_dict[ignored_attribute] # use ret_dict.pop(ignored_attribute, None) if u want to ignore the key not found error
+
+        post_date = self.get_post_datetime() #ret_dict[Post.KEY_POST_DATE]
+        assert isinstance(post_date, datetime)
+        ret_dict[Post.KEY_POST_DATE] = post_date.isoformat()
+
+        exp_date = ret_dict[Post.KEY_EXPERIENCE_DATE]
+        assert isinstance(exp_date, date)
+        ret_dict[Post.KEY_EXPERIENCE_DATE] = exp_date.isoformat()
+
+        return ret_dict
