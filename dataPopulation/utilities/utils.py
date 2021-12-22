@@ -30,6 +30,9 @@ class Utils:
 
     ACTIVITES_JSON_FILE_PATH = "../documentation/activities.json"
 
+    def load_config(config_key) -> str :
+        return os.getenv(config_key)
+
     def load_places_list_from_mongo() -> list:
         """
         returns the _id if a document that is the same as the one given already exists in the given collection, else returns None
@@ -53,7 +56,28 @@ class Utils:
         return lon, lat
 
     def load_activities_list() -> list:
+        """
+        list of dict, each dict is:
+        {
+            "activity"  : str,
+            "tags"      : list of str,
+            "category": str
+        }
+        """
         with open(Utils.ACTIVITES_JSON_FILE_PATH, "r") as jf:
             ret = json.load(jf)
             ret = ret["activities"]
         return ret
+
+    def load_activities_names(activities_list : list = None) -> list:
+        """
+        :returns list of str (the activities names)
+        """
+        if not activities_list:
+            activities_list = Utils.load_activities_list()
+        activities_names = []
+        for activity in activities_list:
+            activities_names.append(activity['activity'])
+        return activities_names
+        
+
