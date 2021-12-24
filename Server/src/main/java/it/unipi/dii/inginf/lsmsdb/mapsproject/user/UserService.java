@@ -4,12 +4,13 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserM
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
 
-    private static final Logger LOG = Logger.getLogger(UserService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
     /**
      * return the User associated to the given credentials if password hashes match, return Null otherwise
@@ -18,15 +19,17 @@ public class UserService {
      * //@exception Any exception
      * @return User object if credentials match or null otherwise
      */
-    public static User login(String username, String password){
+    public static User login(String username, String password) {
         UserManager um = UserManagerFactory.getUserManager();
 
         User u = um.getUserFromUsername(username);
-        String pwdHash = u.getPassword();
-
-        if (UserService.checkPassword(password, pwdHash)) {
-            return u;
+        if (u != null) {
+            String pwdHash = u.getPassword();
+            if (UserService.checkPassword(password, pwdHash)) {
+                return u;
+            }
         }
+
         return null;
     }
 
@@ -91,8 +94,12 @@ public class UserService {
      * @return true if passwords match o false otherwise
      */
     public static boolean checkPassword(String password, String passwordHash){
-        boolean ret = BCrypt.checkpw(password, passwordHash);
-        return ret;
+        try {
+            return BCrypt.checkpw(password, passwordHash);
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
     }
 
     /**
