@@ -1,0 +1,67 @@
+{
+    "kind": "youtube#video",
+    "etag": "2G4PNxp7VUmQoFSYvgUXh7GeSgc",
+    "id": "5-QDBLeqnXo",
+    "snippet": {
+        "publishedAt": "2020-10-22T12:00:01Z",
+        "channelId": "UC1ZqdGtXfqU8uCtdogT13YQ",
+        "title": "Esplorazione La Rocca Della Verruca",
+        "description": "Oggi ho fatto questo bellissimo Trekking per pura voglia di Esplorare la Nota Rocca della Verruca. \nIntagram : https://www.instagram.com/micky_techology/\nhttps://it.wikipedia.org/wiki/Rocca_della_Verruca\nGPX Percorso : https://it.wikiloc.com/percorsi-escursionismo/monte-della-rocca-della-verruca-cai-00-59091707",
+        "thumbnails": {
+            "default": {
+                "url": "https://i.ytimg.com/vi/5-QDBLeqnXo/default.jpg",
+                "width": 120,
+                "height": 90
+            },
+            "medium": {
+                "url": "https://i.ytimg.com/vi/5-QDBLeqnXo/mqdefault.jpg",
+                "width": 320,
+                "height": 180
+            },
+            "high": {
+                "url": "https://i.ytimg.com/vi/5-QDBLeqnXo/hqdefault.jpg",
+                "width": 480,
+                "height": 360
+            },
+            "standard": {
+                "url": "https://i.ytimg.com/vi/5-QDBLeqnXo/sddefault.jpg",
+                "width": 640,
+                "height": 480
+            },
+            "maxres": {
+                "url": "https://i.ytimg.com/vi/5-QDBLeqnXo/maxresdefault.jpg",
+                "width": 1280,
+                "height": 720
+            }
+        },
+        "channelTitle": "Micky Techology",
+        "tags": [
+            "#La Rocca Della Verruca",
+            "#Esplorazione",
+            "Escursione",
+            "#Trakking"
+        ],
+        "categoryId": "22",
+        "liveBroadcastContent": "none",
+        "localized": {
+            "title": "Esplorazione La Rocca Della Verruca",
+            "description": "Oggi ho fatto questo bellissimo Trekking per pura voglia di Esplorare la Nota Rocca della Verruca. \nIntagram : https://www.instagram.com/micky_techology/\nhttps://it.wikipedia.org/wiki/Rocca_della_Verruca\nGPX Percorso : https://it.wikiloc.com/percorsi-escursionismo/monte-della-rocca-della-verruca-cai-00-59091707"
+        },
+        "defaultAudioLanguage": "it"
+    },
+    "contentDetails": {
+        "duration": "PT27M18S",
+        "dimension": "2d",
+        "definition": "hd",
+        "caption": "false",
+        "licensedContent": false,
+        "contentRating": {},
+        "projection": "rectangular"
+    },
+    "statistics": {
+        "viewCount": "103",
+        "likeCount": "5",
+        "favoriteCount": "0",
+        "commentCount": "0"
+    }
+}

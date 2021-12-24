@@ -1,0 +1,22 @@
+STEPS:
+#very similiar to YT posts generator
+    1. We iterate over the places that are present in Places' MongoDB Collection
+    For each place:
+        1. extract the name and the coordinates of the place
+        2. iterate over the activities (that are in /documentation/activities.json)
+        For each activity:
+            Iterate over the tags of the activity.
+            For each tag:
+                1. Query Flickr API specifying:
+                    - as tags the place's name and the given tag
+                    - as coordinates the given coordinates for the current place
+                2. For each result of the query create a Post document, using the fields:
+                    {
+                        "title"     : "",
+                        "date"      : date, //the date of the post
+                        "desc"      : "",   //the description of the post
+                        "place"     : "", //the _id of the place of the post
+                        "activity"  : "", //the name (TODO: or _id if we decide to add it to MongoDB) of the kind of activity related to this post
+                        "tags"      : [], //an (optional) array of strings useful for better categorization and indexing
+                        "flickr"    : {}, //flickr infos
+                    }
