@@ -9,7 +9,7 @@ public final class PlaceManagerFactory {
 
     private static final Logger LOGGER = Logger.getLogger(PlaceManagerFactory.class.getName() );
 
-    private PlaceManagerFactory(){
+    public PlaceManagerFactory(){
     }
 
     public static PlaceManager getPlaceManager(){
