@@ -3,7 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.YtPost;
 import org.bson.Document;
 
 
@@ -25,10 +25,10 @@ public class User implements Serializable {
 	private Date birthDate;
 	private Role role;
 	private Image profilePic;
-	private List<Post> publishedPost;
+	private List<YtPost> publishedPost;
 	private List<User> followedUsers;
 	private List<Place> favouritePlaces;
-	private List<Post> likedPosts;
+	private List<YtPost> likedPosts;
 	private int totalPost;
 
 	//need default constructor for JSON Parsing

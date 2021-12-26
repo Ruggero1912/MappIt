@@ -45,7 +45,7 @@ public class MongoConnection {
         return getDatabase().getCollection(collectionName);
     }
 
-    public static void mongoDBFirstTest(){
+    /*public static void mongoDBFirstTest(){
         //LOGGER.log(Level.SEVERE, "using {0} as MongoURI", new Object[]{MongoURI});
         try (MongoClient mongoClient = MongoClients.create(MongoURI)) {
             MongoDatabase database = mongoClient.getDatabase(DatabaseName);
@@ -53,7 +53,7 @@ public class MongoConnection {
             Document doc = collection.find(eq("username", "fenomp")).first();
             System.out.println(doc.toJson());
         }
-    }
+    }*/
 
     public enum Collections{
         USERS("user"),
