@@ -17,9 +17,13 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class UserManagerMongoDB implements UserManager{
+
+    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
     private static final UserManagerMongoDB obj = new UserManagerMongoDB(); //TODO
 
@@ -89,7 +93,17 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public User getUserFromId(String id){
-        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+
+        ObjectId objId;
+
+        try{
+           objId = new ObjectId(id);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return null;
+        }
+
+        Bson idFilter = Filters.eq(IDKEY, objId);
         MongoCursor<Document> cursor = userCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
             return null;
@@ -103,13 +117,27 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean deleteUserFromId(String id){
-        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+        ObjectId objId;
+
+        try{
+            objId = new ObjectId(id);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+
+        Bson idFilter = Filters.eq(IDKEY, objId);
         DeleteResult ret = userCollection.deleteOne(idFilter);
         return ret.wasAcknowledged();
     }
 
     @Override
     public boolean changePassword(String id, String newPassword){
+
+        if(newPassword == "" || id == ""){
+            return false;
+        }
+
         String newEncryptedPassword = UserService.passwordEncryption(newPassword);
         Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
         UpdateResult res = userCollection.updateOne(idFilter, set("password", newEncryptedPassword));
