@@ -139,11 +139,6 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean changePassword(String id, String newPassword){
-
-        if(newPassword == "" || id == ""){
-            return false;
-        }
-
         String newEncryptedPassword = UserService.passwordEncryption(newPassword);
         Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
         UpdateResult res = userCollection.updateOne(idFilter, set("password", newEncryptedPassword));

@@ -117,10 +117,12 @@ public class UserService {
      * @return true if deletion has been successful, false otherwise
      */
     public static boolean delete(User userToDelete){
+        if(userToDelete == null || userToDelete.getId() == null)
+            return false;
+
         UserManager um = UserManagerFactory.getUserManager();
         String userId = userToDelete.getId();
-        boolean ret = um.deleteUserFromId(userId);
-        return ret;
+        return um.deleteUserFromId(userId);
     }
 
     /**
@@ -130,6 +132,10 @@ public class UserService {
      * @return true if password change has been successful, false otherwise
      */
     public static boolean updatePassword(String userID, String newPassword){
+        if(newPassword == "" || userID == "" || newPassword.length() <= 4){
+            return false;
+        }
+
         UserManager um = UserManagerFactory.getUserManager();
         boolean ret = um.changePassword(userID, newPassword);
         return ret;

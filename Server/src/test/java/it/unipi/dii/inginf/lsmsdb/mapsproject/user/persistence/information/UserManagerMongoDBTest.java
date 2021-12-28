@@ -1,8 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
-import org.junit.jupiter.api.Assertions;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UserManagerMongoDBTest {
+
+        private static final String DEFAULT_PASSWORD = "defaultPassword";
+        private static final String DEFAULT_USERNAME = "61c3154f1dcfc81aae55085d";
+        private static final String EMPTY_FIELD = "";
+
         UserManagerMongoDB user;
 
         @BeforeEach
@@ -22,13 +26,13 @@ public class UserManagerMongoDBTest {
         @DisplayName("Test UserManagerMongoDB.getUserFromUsername")
         @Test
         void GIVEN_get_user_from_username_WHEN_empty_username_is_passed_THEN_return_null(){
-            assertNull(user.getUserFromUsername(""), "Empty username case is not well handled");
+            assertNull(user.getUserFromUsername(EMPTY_FIELD), "Empty username case is not well handled");
         }
 
         @DisplayName("Test UserManagerMongoDB.checkDuplicateUsername with empy username")
         @Test
         void GIVEN_check_duplicate_username_WHEN_empty_username_is_passed_THEN_return_false(){
-            assertFalse(user.checkDuplicateUsername(""), "Empty username case in checkDuplicateUsername() is not well handled");
+            assertFalse(user.checkDuplicateUsername(EMPTY_FIELD), "Empty username case in checkDuplicateUsername() is not well handled");
         }
 
         @DisplayName("Test UserManagerMongoDB.checkDuplicateUsername with duplicate username")
@@ -44,7 +48,7 @@ public class UserManagerMongoDBTest {
         @DisplayName("Test UserManagerMongoDB.checkDuplicateEmail")
         @Test
         void GIVEN_check_duplicate_email_WHEN_empty_email_is_passed_THEN_return_false(){
-            assertFalse(user.checkDuplicateEmail(""), "Empty username case in checkDuplicateEmail() is not well handled");
+            assertFalse(user.checkDuplicateEmail(EMPTY_FIELD), "Empty username case in checkDuplicateEmail() is not well handled");
         }
 
         @DisplayName("Test UserManagerMongoDB.checkDuplicateEmail with duplicate email")
@@ -67,25 +71,25 @@ public class UserManagerMongoDBTest {
         @DisplayName("Test UserManagerMongoDB.getUserFromId")
         @Test
         void GIVEN_get_user_from_id_WHEN_empty_id_is_passed_THEN_return_null(){
-            assertNull(user.getUserFromId(""), "Empty id case in getUserFromId() is not well handled");
+            assertNull(user.getUserFromId(EMPTY_FIELD), "Empty id case in getUserFromId() is not well handled");
         }
 
         @DisplayName("Test UserManagerMongoDB.deleteUserFromId")
         @Test
         void GIVEN_delete_user_from_id_WHEN_empty_id_is_passed_THEN_return_false(){
-            assertFalse(user.deleteUserFromId(""), "Empty id case in deleteUserFromId() is not well handled");
+            assertFalse(user.deleteUserFromId(EMPTY_FIELD), "Empty id case in deleteUserFromId() is not well handled");
         }
 
         @DisplayName("Test UserManagerMongoDB.changePassword with empty password")
         @Test
         void GIVEN_change_password_WHEN_empty_password_is_passed_THEN_return_false(){
             // We use a default user_id to test
-            assertFalse(user.changePassword("61c3154f1dcfc81aae55085d", ""), "Empty password case in changePassword() is not well handled");
+            assertFalse(user.changePassword(DEFAULT_USERNAME, EMPTY_FIELD), "Empty password case in changePassword() is not well handled");
         }
 
         @DisplayName("Test UserManagerMongoDB.changePassword with empty id")
         @Test
         void GIVEN_change_password_WHEN_empty_id_is_passed_THEN_return_false(){
-            assertFalse(user.changePassword("", "defaultPassword"), "Empty id case in changePassword() is not well handled");
+            assertFalse(user.changePassword(EMPTY_FIELD, DEFAULT_PASSWORD), "Empty id case in changePassword() is not well handled");
         }
 }
