@@ -93,6 +93,8 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public User getUserFromId(String id){
+        if(id.equals(""))
+            return null;
 
         ObjectId objId;
 
@@ -117,6 +119,9 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean deleteUserFromId(String id){
+        if(id.equals(""))
+            return false;
+
         ObjectId objId;
 
         try{
