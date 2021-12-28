@@ -77,6 +77,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public User storeUser(RegistrationUser newUser){
+
         // RegistrationUser.createDocument() also add a default role and default profile pic
         Document userDoc = newUser.createDocument();
 
@@ -86,7 +87,7 @@ public class UserManagerMongoDB implements UserManager{
             String id = userDoc.getObjectId("_id").toString();
             userDoc.append("_id", id);
             return new User(userDoc);
-        } catch(MongoException me){
+        } catch(Exception e){
             return null;
         }
     }

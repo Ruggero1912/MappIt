@@ -40,6 +40,14 @@ public class UserService {
      * @return user object or null if already exists
      */
     public static User register(RegistrationUser newRegistrationUser) {
+
+        //check restrictions on password
+        String password = newRegistrationUser.getPassword();
+        if( password == null || password.length() <= 4){
+            return null;
+        }
+
+        //strings for duplicates
         String username = newRegistrationUser.getUsername();
         String email = newRegistrationUser.getEmail();
 
@@ -83,6 +91,7 @@ public class UserService {
      * @return hashed password to store
      */
     public static String passwordEncryption(String password){
+
         String pwdHash = BCrypt.hashpw(password, BCrypt.gensalt());
         return pwdHash;
     }
