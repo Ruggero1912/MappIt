@@ -107,13 +107,13 @@ class YTPostFactory:
         
         return posts
 
-    def parse_post_from_details(yt_video_full_details : dict) -> str:
+    def parse_post_from_details(yt_video_full_details : dict) -> YTPost:
         """
         receives a dict with the yt video details and crafts the post starting from them
         - the activity category can be determined by the YTPost constructor
         - the author is loaded by 'UserFactory.get_author_id_from_YTchannel' that is called inside this method
         :param yt_video_full_details dict
-        :return the _id of the created post
+        :return the YTPost object of the created post (to be stored in the database still)
         """
         channel_id = YTPostFactory.get_channelId_yt_resp(yt_video_full_details)
         channel_name=YTPostFactory.get_channelName_yt_resp(yt_video_full_details)
@@ -141,6 +141,8 @@ class YTPostFactory:
         yt_post_doc = yt_post.get_dict()
         ret = YTPostFactory.POSTS_COLLECTION.insert_one(yt_post_doc)
         yt_post_doc_id = ret.inserted_id
+
+        #TODO: store inside Neo4J?
 
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
