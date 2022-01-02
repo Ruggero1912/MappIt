@@ -16,6 +16,7 @@ PLACES_SOURCE_FILE = "responses/PISA.geojson"
 
 DEBUG = False
 STORE_IN_MONGO = True
+STORE_IN_NEO4J = True
 
 CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
 DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
@@ -47,10 +48,29 @@ def store_into_mongo(document : dict, collection=COLLECTION_NAME_PLACES):
     existing_doc_id = check_if_already_exists_in_mongo(document, collection)
     if(existing_doc_id is not None):
         print("[!] it already exists an instance for the given doc whose name is {name}. The _id of the existing doc is {id}".format(name=document["name"], id=existing_doc_id))
-        return False
+        return existing_doc_id #return False
     x = mycol.insert_one(document)
     return x.inserted_id
 
+from neo4j import (
+    GraphDatabase,
+    WRITE_ACCESS,
+)
+
+NEO4J_URI = os.getenv("NEO4J_CONNECTION_STRING")
+NEO4J_DB_NAME = os.getenv("NEO4J_DATABASE_NAME")
+NEO4J_DB_USER = os.getenv("NEO4J_DATABASE_USER")
+NEO4J_DB_PWD = os.getenv("NEO4J_DATABASE_PWD")
+NEO4J_PLACE_LABEL = os.getenv("NEO4J_PLACE_LABEL")
+
+def store_into_neo4j(place_name : str, place_id : str):
+    driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
+    session = driver.session(default_access_mode=WRITE_ACCESS)
+    ret = session.run("MERGE (a:"+NEO4J_PLACE_LABEL+" {id: $id, name: $name})", {"id": place_id, "name": place_name})
+    session.close()
+    driver.close()
+    result_summary = ret.consume()
+    return result_summary
 
 
 def load_centroid(geometry_value):  #geojson_infos["geometry"]
@@ -152,6 +172,10 @@ for geojson_infos in geojson_array:
     if(STORE_IN_MONGO): 
         id_doc = store_into_mongo(place_doc)
         if(id_doc): print("[+] stored inside mongo the place '{name}' | given _id: {id}".format(name=name, id=id_doc))
+
+    if (STORE_IN_NEO4J):
+        neo_res_infos = store_into_neo4j(place_name=name, place_id=str(id_doc))
+        if(neo_res_infos): print("[+] stored also inside neo4j the place '{name}' | given node: {node}".format(name=name, node=neo_res_infos))
 
     counter += 1
 
