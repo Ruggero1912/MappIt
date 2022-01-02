@@ -9,9 +9,9 @@ import pymongo
 import json
 
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv("../.env")   #By default loads .env configuration variables from current directory, searching in the file ".env"
+load_dotenv(find_dotenv())   #By default loads .env configuration variables from current directory, searching in the file ".env"
 
 CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
 DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
@@ -27,8 +27,6 @@ ACTIVITY_CATEGORY_KEY   = "category"
 
 PLACE_NAME_KEY  = "name"
 PLACE_LOC_KEY   = "loc"
-
-from dataPopulation.utilities.utils import Utils
 
 #https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=2d81292efaa5c80af3dcb72ea977a339&text=rocca+della+verruca&lat=43.70720745038839&lon=10.533851401339211&radius=1mi&format=json&nojsoncallback=1
 
@@ -57,7 +55,14 @@ def flickr_query(place_name, activity_tag, lon, lat) -> list:
     json_response = response.json()
     
     #in this way we retrieve only the first page of images, but it is enough because we have 250 photos per page
-    return json_response['photos']['photo']  
+    try:
+        ret = json_response['photos']['photo']  
+    except Exception as e:
+        print(json_response)
+        print("following exception occurred: \n" + str(e))
+        exit()
+
+    return ret
 
 def flickr_get_photo_details(photo_id) -> dict:
     params = {
@@ -78,15 +83,20 @@ def flickr_get_photo_details(photo_id) -> dict:
     for detail in unnecessary_details:
         json_response.pop(detail, None)
 
-    print("###Going to print the content for photo details response from flickr for photo {id}".format(id=photo_id))
-
-    print(json.dumps(json_response, indent=4))
     return json_response
 
 
-places = Utils.load_places_list_from_mongo()
+places = [
+    {'_id': '61b48d835a452364c1384589', 'name': 'Rocca della Verruca', 'loc': {'type': 'Point', 'coordinates': [10.533851401339211, 43.70720745038839]}, 'fits': [], 'image': 'https://commons.wikimedia.org/wiki/Special:FilePath/Ifj markó verruca.jpg', 'osm': {'type': 'Feature', 'id': 'way/34262137', 'geometry': {'type': 'Polygon', 'coordinates': [[[10.53334, 43.70728], [10.533316, 43.707263], [10.533321, 43.707242], [10.533413, 43.707199], [10.533542, 43.707154], [10.533591, 43.707125], [10.533628, 43.707096], [10.53365, 43.707034], [10.533625, 43.70693], [10.533905, 43.706992], [10.53416, 43.707058], [10.534193, 43.707044], [10.534262, 43.707058], [10.534272, 43.707096], [10.534251, 43.707127], [10.53422, 43.70714], [10.534189, 43.707143], [10.534186, 43.707178], [10.534194, 43.707215], [10.534185, 43.707269], [10.534128, 43.70738], [10.534166, 43.707399], [10.534173, 43.70743], [10.534126, 43.707461], [10.534057, 43.707468], [10.534008, 43.707465], [10.533975, 43.707437], [10.53374, 43.70738], [10.53334, 43.70728]]]}, 'properties': {'building': 'yes', 'historic': 'ruins', 'historic:civilization': 'medieval', 'name': 'Rocca della Verruca', 'ruins': 'castle', 'wikidata': 'Q3939451', 'wikipedia': 'it:Rocca della Verruca', 'id': 'way/34262137'}}}
+]
 
-activities = Utils.load_activities_list()
+activities = [
+    {
+        "activity" : "drone",
+        "category" : "fenom",
+        "tags"     : ["drone", "foo"]
+    }
+]
 
 counter = 0
 
@@ -120,13 +130,20 @@ for place in places:
                 flickr_photo["image_link"] = image_link
                 flickr_photo_details = flickr_get_photo_details(flickr_photo_id)
 
-                exit()
-                pass
+                with open("Flickr_photos_getInfo_response_example.json", 'w') as fp:
+                    json.dump(flickr_photo_details, fp=fp, indent=4)
+
+                break
+
 
             print( flickr_photos )
             print( "---------------------------------" )
             print()
             if len(flickr_photos) > 0:
+                with open("Flickr_photos_search_response_example.json", 'w') as fp:
+                    json.dump(flickr_photos, fp=fp, indent=4)
+
+                exit()
                 break
                 #exit()
         break
