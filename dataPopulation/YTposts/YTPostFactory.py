@@ -1,6 +1,11 @@
 import json
 import pymongo
 
+from neo4j import (
+    GraphDatabase,
+    WRITE_ACCESS,
+)
+
 from YTposts.YTClient import YTClient
 from YTposts.YTPost import YTPost
 from users.userFactory import UserFactory
@@ -32,6 +37,14 @@ class YTPostFactory:
     DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
     POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
     YT_DETAILS_COLLECTION_NAME  = Utils.load_config("COLLECTION_NAME_YT_DETAILS")
+
+    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
+    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
+    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
+    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
+    NEO4J_POST_LABEL    = Utils.load_config("NEO4J_POST_LABEL")
+
+    neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     POSTS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     YT_DETAILS_COLLECTION   = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][YT_DETAILS_COLLECTION_NAME]
@@ -148,6 +161,26 @@ class YTPostFactory:
         yt_details_doc_id = ret_yt_details.inserted_id
 
         return (yt_post_doc_id, yt_details_doc_id)
+
+    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id):
+        """
+        the Post node should have the attributes:
+        - id
+        - title
+        - description   (just an excerpt)
+        - thumbnail
+        We have to create the relationship between the Post node and the Place node (relation "LOCATION")
+        We have to create the relationship between the Post node and the User node (relation "AUTHOR")
+        """
+        desc = desc[:75]    #first 75 chars of the description
+        session = YTPostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        ret = session.run("MERGE (a:"+YTPostFactory.NEO4J_POST_LABEL+" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})", {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
+        
+        #TODO: relationships!
+
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
 
     def load_post_from_video_id(yt_video_id):
         """
