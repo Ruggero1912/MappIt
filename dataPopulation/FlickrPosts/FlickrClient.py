@@ -6,7 +6,8 @@ class FlickrClient:
 
     FLICKR_API_KEY      = Utils.load_config("FLICKR_API_KEY")
     FLICKR_API_ENDPOINT = "https://www.flickr.com/services/rest/"
-    STATIC_IMAGE_URI    = "https://live.staticflickr.com/{server}/{id}_{secret}.jpg"
+    STATIC_IMAGE_URI    = "https://live.staticflickr.com/{server}/{id}_{secret}_{size}.jpg"
+    THUMBNAIL_SIZE      = "t"
 
     HTTP_SESSION        = requests.Session()
 
@@ -55,18 +56,19 @@ class FlickrClient:
 
         return json_response
 
-    def get_photo_link_from_id(flickr_photo_id : str, flickr_photo_server : str, flickr_photo_secret : str):
-        return FlickrClient.STATIC_IMAGE_URI.format(server=flickr_photo_server, id=flickr_photo_id, secret=flickr_photo_secret)
-
-    def get_thumbnail_link_from_id(flickr_photo_id : str, flickr_photo_server : str, flickr_photo_secret : str):
+    def get_photo_link_from_id(flickr_photo_id : str, flickr_photo_server : str, flickr_photo_secret : str, size : str = "b"):
         """
         available sizes:
          - s
          - z (t / m)    -> use _t for the thumbnail
          - b
         """
-        THUMB_SIZE_STR_KEY = "_t"
-        photo_link = FlickrClient.get_photo_link_from_id(flickr_photo_id, flickr_photo_server, flickr_photo_secret)
-        assert isinstance(photo_link, str)
-        splitted_link = photo_link.split(".jpg")
-        ret = splitted_link[0].append(THUMB_SIZE_STR_KEY).append(splitted_link[1])
+        if size not in [ "b" , "s", "z" , "t" , "m" ]:
+            size = "b"
+
+        return FlickrClient.STATIC_IMAGE_URI.format(server=flickr_photo_server, id=flickr_photo_id, secret=flickr_photo_secret, size=size)
+
+    def get_thumbnail_link_from_id(flickr_photo_id : str, flickr_photo_server : str, flickr_photo_secret : str):
+
+        return FlickrClient.get_photo_link_from_id(flickr_photo_id, flickr_photo_server, flickr_photo_secret, size=FlickrClient.THUMBNAIL_SIZE)
+

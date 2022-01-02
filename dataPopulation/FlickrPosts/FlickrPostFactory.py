@@ -1,7 +1,7 @@
 import json, logging, pymongo
 from datetime import datetime
 from dateutil import parser
-from dataPopulation.users.userFactory import UserFactory
+from users.userFactory import UserFactory
 
 
 from utilities.utils import Utils
@@ -32,6 +32,8 @@ class FlickrPostFactory:
         activity_tag = None #we will not use the activity tag to filter the flickr posts (because of the low number of posts)
 
         flickr_photos = FlickrClient.photos_search(place_name=place_name, activity_tag=activity_tag, lon=place_lon, lat=place_lat)
+
+        FlickrPostFactory.LOGGER.info("Found {num} pictures for {place}".format(num=len(flickr_photos), place=place_name))
 
         for flickr_photo in flickr_photos:
 
@@ -87,8 +89,13 @@ class FlickrPostFactory:
 
         author_id = UserFactory.get_author_id_from_flickr_account_id(flickr_author_id, flickr_author_username, flickr_realname=flickr_author_realname)
 
+        #FlickrPostFactory.LOGGER.debug("pic link: {link}".format(link=flickr_pic_link))
+
         #we specify everything to the constructor except for the activity, that will be determined by the script
-        flickr_post = FlickrPost(author_id=author_id    ,   title=flickr_title      ,   description=flickr_description, post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array,pics_array=[flickr_pic_link], thumbnail=flickr_thumb_link, flickr_post_id=flickr_post_id)
+        flickr_post = FlickrPost(author_id=author_id    ,   title=flickr_title      ,   description=flickr_description, post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array, 
+        pics_array=[flickr_pic_link], thumbnail=flickr_thumb_link, flickr_post_id=flickr_post_id)
+
+        #FlickrPostFactory.LOGGER.debug("pics_array: {pics_arr}".format(pics_arr=flickr_post.get_pics_array()))
 
         return flickr_post
 
@@ -155,7 +162,9 @@ class FlickrPostFactory:
     """
     def get_posted_date_from_flickr_response(flickr_post_full_details : dict) -> datetime:
         raw_posted_date = flickr_post_full_details["dates"]["posted"]
-        if [' ', '-', ':'] not in raw_posted_date:
+        search_characters = [' ', '-', ':']
+
+        if not any(x in raw_posted_date for x in search_characters):
             #we assume it is epoch encoded
             epoch_time_posted = int( raw_posted_date )
             posted_datetime = datetime.fromtimestamp(epoch_time_posted)
@@ -165,7 +174,9 @@ class FlickrPostFactory:
 
     def get_taken_date_from_flickr_response(flickr_post_full_details : dict) -> datetime:
         raw_taken_date = flickr_post_full_details["dates"]["taken"]
-        if [' ', '-', ':'] not in raw_taken_date:
+        search_characters = [' ', '-', ':']
+
+        if not any(x in raw_taken_date for x in search_characters):
             #we assume it is epoch encoded
             epoch_time_taken = int( raw_taken_date )
             taken_datetime = datetime.fromtimestamp(epoch_time_taken)
@@ -206,12 +217,15 @@ class FlickrPostFactory:
         pic_id = FlickrPostFactory.get_flickr_post_id_from_flickr_response(flickr_post_full_details)
         pic_secret = flickr_post_full_details["secret"]
         pic_server = flickr_post_full_details["server"]
-        FlickrClient.get_thumbnail_link_from_id(pic_id, pic_server, pic_secret)
+        return FlickrClient.get_thumbnail_link_from_id(pic_id, pic_server, pic_secret)
 
     def get_pic_link_from_flickr_response(flickr_post_full_details : dict) -> str:
         pic_id = FlickrPostFactory.get_flickr_post_id_from_flickr_response(flickr_post_full_details)
         pic_secret = flickr_post_full_details["secret"]
         pic_server = flickr_post_full_details["server"]
-        FlickrClient.get_photo_link_from_id(pic_id, pic_server, pic_secret)
+
+        #FlickrPostFactory.LOGGER.debug("call to FlickrClient.get_photo_link_from_id({pic_id}, {pic_server}, {pic_secret})".format(pic_id=pic_id, pic_server=pic_server, pic_secret=pic_secret))
+
+        return FlickrClient.get_photo_link_from_id(pic_id, pic_server, pic_secret)
 
     
