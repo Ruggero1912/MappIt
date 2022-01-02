@@ -55,3 +55,14 @@ class User:
 
     def get_birth_date(self):
         return getattr(self, User.KEY_BIRTH_DATE)
+
+    def set_id(self, id : str):
+        if self.get_id() == None:
+            setattr(self, User.KEY_ID, id)
+        return self.get_id()
+
+    def get_id(self):
+        return getattr(self, User.KEY_ID, None)
+
+    def get_username(self):
+        return getattr(self, User.KEY_USERNAME, None)

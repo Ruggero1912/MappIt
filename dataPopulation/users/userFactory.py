@@ -2,6 +2,11 @@ from re import split
 import pymongo
 from faker import Faker
 
+from neo4j import (
+    GraphDatabase,
+    WRITE_ACCESS,
+)
+
 import os
 from dotenv import load_dotenv, find_dotenv
 
@@ -22,6 +27,14 @@ class UserFactory:
     CONNECTION_STRING           = os.getenv("MONGO_CONNECTION_STRING")
     DATABASE_NAME               = os.getenv("MONGO_DATABASE_NAME")
     USERS_COLLECTION_NAME       = os.getenv("COLLECTION_NAME_USERS")
+
+    NEO4J_URI = os.getenv("NEO4J_CONNECTION_STRING")
+    NEO4J_DB_NAME = os.getenv("NEO4J_DATABASE_NAME")
+    NEO4J_DB_USER = os.getenv("NEO4J_DATABASE_USER")
+    NEO4J_DB_PWD = os.getenv("NEO4J_DATABASE_PWD")
+    NEO4J_USER_LABEL = os.getenv("NEO4J_USER_LABEL")
+
+    neo_driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     USER_YT_CHANNEL_ID_KEY      = os.getenv("USER_YT_CHANNEL_ID_KEY")
     USER_ID_KEY                 = os.getenv("USER_ID_KEY")
@@ -83,10 +96,25 @@ class UserFactory:
         user = User(username, name, surname)
         #here it should store it in the database
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
-
         user_id = db_ret.inserted_id
+
+        user.set_id(user_id)
+
+        UserFactory.store_in_neo(user)
         #it should return the associated _id
         return user_id
+
+    def store_in_neo(user : User):
+        user_id = user.get_id()
+        username = user.get_username()
+        return UserFactory.store_in_neo(user_id=user_id, username=username)
+
+    def store_in_neo(user_id, username):
+        session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        ret = session.run("MERGE (a:"+UserFactory.NEO4J_USER_LABEL+" {id: $id, name: $name})", {"id": user_id, "username": username})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
 
     def bind_user_to_channel(user_id, channel_id):
         """
@@ -116,6 +144,7 @@ class UserFactory:
 
     def find_user_by_Flickr_account_id(flickr_account_id):
         user = UserFactory.USERS_COLLECTION.find_one({UserFactory.USER_FLICKR_ACCOUNT_ID_KEY : flickr_account_id})
+        return user
 
     def bind_user_to_Flickr_account(user_id, flickr_account_id):
         """
