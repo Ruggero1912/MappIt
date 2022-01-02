@@ -2,6 +2,7 @@ from typing import Tuple
 import pymongo
 import json
 from faker import Faker
+import logging
 
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -30,8 +31,18 @@ class Utils:
 
     ACTIVITES_JSON_FILE_PATH = "../documentation/activities.json"
 
-    def load_config(config_key) -> str :
+    def load_config(config_key : str) -> str :
         return os.getenv(config_key)
+
+    def start_logger(logger_name : str):
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(level=logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(level=logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - [%(levelname)s] - %(message)s')
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+        return logger
 
     def load_places_list_from_mongo() -> list:
         """
