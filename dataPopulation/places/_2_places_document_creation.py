@@ -38,7 +38,9 @@ def check_if_already_exists_in_mongo(document : dict, collection : str) -> str:
     else:
         return None
 
-def store_into_mongo(document : dict, collection=COLLECTION_NAME_PLACES):
+COLLECTION_NAME_OSM_DATA = os.getenv("COLLECTION_NAME_OSM_DATA")
+
+def store_into_mongo(document : dict, osm_data : dict = None, collection=COLLECTION_NAME_PLACES):
     """
     returns the _id of the inserted document or False if it already exists
     """
@@ -50,6 +52,10 @@ def store_into_mongo(document : dict, collection=COLLECTION_NAME_PLACES):
         print("[!] it already exists an instance for the given doc whose name is {name}. The _id of the existing doc is {id}".format(name=document["name"], id=existing_doc_id))
         return existing_doc_id #return False
     x = mycol.insert_one(document)
+    OSM_DATA_COLLECTION = mydb[COLLECTION_NAME_OSM_DATA]
+
+    if osm_data:    OSM_DATA_COLLECTION.insert_one(osm_data)
+
     return x.inserted_id
 
 from neo4j import (
@@ -165,13 +171,13 @@ for geojson_infos in geojson_array:
         "loc"   : centroid_location_attribute,
         "fits"  : [],
         "image" : img_link,
-        "osm"   : geojson_infos,
+        "osmID" : geojson_infos["id"],
         "posts" : []
     }
     if(DEBUG): print(place_doc)
 
     if(STORE_IN_MONGO): 
-        id_doc = store_into_mongo(place_doc)
+        id_doc = store_into_mongo(place_doc, osm_data=geojson_infos)
         if(id_doc): print("[+] stored inside mongo the place '{name}' | given _id: {id}".format(name=name, id=id_doc))
 
     if (STORE_IN_NEO4J):
