@@ -3,6 +3,10 @@ from datetime import datetime
 from dateutil import parser
 from users.userFactory import UserFactory
 
+from neo4j import (
+    GraphDatabase,
+    WRITE_ACCESS,
+)
 
 from utilities.utils import Utils
 from FlickrPosts.FlickrClient import FlickrClient
@@ -18,6 +22,18 @@ class FlickrPostFactory:
     DATABASE_NAME                   = Utils.load_config("MONGO_DATABASE_NAME")
     POSTS_COLLECTION_NAME           = Utils.load_config("COLLECTION_NAME_POSTS")
     FLICKR_DETAILS_COLLECTION_NAME  = Utils.load_config("COLLECTION_NAME_FLICKR_DETAILS")
+
+    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
+    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
+    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
+    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
+    NEO4J_POST_LABEL    = Utils.load_config("NEO4J_POST_LABEL")
+    NEO4J_USER_LABEL    = Utils.load_config("NEO4J_USER_LABEL")
+    NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
+    NEO4J_RELATION_POST_PLACE = Utils.load_config("NEO4J_RELATION_POST_PLACE")
+    NEO4J_RELATION_POST_USER = Utils.load_config("NEO4J_RELATION_POST_USER")
+
+    neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     POSTS_COLLECTION                = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     FLICKR_DETAILS_COLLECTION       = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][FLICKR_DETAILS_COLLECTION_NAME]
@@ -111,12 +127,46 @@ class FlickrPostFactory:
         ret = FlickrPostFactory.POSTS_COLLECTION.insert_one(flickr_post_doc)
         flickr_post_doc_id = ret.inserted_id
 
-        #TODO: store inside Neo4J?
-
         ret_flickr_details = FlickrPostFactory.FLICKR_DETAILS_COLLECTION.insert_one(all_flickr_details)
         flickr_details_doc_id = ret_flickr_details.inserted_id
 
+         #we add the post_id to posts fields of User and Place Documents
+
+        user_modified_rows = UserFactory.add_post_id_to_post_array( flickr_post.get_author(), flickr_post_doc_id)
+        if user_modified_rows != 1:
+            FlickrPostFactory.LOGGER.warning("The Flickr post_id has not been added to the User posts field, modified_rows = " + str(user_modified_rows))
+
+        place_modified_rows = PlaceFactory.add_post_id_to_post_array( flickr_post.get_place(), flickr_post_doc_id)
+        if place_modified_rows != 1:
+            FlickrPostFactory.LOGGER.warning("The Flickr post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
+
+        FlickrPostFactory.store_in_neo(flickr_post_doc_id, flickr_post.get_title(), flickr_post.get_description(), flickr_post.get_thumbnail(), flickr_post.get_place(), flickr_post.get_author())
+
         return (flickr_post_doc_id, flickr_details_doc_id)
+
+    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id):
+        """
+        the Post node should have the attributes:
+        - id
+        - title
+        - description   (just an excerpt)
+        - thumbnail
+        We have to create the relationship between the Post node and the Place node (relation "LOCATION")
+        We have to create the relationship between the Post node and the User node (relation "AUTHOR")
+        """
+        desc = desc[:75]    #first 75 chars of the description
+        session = FlickrPostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """ MATCH (u:"""+FlickrPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+ str(author_id) +"""')
+                    MATCH (p:"""+FlickrPostFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+ str(place_id) +"""')
+                    MERGE (a:"""+FlickrPostFactory.NEO4J_POST_LABEL+""" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})
+                    CREATE (a)-[:"""+FlickrPostFactory.NEO4J_RELATION_POST_USER+"""]->(u)
+                    CREATE (a)-[:"""+FlickrPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
+                """
+        ret = session.run(query, {"id": str(post_id), "title": title, "description": desc, "thumbnail" : thumbnail})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
 
     def load_post_from_flickr_post_id(flickr_post_id):
         """

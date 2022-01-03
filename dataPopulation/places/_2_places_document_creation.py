@@ -66,7 +66,7 @@ NEO4J_PLACE_LABEL = os.getenv("NEO4J_PLACE_LABEL")
 def store_into_neo4j(place_name : str, place_id : str):
     driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
     session = driver.session(default_access_mode=WRITE_ACCESS)
-    ret = session.run("MERGE (a:"+NEO4J_PLACE_LABEL+" {id: $id, name: $name})", {"id": place_id, "name": place_name})
+    ret = session.run("MERGE (a:"+NEO4J_PLACE_LABEL+" {id: $id, name: $name})", {"id": str(place_id), "name": place_name})
     session.close()
     driver.close()
     result_summary = ret.consume()
@@ -165,7 +165,8 @@ for geojson_infos in geojson_array:
         "loc"   : centroid_location_attribute,
         "fits"  : [],
         "image" : img_link,
-        "osm"   : geojson_infos
+        "osm"   : geojson_infos,
+        "posts" : []
     }
     if(DEBUG): print(place_doc)
 

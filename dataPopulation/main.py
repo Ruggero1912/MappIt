@@ -20,6 +20,7 @@ counter = 0
 PLACE_ID_KEY = "_id"
 
 for place in places:
+
     place_id = str(place[PLACE_ID_KEY])
     place_name = place[Utils.PLACE_NAME_KEY]
     (lon, lat) = Utils.load_coordinates(place)

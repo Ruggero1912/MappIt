@@ -1,5 +1,6 @@
 from logging import Logger
 import pymongo
+from bson.objectid import ObjectId
 
 from utilities.utils import Utils
 
@@ -15,6 +16,7 @@ class PlaceFactory:
 
     PLACE_ID_KEY                    = Utils.load_config("PLACE_ID_KEY")
     PLACE_FITS_KEY                  = Utils.load_config("PLACE_FITS_KEY")
+    PLACE_POST_ARRAY_KEY            = Utils.load_config("PLACE_POST_ARRAY_KEY")
 
     def load_place_by_id(place_id):
         """
@@ -30,5 +32,12 @@ class PlaceFactory:
         """
         #we use $addToSet to add the element to the array only once, in order to prevent duplicates
         # ( we use this instead of $push )
-        ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : place_id}, update={'$addToSet' : {PlaceFactory.PLACE_FITS_KEY : activity_name}})
+        ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(place_id)}, update={'$addToSet' : {PlaceFactory.PLACE_FITS_KEY : activity_name}})
+        return ret.modified_count
+
+    def add_post_id_to_post_array(place_id, post_id):
+        """
+        adds post_id related to a specific place into its post_array 
+        """
+        ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(place_id)}, update={'$addToSet' : {PlaceFactory.PLACE_POST_ARRAY_KEY : str(post_id)}})
         return ret.modified_count

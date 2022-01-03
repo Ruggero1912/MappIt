@@ -1,5 +1,6 @@
 from re import split
 import pymongo
+from bson.objectid import ObjectId
 from faker import Faker
 
 from neo4j import (
@@ -38,6 +39,7 @@ class UserFactory:
 
     USER_YT_CHANNEL_ID_KEY      = os.getenv("USER_YT_CHANNEL_ID_KEY")
     USER_ID_KEY                 = os.getenv("USER_ID_KEY")
+    USER_POST_ARRAY_KEY         = os.getenv("USER_POST_ARRAY_KEY")
 
     USER_FLICKR_ACCOUNT_ID_KEY  = os.getenv("USER_FLICKR_ACCOUNT_ID_KEY")
 
@@ -83,8 +85,8 @@ class UserFactory:
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_Flickr_account(user_id=new_user_id, flickr_account_id=flickr_account_id)
             return new_user_id
-
-        pass
+        else:
+            return associated_user[UserFactory.USER_ID_KEY]
 
     def create_user_by_username(username, name=None, surname=None):
         """
@@ -98,20 +100,20 @@ class UserFactory:
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
         user_id = db_ret.inserted_id
 
-        user.set_id(user_id)
+        user.set_id(str(user_id))
 
-        UserFactory.store_in_neo(user)
+        UserFactory.store_in_neo_usingObj(user)
         #it should return the associated _id
         return user_id
 
-    def store_in_neo(user : User):
+    def store_in_neo_usingObj(user : User):
         user_id = user.get_id()
         username = user.get_username()
         return UserFactory.store_in_neo(user_id=user_id, username=username)
 
     def store_in_neo(user_id, username):
         session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
-        ret = session.run("MERGE (a:"+UserFactory.NEO4J_USER_LABEL+" {id: $id, name: $name})", {"id": user_id, "username": username})
+        ret = session.run("MERGE (a:"+UserFactory.NEO4J_USER_LABEL+" {id: $id, username: $username})", {"id": str(user_id), "username": username})
         session.close()
         result_summary = ret.consume()
         return result_summary
@@ -154,7 +156,7 @@ class UserFactory:
 
         newvalues = { "$set": { UserFactory.USER_FLICKR_ACCOUNT_ID_KEY : flickr_account_id } }
 
-        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : user_id}, update=newvalues)
+        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : ObjectId(user_id)}, update=newvalues)
 
         if ret.modified_count == 1:
             return True
@@ -168,9 +170,7 @@ class UserFactory:
         """
         adds post_id published by a specific user into post_array 
         """
-        #we use $addToSet to add the element to the array only once, in order to prevent duplicates
-        # ( we use this instead of $push )
-        ret = UserFactory.USERS_COLLECTION.update_one({UserFactory.USER_ID_KEY : user_id}, update={'$addToSet' : {UserFactory.USER_POST_ARRAY_KEY : post_id}})
+        ret = UserFactory.USERS_COLLECTION.update_one({UserFactory.USER_ID_KEY : ObjectId(user_id)}, update={'$addToSet' : {UserFactory.USER_POST_ARRAY_KEY : str(post_id)}})
         return ret.modified_count
 
 

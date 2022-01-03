@@ -127,9 +127,15 @@ class YTPostFactory:
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
 
-        modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
-        if modified_rows != 1:
-            YTPostFactory.LOGGER.warning("The post_id has not been added to the User post_array, modified_rows = " + str(modified_rows))
+        #we add the post_id to posts fields of User and Place Documents
+
+        user_modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        if user_modified_rows != 1:
+            YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the User posts field, modified_rows = " + str(user_modified_rows))
+
+        place_modified_rows = PlaceFactory.add_post_id_to_post_array( yt_post.get_place(), yt_post_doc_id)
+        if place_modified_rows != 1:
+            YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
 
         YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_place(), yt_post.get_author())
 
@@ -148,9 +154,9 @@ class YTPostFactory:
         desc = desc[:75]    #first 75 chars of the description
         session = YTPostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
         
-        query = """ MERGE (a:"""+YTPostFactory.NEO4J_POST_LABEL+""" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})
-                    MATCH (u:"""+YTPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+author_id+"""')
-                    MATCH (p:"""+YTPostFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+place_id+"""')
+        query = """ MATCH (u:"""+YTPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(author_id)+"""')
+                    MATCH (p:"""+YTPostFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+str(place_id)+"""')
+                    MERGE (a:"""+YTPostFactory.NEO4J_POST_LABEL+""" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})
                     CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_USER+"""]->(u)
                     CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
                 """
