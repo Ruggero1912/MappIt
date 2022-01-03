@@ -2,7 +2,7 @@
     "activities" : [
     {
         "activity"  : "street photography",
-        "tags"      : ["street photographer", "street photography"],
+        "tags"      : ["street photography"],
         "category": "photography"
     },
     {
@@ -47,7 +47,7 @@
     },
     {
         "activity"  : "skiing",
-        "tags"      : ["skiing", "ski", "snow", "powderski", "skier", "backcountry", "freeski"],
+        "tags"      : ["skiing", "ski", "snow", "powderski", "skier", "freeski"],
         "category": "sport"
     },
     {
@@ -67,7 +67,7 @@
     },
     {
         "activity"  : "paragliding",
-        "tags"      : ["paragliding", "paragliders", "voolivre", "paraglide"],
+        "tags"      : ["paragliding", "paragliders", "paraglide"],
         "category": "sport"
     },
     {
@@ -88,6 +88,11 @@
     {
         "activity"  : "triathlon",
         "tags"      : ["triatlon", "triathletes"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "fishing",
+        "tags"      : ["fishing", "fisherman"],
         "category": "sport"
     }
     ]
