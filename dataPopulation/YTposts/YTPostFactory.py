@@ -52,46 +52,6 @@ class YTPostFactory:
 
     POSTS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     YT_DETAILS_COLLECTION   = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][YT_DETAILS_COLLECTION_NAME]
-
-    @DeprecationWarning
-    def posts_in_given_place_iterative_queries(place_name, place_lon, place_lat, activities : list):
-        print( """
-        do not use this method, use 'posts_in_given_place' instead
-        """ ) 
-        return False
-        for activity in activities:
-            assert isinstance(activity, dict)
-            activity_name = activity[YTPostFactory.ACTIVITY_NAME_KEY]
-            activity_category = activity[YTPostFactory.ACTIVITY_CATEGORY_KEY]
-            activity_tags = activity[YTPostFactory.ACTIVITY_TAG_KEY]
-
-            for activity_tag in activity_tags:
-                #query YT
-                yt_videos = YTClient.youtube_search_query(place_name=place_name, activity_tag=activity_tag, lon=place_lon, lat=place_lat)
-
-                
-                for yt_video in yt_videos:
-                    
-                    #retrieve useful infos for the post
-                    yt_infos      = {
-                        "title"             : yt_video['snippet']['title'],
-                        "desc"              : yt_video['snippet']['description'],
-                        "thumbnail"         : yt_video['snippet']['thumbnails']['medium']['url'],    #320 x 180px
-                        "publish_date"      : yt_video['snippet']['publishedAt'],
-                        "channel_id"        : yt_video['snippet']['channelId'],
-                        "channel_name"      : yt_video['snippet']['channelTitle']
-                    }
-                    #TODO: 
-                    # - the date attribute (the one which states when the experience took place) will be empty if we do not execute another API call to YT to obtain this info (but we do not have enough credits)
-                    # - tags : what should it contain? the activity_tag that was used to find this video? if it is found more than with only one query (and so with different tags), the other should be added? 
-                    # - determine the id of the activity for this post
-                    # - the thumbnail for the video which key should have? is it useful (I think that could be useful to use it as preview during posts listing)
-                    # - the YT video link which key should have? 
-                    # - all the other YT infos should be stored? in case, where? inside an attribute 'yt'? or in a different collection to prevent the document to become too big?
-                    author_id = UserFactory.get_author_id_from_YTchannel(channel_id=yt_infos["channel_id"], channel_name=yt_infos["channel_name"])
-                    #TODO: store_in_mongo method
-                    store_in_mongo(details=yt_infos, yt_all_details=yt_video)
-                    pass
     
     def posts_in_given_place(place_name, place_lon, place_lat):
 
@@ -161,6 +121,10 @@ class YTPostFactory:
 
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
+
+        modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        if modified_rows != 1:
+            YTPostFactory.LOGGER.warning("The post_id has not been added to the User post_array, modified_rows = " + str(modified_rows))
 
         YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_author(), yt_post.get_place())
 

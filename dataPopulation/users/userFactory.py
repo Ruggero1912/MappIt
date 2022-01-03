@@ -164,4 +164,13 @@ class UserFactory:
             #never happens
             return False
 
+    def add_post_id_to_post_array(user_id, post_id):
+        """
+        adds post_id published by a specific user into post_array 
+        """
+        #we use $addToSet to add the element to the array only once, in order to prevent duplicates
+        # ( we use this instead of $push )
+        ret = UserFactory.USERS_COLLECTION.update_one({UserFactory.USER_ID_KEY : user_id}, update={'$addToSet' : {UserFactory.USER_POST_ARRAY_KEY : post_id}})
+        return ret.modified_count
+
 
