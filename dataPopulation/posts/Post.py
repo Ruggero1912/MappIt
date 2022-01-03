@@ -114,6 +114,15 @@ class Post:
             experience_date = parser.parse(experience_date).date()
         return experience_date
 
+    def get_thumbnail(self) -> str:
+        return getattr(self, Post.KEY_THUMBNAIL, None)
+
+    def get_author(self) -> str:
+        return getattr(self, Post.KEY_AUTHOR)
+    
+    def get_place(self) -> str:
+        return getattr(self, Post.KEY_PLACE)
+
     def get_dict(self) -> dict:
         ret_dict = self.__dict__
 

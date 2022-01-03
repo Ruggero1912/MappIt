@@ -43,6 +43,10 @@ class YTPostFactory:
     NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
     NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_POST_LABEL    = Utils.load_config("NEO4J_POST_LABEL")
+    NEO4J_USER_LABEL    = Utils.load_config("NEO4J_USER_LABEL")
+    NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
+    NEO4J_RELATION_POST_PLACE = Utils.load_config("NEO4J_RELATION_POST_PLACE")
+    NEO4J_RELATION_POST_USER = Utils.load_config("NEO4J_RELATION_POST_USER")
 
     neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
@@ -155,10 +159,10 @@ class YTPostFactory:
         ret = YTPostFactory.POSTS_COLLECTION.insert_one(yt_post_doc)
         yt_post_doc_id = ret.inserted_id
 
-        #TODO: store inside Neo4J?
-
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
+
+        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_author(), yt_post.get_place())
 
         return (yt_post_doc_id, yt_details_doc_id)
 
@@ -174,7 +178,15 @@ class YTPostFactory:
         """
         desc = desc[:75]    #first 75 chars of the description
         session = YTPostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
-        ret = session.run("MERGE (a:"+YTPostFactory.NEO4J_POST_LABEL+" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})", {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
+        
+        query = """ MERGE (a:"""+YTPostFactory.NEO4J_POST_LABEL+""" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})
+                    MATCH (u:"""+YTPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+author_id+"""')
+                    MATCH (p:"""+YTPostFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+place_id+"""')
+                    CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_USER+"""]->(u)
+                    CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
+                """
+        ret = session.run(query, {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
+    
         
         #TODO: relationships!
 
