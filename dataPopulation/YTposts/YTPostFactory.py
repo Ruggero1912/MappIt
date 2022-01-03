@@ -157,7 +157,7 @@ class YTPostFactory:
         query = """ MATCH (u:"""+YTPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(author_id)+"""')
                     MATCH (p:"""+YTPostFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+str(place_id)+"""')
                     MERGE (a:"""+YTPostFactory.NEO4J_POST_LABEL+""" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})
-                    CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_USER+"""]->(u)
+                    CREATE (u)-[:"""+YTPostFactory.NEO4J_RELATION_POST_USER+"""]->(a)
                     CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
                 """
         ret = session.run(query, {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
