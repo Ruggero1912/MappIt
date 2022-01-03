@@ -22,7 +22,7 @@ class FlickrPostFactory:
     FLICKR_DETAILS_COLLECTION       = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][FLICKR_DETAILS_COLLECTION_NAME]
 
 
-    def posts_in_given_place(place_name, place_lon, place_lat):
+    def posts_in_given_place(place_name, place_lon, place_lat, place_id):
         """
         finds all the posts associated to the given place
         """
@@ -52,7 +52,7 @@ class FlickrPostFactory:
                 flickr_photo_details = FlickrClient.photos_getInfo(flickr_photo_id)
 
                 #parse the flickr-origin post from the json response
-                flickr_post = FlickrPostFactory.parse_post_from_details(flickr_photo_details)
+                flickr_post = FlickrPostFactory.parse_post_from_details(flickr_photo_details, place_id)
 
                 #store the post
                 FlickrPostFactory.store_in_persistent_db(flickr_post=flickr_post, all_flickr_details=flickr_photo_details)
@@ -62,7 +62,7 @@ class FlickrPostFactory:
         #return the list of creatd posts
         return posts
 
-    def parse_post_from_details(flickr_post_full_details : dict) -> FlickrPost:
+    def parse_post_from_details(flickr_post_full_details : dict, place_id : str) -> FlickrPost:
         """
         receives a dict with the FlickrPost details and crafts the post starting from them
         - the activity category can be determined by the FlickrPost constructor
@@ -92,7 +92,7 @@ class FlickrPostFactory:
         #FlickrPostFactory.LOGGER.debug("pic link: {link}".format(link=flickr_pic_link))
 
         #we specify everything to the constructor except for the activity, that will be determined by the script
-        flickr_post = FlickrPost(author_id=author_id    ,   title=flickr_title      ,   description=flickr_description, post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array, 
+        flickr_post = FlickrPost(author_id=author_id    ,  place_id=place_id, title=flickr_title      ,   description=flickr_description, post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array, 
         pics_array=[flickr_pic_link], thumbnail=flickr_thumb_link, flickr_post_id=flickr_post_id)
 
         #FlickrPostFactory.LOGGER.debug("pics_array: {pics_arr}".format(pics_arr=flickr_post.get_pics_array()))

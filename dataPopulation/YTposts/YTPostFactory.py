@@ -93,7 +93,7 @@ class YTPostFactory:
                     store_in_mongo(details=yt_infos, yt_all_details=yt_video)
                     pass
     
-    def posts_in_given_place(place_name, place_lon, place_lat):
+    def posts_in_given_place(place_name, place_lon, place_lat, place_id):
 
         yt_videos = YTClient.youtube_search_query(place_name=place_name, lon=place_lon, lat=place_lat)
 
@@ -116,7 +116,7 @@ class YTPostFactory:
 
             yt_video_full_details = YTClient.youtube_video_details(video_id=yt_video_id)
 
-            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details)
+            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id)
 
             YTPostFactory.store_in_persistent_db(yt_post=yt_post, all_yt_details=yt_video_full_details)
             
@@ -124,7 +124,7 @@ class YTPostFactory:
         
         return posts
 
-    def parse_post_from_details(yt_video_full_details : dict) -> YTPost:
+    def parse_post_from_details(yt_video_full_details : dict, place_id : str) -> YTPost:
         """
         receives a dict with the yt video details and crafts the post starting from them
         - the activity category can be determined by the YTPost constructor
@@ -147,7 +147,7 @@ class YTPostFactory:
         #we will not specify pics_array, activity and experience date
         yt_post=YTPost(author_id=author_id  , yt_video_id=yt_video_id, yt_channel_id=channel_id ,
                        title=title          , description=description, post_date=yt_post_date   ,
-                       tags_array=yt_tags   , thumbnail=yt_thumb_link
+                       tags_array=yt_tags   , thumbnail=yt_thumb_link, place_id=place_id
         ) 
         return yt_post
 
@@ -162,7 +162,7 @@ class YTPostFactory:
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
 
-        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_author(), yt_post.get_place())
+        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_place(), yt_post.get_author())
 
         return (yt_post_doc_id, yt_details_doc_id)
 
@@ -186,10 +186,6 @@ class YTPostFactory:
                     CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
                 """
         ret = session.run(query, {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
-    
-        
-        #TODO: relationships!
-
         session.close()
         result_summary = ret.consume()
         return result_summary
