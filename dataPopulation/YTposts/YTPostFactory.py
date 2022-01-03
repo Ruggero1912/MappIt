@@ -9,6 +9,7 @@ from neo4j import (
 from YTposts.YTClient import YTClient
 from YTposts.YTPost import YTPost
 from users.userFactory import UserFactory
+from places.placeFactory import PlaceFactory
 
 from utilities.utils import Utils
 
@@ -53,7 +54,7 @@ class YTPostFactory:
     POSTS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     YT_DETAILS_COLLECTION   = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][YT_DETAILS_COLLECTION_NAME]
     
-    def posts_in_given_place(place_name, place_lon, place_lat):
+    def posts_in_given_place(place_name, place_lon, place_lat, place_id):
 
         yt_videos = YTClient.youtube_search_query(place_name=place_name, lon=place_lon, lat=place_lat)
 
@@ -76,15 +77,19 @@ class YTPostFactory:
 
             yt_video_full_details = YTClient.youtube_video_details(video_id=yt_video_id)
 
-            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details)
+            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id)
 
             YTPostFactory.store_in_persistent_db(yt_post=yt_post, all_yt_details=yt_video_full_details)
+
+            #here we should update the place document fits
+            PlaceFactory.add_activity_to_fits(place_id=place_id, activity_name=yt_post.get_activity())
+            
             
             posts.append(yt_post)
         
         return posts
 
-    def parse_post_from_details(yt_video_full_details : dict) -> YTPost:
+    def parse_post_from_details(yt_video_full_details : dict, place_id : str) -> YTPost:
         """
         receives a dict with the yt video details and crafts the post starting from them
         - the activity category can be determined by the YTPost constructor
@@ -107,7 +112,7 @@ class YTPostFactory:
         #we will not specify pics_array, activity and experience date
         yt_post=YTPost(author_id=author_id  , yt_video_id=yt_video_id, yt_channel_id=channel_id ,
                        title=title          , description=description, post_date=yt_post_date   ,
-                       tags_array=yt_tags   , thumbnail=yt_thumb_link
+                       tags_array=yt_tags   , thumbnail=yt_thumb_link, place_id=place_id
         ) 
         return yt_post
 
@@ -126,7 +131,7 @@ class YTPostFactory:
         if modified_rows != 1:
             YTPostFactory.LOGGER.warning("The post_id has not been added to the User post_array, modified_rows = " + str(modified_rows))
 
-        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_author(), yt_post.get_place())
+        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_place(), yt_post.get_author())
 
         return (yt_post_doc_id, yt_details_doc_id)
 
@@ -150,10 +155,6 @@ class YTPostFactory:
                     CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
                 """
         ret = session.run(query, {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
-    
-        
-        #TODO: relationships!
-
         session.close()
         result_summary = ret.consume()
         return result_summary
