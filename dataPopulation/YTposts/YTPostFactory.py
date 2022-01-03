@@ -160,7 +160,7 @@ class YTPostFactory:
                     CREATE (u)-[:"""+YTPostFactory.NEO4J_RELATION_POST_USER+"""]->(a)
                     CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
                 """
-        ret = session.run(query, {"id": post_id, "title": title, "description": desc, "thumbnail" : thumbnail})
+        ret = session.run(query, {"id": str(post_id), "title": title, "description": desc, "thumbnail" : thumbnail})
         session.close()
         result_summary = ret.consume()
         return result_summary
