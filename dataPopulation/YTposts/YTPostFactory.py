@@ -9,6 +9,7 @@ from neo4j import (
 from YTposts.YTClient import YTClient
 from YTposts.YTPost import YTPost
 from users.userFactory import UserFactory
+from places.placeFactory import PlaceFactory
 
 from utilities.utils import Utils
 
@@ -119,6 +120,10 @@ class YTPostFactory:
             yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id)
 
             YTPostFactory.store_in_persistent_db(yt_post=yt_post, all_yt_details=yt_video_full_details)
+
+            #here we should update the place document fits
+            PlaceFactory.add_activity_to_fits(place_id=place_id, activity_name=yt_post.get_activity())
+            
             
             posts.append(yt_post)
         

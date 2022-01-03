@@ -75,6 +75,11 @@ class Post:
 
         return Post.DEFAULT_ACTIVITY
 
+    def get_activity(self):
+        activity_name = getattr(self, Post.KEY_ACTIVITY)
+        assert isinstance(activity_name,str)
+        return activity_name
+
     def get_title(self):
         title = getattr(self, Post.KEY_TITLE)
         assert isinstance(title, str)

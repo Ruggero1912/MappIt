@@ -7,6 +7,7 @@ from users.userFactory import UserFactory
 from utilities.utils import Utils
 from FlickrPosts.FlickrClient import FlickrClient
 from FlickrPosts.FlickrPost import FlickrPost
+from places.placeFactory import PlaceFactory
 
 class FlickrPostFactory:
 
@@ -56,6 +57,9 @@ class FlickrPostFactory:
 
                 #store the post
                 FlickrPostFactory.store_in_persistent_db(flickr_post=flickr_post, all_flickr_details=flickr_photo_details)
+
+                #here we should update the place document fits
+                PlaceFactory.add_activity_to_fits(place_id=place_id, activity_name=flickr_post.get_activity())
 
                 posts.append(flickr_post)
        
