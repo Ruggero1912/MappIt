@@ -184,8 +184,129 @@ class UserFactory:
         ret = UserFactory.USERS_COLLECTION.update_one({UserFactory.USER_ID_KEY : ObjectId(user_id)}, update={'$addToSet' : {UserFactory.USER_POST_ARRAY_KEY : str(post_id)}})
         return ret.modified_count
 
+    def user_visited_place(user_id : str, place_id : str, datetime_visit : datetime = datetime.now()):
+        """
+        stores the visit done by a given user to a given place
+        """
+        if isinstance(datetime_visit, date):
+            datetime_visit = Utils.convert_date_to_datetime(datetime_visit)
 
+        if not isinstance(datetime_visit, datetime):
+            UserFactory.LOGGER.warning("user_visited_place received as datetime_visit a {type} instead of datetime! Cannot proceed. \t\t Content of datetime_visit : {datetime_visit}".format(type=type(datetime_visit), datetime_visit=datetime_visit))
+            return False
+        
+        session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """ MATCH (u:"""+UserFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(user_id)+"""')
+                    MATCH (p:"""+UserFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+str(place_id)+"""')
+                    CREATE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_VISITED_PLACE+""" {datetime: $datetime}]->(p)
+                """
+        ret = session.run(query, {"datetime" : datetime_visit})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
 
+    def user_follows_user(follower_id : str, followed_id : str, datetime_follow : datetime = datetime.now()):
+        """
+        stores the follow action done by a given user to another
+        - follower_id -[:FOLLOWS{datetime: datetime_follow}]-> followed_id
+        """
+        if follower_id == followed_id:
+            UserFactory.LOGGER.warning("[x] a user cannot follow himself! received follower_id: {follower_id}".format(follower_id=follower_id))
+            return
+        if isinstance(datetime_follow, date):
+            datetime_follow = Utils.convert_date_to_datetime(datetime_follow)
+
+        if not isinstance(datetime_follow, datetime):
+            UserFactory.LOGGER.warning("user_visited_place received as datetime_follow a {type} instead of datetime! Cannot proceed. \t\t Content of datetime_follow : {datetime_follow}".format(type=type(datetime_follow), datetime_follow=datetime_follow))
+            return False
+        
+        session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """ MATCH (u:"""+UserFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(follower_id)+"""')
+                    MATCH (f:"""+UserFactory.NEO4J_USER_LABEL+""" WHERE f.id = '"""+str(followed_id)+"""')
+                    MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_FOLLOWS_USER+""" {datetime: $datetime}]->(f)
+                """
+        ret = session.run(query, {"datetime" : datetime_follow})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
+
+    def user_likes_post(user_id : str, post_id : str, datetime_like : datetime = datetime.now()):
+        """
+        stores the like action done by a given user to a post
+        - user_id -[:LIKES{datetime: datetime_like}]-> post_id
+        """
+        if isinstance(datetime_like, date):
+            datetime_like = Utils.convert_date_to_datetime(datetime_like)
+
+        if not isinstance(datetime_like, datetime):
+            UserFactory.LOGGER.warning("user_visited_place received as datetime_like a {type} instead of datetime! Cannot proceed. \t\t Content of datetime_like : {datetime_like}".format(type=type(datetime_like), datetime_like=datetime_like))
+            return False
+        
+        session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """ MATCH (u:"""+UserFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(user_id)+"""')
+                    MATCH (p:"""+UserFactory.NEO4J_POST_LABEL+""" WHERE p.id = '"""+str(post_id)+"""')
+                    MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_LIKES_POST+""" {datetime: $datetime}]->(p)
+                """
+        ret = session.run(query, {"datetime" : datetime_like})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
+
+    def user_adds_place_to_favourites(user_id : str, place_id : str, datetime_fav : datetime = datetime.now()):
+        """
+        stores the add to favourites action done by a given user to a post
+        - user_id -[:FAVOURITES{datetime: datetime_like}]-> post_id
+        """
+        if isinstance(datetime_fav, date):
+            datetime_fav = Utils.convert_date_to_datetime(datetime_fav)
+
+        if not isinstance(datetime_fav, datetime):
+            UserFactory.LOGGER.warning("user_visited_place received as datetime_fav a {type} instead of datetime! Cannot proceed. \t\t Content of datetime_fav : {datetime_fav}".format(type=type(datetime_fav), datetime_fav=datetime_fav))
+            return False
+        
+        session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """ MATCH (u:"""+UserFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(user_id)+"""')
+                    MATCH (p:"""+UserFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+str(place_id)+"""')
+                    MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_FAVOURITES_PLACE+""" {datetime: $datetime}]->(p)
+                """
+        ret = session.run(query, {"datetime" : datetime_fav})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary
+
+    def generate_follows(user_id : str, how_many : int = 10):
+        users_to_follow_ids = UserFactory.get_random_ids(how_many=how_many)
+        for user_to_follow in users_to_follow_ids:
+            UserFactory.user_follows_user(follower_id=user_id, followed_id=user_to_follow)
+        return
+
+    def generate_followers(user_id : str, how_many : int = 10):
+        follower_users_ids = UserFactory.get_random_ids(how_many=how_many)
+        for future_follower_id in follower_users_ids:
+            UserFactory.user_follows_user(follower_id=future_follower_id, followed_id=user_id)
+        return
+
+    def like_to_some_posts(user_id : str, how_many : int = 10):
+        posts_ids = PostFactory.get_random_ids(how_many=how_many)
+        for post_id in posts_ids:
+            UserFactory.user_likes_post(user_id, post_id)
+        return
+
+    def add_to_favourites_some_places(user_id : str, how_many : int = 10):
+        places_ids = PlaceFactory.get_random_ids(how_many=how_many)
+        for place_id in places_ids:
+            UserFactory.user_adds_place_to_favourites(user_id=user_id,place_id=place_id)
+        return
+
+    def visit_some_places(user_id : str, how_many : int = 10):
+        places_ids = PlaceFactory.get_random_ids(how_many=how_many)
+        for place_id in places_ids:
+            UserFactory.user_visited_place(user_id=user_id, place_id=place_id)
+        return
 
     def get_random_ids(how_many : int = 10) -> list :
         """
