@@ -19,9 +19,9 @@ from users.user import User
 
 class UserFactory:
 
-    BEGIN               = start()
+    LOGGER                      = Utils.start_logger("UserFactory")
 
-    LOCALIZATION        = os.getenv("LOCALIZATION")
+    fake                        = Utils.fake        #Faker(LOCALIZATION)
 
     fake                = Faker(LOCALIZATION)
 
@@ -29,19 +29,29 @@ class UserFactory:
     DATABASE_NAME               = os.getenv("MONGO_DATABASE_NAME")
     USERS_COLLECTION_NAME       = os.getenv("COLLECTION_NAME_USERS")
 
-    NEO4J_URI = os.getenv("NEO4J_CONNECTION_STRING")
-    NEO4J_DB_NAME = os.getenv("NEO4J_DATABASE_NAME")
-    NEO4J_DB_USER = os.getenv("NEO4J_DATABASE_USER")
-    NEO4J_DB_PWD = os.getenv("NEO4J_DATABASE_PWD")
-    NEO4J_USER_LABEL = os.getenv("NEO4J_USER_LABEL")
+    CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
+    DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
+    USERS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_USERS")
+
+    NEO4J_URI                   = Utils.load_config("NEO4J_CONNECTION_STRING")
+    NEO4J_DB_NAME               = Utils.load_config("NEO4J_DATABASE_NAME")
+    NEO4J_DB_USER               = Utils.load_config("NEO4J_DATABASE_USER")
+    NEO4J_DB_PWD                = Utils.load_config("NEO4J_DATABASE_PWD")
+    NEO4J_USER_LABEL            = Utils.load_config("NEO4J_USER_LABEL")
+    NEO4J_PLACE_LABEL           = Utils.load_config("NEO4J_PLACE_LABEL")
+    NEO4J_POST_LABEL            = Utils.load_config("NEO4J_POST_LABEL")
+    NEO4J_RELATION_USER_VISITED_PLACE = Utils.load_config("NEO4J_RELATION_USER_VISITED_PLACE")
+    NEO4J_RELATION_USER_FOLLOWS_USER = Utils.load_config("NEO4J_RELATION_USER_FOLLOWS_USER")
+    NEO4J_RELATION_USER_LIKES_POST = Utils.load_config("NEO4J_RELATION_USER_LIKES_POST")
+    NEO4J_RELATION_USER_FAVOURITES_PLACE = Utils.load_config("NEO4J_RELATION_USER_FAVOURITES_PLACE")
 
     neo_driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
-    USER_YT_CHANNEL_ID_KEY      = os.getenv("USER_YT_CHANNEL_ID_KEY")
-    USER_ID_KEY                 = os.getenv("USER_ID_KEY")
-    USER_POST_ARRAY_KEY         = os.getenv("USER_POST_ARRAY_KEY")
+    USER_YT_CHANNEL_ID_KEY      = Utils.load_config("USER_YT_CHANNEL_ID_KEY")
+    USER_ID_KEY                 = Utils.load_config("USER_ID_KEY")
+    USER_POST_ARRAY_KEY         = Utils.load_config("USER_POST_ARRAY_KEY")
 
-    USER_FLICKR_ACCOUNT_ID_KEY  = os.getenv("USER_FLICKR_ACCOUNT_ID_KEY")
+    USER_FLICKR_ACCOUNT_ID_KEY  = Utils.load_config("USER_FLICKR_ACCOUNT_ID_KEY")
 
     USERS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][USERS_COLLECTION_NAME]
 
