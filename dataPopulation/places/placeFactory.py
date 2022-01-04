@@ -2,6 +2,11 @@ from logging import Logger
 import pymongo
 from bson.objectid import ObjectId
 
+from neo4j import (
+    GraphDatabase,
+    WRITE_ACCESS,
+)
+
 from utilities.utils import Utils
 
 class PlaceFactory:
@@ -17,6 +22,14 @@ class PlaceFactory:
     PLACE_ID_KEY                    = Utils.load_config("PLACE_ID_KEY")
     PLACE_FITS_KEY                  = Utils.load_config("PLACE_FITS_KEY")
     PLACE_POST_ARRAY_KEY            = Utils.load_config("PLACE_POST_ARRAY_KEY")
+
+    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
+    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
+    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
+    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
+    NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
+
+    neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     def load_place_by_id(place_id):
         """
@@ -41,3 +54,29 @@ class PlaceFactory:
         """
         ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(place_id)}, update={'$addToSet' : {PlaceFactory.PLACE_POST_ARRAY_KEY : str(post_id)}})
         return ret.modified_count
+
+    def get_random_ids(how_many : int = 10) -> list :
+        """
+        returns a list of random post_ids
+        - returns list<str>
+        """
+        list_of_ids = []
+
+        session = PlaceFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """
+                MATCH (p:{place_label})
+                RETURN p, rand() as r
+                ORDER BY r
+                LIMIT {how_many} 
+                """.format(place_label=PlaceFactory.NEO4J_PLACE_LABEL, how_many=how_many)
+        ret = session.run(query)
+        result_set = ret.data()
+        session.close()
+        if len(result_set) == 0:
+            PlaceFactory.LOGGER.warning("[!] empty result set for get_random_ids! specified how_many value: {how_many}".format(how_many=how_many))
+            return []
+
+        for element in result_set:
+            list_of_ids.append(element['p']['id'])
+        return list_of_ids

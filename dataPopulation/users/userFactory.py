@@ -16,6 +16,7 @@ def start():
     return True
 
 from users.user import User
+from utilities.utils import Utils
 
 class UserFactory:
 
@@ -184,3 +185,30 @@ class UserFactory:
         return ret.modified_count
 
 
+
+
+    def get_random_ids(how_many : int = 10) -> list :
+        """
+        returns a list of random user_ids
+        - returns list<str>
+        """
+        list_of_ids = []
+
+        session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """
+                MATCH (u:{user_label})
+                RETURN u, rand() as r
+                ORDER BY r
+                LIMIT {how_many} 
+                """.format(user_label=UserFactory.NEO4J_USER_LABEL, how_many=how_many)
+        ret = session.run(query)
+        result_set = ret.data()
+        session.close()
+        if len(result_set) == 0:
+            UserFactory.LOGGER.warning("[!] empty result set for get_random_ids! specified how_many value: {how_many}".format(how_many=how_many))
+            return []
+
+        for element in result_set:
+            list_of_ids.append(element['u']['id'])
+        return list_of_ids
