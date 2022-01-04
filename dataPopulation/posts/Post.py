@@ -142,6 +142,6 @@ class Post:
 
         exp_date = ret_dict[Post.KEY_EXPERIENCE_DATE]
         assert isinstance(exp_date, date)
-        ret_dict[Post.KEY_EXPERIENCE_DATE] = datetime(exp_date.year, exp_date.month, exp_date.day) #.isoformat()
+        ret_dict[Post.KEY_EXPERIENCE_DATE] = Utils.convert_date_to_datetime(exp_date) #datetime(exp_date.year, exp_date.month, exp_date.day)
 
         return ret_dict

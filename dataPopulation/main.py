@@ -35,7 +35,7 @@ for place in places:
     FlickrPostFactory.posts_in_given_place(place_name=place_name, place_lon=lon, place_lat=lat, place_id=place_id)
 
     counter += 1
-
+    
     if limit != -1 and counter > limit:
         break
     

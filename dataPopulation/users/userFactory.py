@@ -1,6 +1,7 @@
-from re import split
 import pymongo
+import random
 from bson.objectid import ObjectId
+from datetime import datetime, date
 from faker import Faker
 
 from neo4j import (
@@ -8,15 +9,12 @@ from neo4j import (
     WRITE_ACCESS,
 )
 
-import os
-from dotenv import load_dotenv, find_dotenv
 
-def start():
-    load_dotenv(find_dotenv())
-    return True
 
 from users.user import User
 from utilities.utils import Utils
+from posts.postFactory import PostFactory
+from places.placeFactory import PlaceFactory
 
 class UserFactory:
 
@@ -24,11 +22,9 @@ class UserFactory:
 
     fake                        = Utils.fake        #Faker(LOCALIZATION)
 
-    fake                = Faker(LOCALIZATION)
+    GENERATE_SOCIAL_RELATIONS   = Utils.load_config_boolean("GENERATE_SOCIAL_RELATIONS")
 
-    CONNECTION_STRING           = os.getenv("MONGO_CONNECTION_STRING")
-    DATABASE_NAME               = os.getenv("MONGO_DATABASE_NAME")
-    USERS_COLLECTION_NAME       = os.getenv("COLLECTION_NAME_USERS")
+    SOCIAL_RELATIONS_HOW_MANY_SEED = Utils.load_config_integer("SOCIAL_RELATIONS_HOW_MANY_SEED")
 
     CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
     DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
@@ -114,8 +110,26 @@ class UserFactory:
         user.set_id(str(user_id))
 
         UserFactory.store_in_neo_usingObj(user)
+
+        if UserFactory.GENERATE_SOCIAL_RELATIONS:
+            UserFactory.generate_social_relations_for_the_user(user_id)
+
         #it should return the associated _id
         return user_id
+
+    def generate_social_relations_for_the_user(user_id : str):
+        how_many_seed = random.randint(UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED, UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED * 3)
+        how_many_follows = random.randint(how_many_seed//2, how_many_seed*2)
+        how_many_followers  = random.randint( (how_many_follows//2), how_many_follows * 2)
+        how_many_likes = random.randint( (how_many_follows//2), how_many_follows * 10)
+        how_many_favs = random.randint(how_many_seed // 3, how_many_seed)
+        how_many_visits = random.randint( how_many_seed // 2, how_many_seed * 2)
+        UserFactory.generate_follows(user_id, how_many_follows)
+        UserFactory.generate_followers(user_id, how_many_followers)
+        UserFactory.like_to_some_posts(user_id, how_many_likes)
+        UserFactory.add_to_favourites_some_places(user_id, how_many_favs)
+        UserFactory.visit_some_places(user_id, how_many_visits)
+        return
 
     def store_in_neo_usingObj(user : User):
         user_id = user.get_id()
