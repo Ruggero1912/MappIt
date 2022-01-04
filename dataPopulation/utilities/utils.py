@@ -3,6 +3,7 @@ import pymongo
 import json
 from faker import Faker
 import logging
+from datetime import date, datetime
 
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -34,6 +35,23 @@ class Utils:
     def load_config(config_key : str) -> str :
         return os.getenv(config_key)
 
+    def load_config_boolean(config_key : str) -> bool :
+        """
+        parse a boolean from the specified config_key key and returns it
+        """
+        value = Utils.load_config(config_key=config_key)
+        if value.lower() in ["t", "true", "1", "on", "yes", "y"]:
+            return True
+        else:
+            return False
+
+    def load_config_integer(config_key : str) -> int :
+        """
+        parse an int from the specified config_key key and returns it
+        """
+        value = Utils.load_config(config_key=config_key)
+        return int(value)
+
     def start_logger(logger_name : str):
         logger = logging.getLogger(logger_name)
         logger.setLevel(level=logging.DEBUG)
@@ -43,6 +61,12 @@ class Utils:
         ch.setFormatter(formatter)
         logger.addHandler(ch)
         return logger
+
+    def convert_date_to_datetime(date : date) -> datetime:
+        """
+        converts a date object to a datetime object and returns it
+        """
+        return datetime(date.year, date.month, date.day)
 
     def load_places_list_from_mongo() -> list:
         """
