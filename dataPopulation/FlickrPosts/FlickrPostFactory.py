@@ -1,5 +1,5 @@
 import json, logging, pymongo
-from datetime import datetime
+from datetime import datetime, date
 from dateutil import parser
 from users.userFactory import UserFactory
 
@@ -140,11 +140,11 @@ class FlickrPostFactory:
         if place_modified_rows != 1:
             FlickrPostFactory.LOGGER.warning("The Flickr post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
 
-        FlickrPostFactory.store_in_neo(flickr_post_doc_id, flickr_post.get_title(), flickr_post.get_description(), flickr_post.get_thumbnail(), flickr_post.get_place(), flickr_post.get_author())
+        FlickrPostFactory.store_in_neo(flickr_post_doc_id, flickr_post.get_title(), flickr_post.get_description(), flickr_post.get_thumbnail(), flickr_post.get_place(), flickr_post.get_author(), flickr_post.get_experience_date())
 
         return (flickr_post_doc_id, flickr_details_doc_id)
 
-    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id):
+    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id, date_visit : date):
         """
         the Post node should have the attributes:
         - id
@@ -166,6 +166,7 @@ class FlickrPostFactory:
         ret = session.run(query, {"id": str(post_id), "title": title, "description": desc, "thumbnail" : thumbnail})
         session.close()
         result_summary = ret.consume()
+        UserFactory.user_visited_place(str(author_id), str(place_id), datetime_visit=Utils.convert_date_to_datetime(date_visit))
         return result_summary
 
     def load_post_from_flickr_post_id(flickr_post_id):

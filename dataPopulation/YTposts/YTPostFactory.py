@@ -14,6 +14,7 @@ from places.placeFactory import PlaceFactory
 from utilities.utils import Utils
 
 import logging
+from datetime import datetime, date
 
 
 def start_logger(logger_name):
@@ -137,11 +138,11 @@ class YTPostFactory:
         if place_modified_rows != 1:
             YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
 
-        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_place(), yt_post.get_author())
+        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_place(), yt_post.get_author(), yt_post.get_experience_date())
 
         return (yt_post_doc_id, yt_details_doc_id)
 
-    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id):
+    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id, date_visit : date):
         """
         the Post node should have the attributes:
         - id
@@ -163,6 +164,7 @@ class YTPostFactory:
         ret = session.run(query, {"id": str(post_id), "title": title, "description": desc, "thumbnail" : thumbnail})
         session.close()
         result_summary = ret.consume()
+        UserFactory.user_visited_place(str(author_id), str(place_id), datetime_visit=Utils.convert_date_to_datetime(date_visit))
         return result_summary
 
     def load_post_from_video_id(yt_video_id):
