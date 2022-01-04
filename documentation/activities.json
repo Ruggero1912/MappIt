@@ -2,7 +2,7 @@
     "activities" : [
     {
         "activity"  : "street photography",
-        "tags"      : ["street photography"],
+        "tags"      : ["street photography", "fotografia di strada"],
         "category": "photography"
     },
     {
@@ -12,12 +12,12 @@
     },
     {
         "activity"  : "sport photography",
-        "tags"      : ["sport photographer", "sport photography", "action photography"],
+        "tags"      : ["sport photographer", "sport photography", "action photography", "fotografia sportiva"],
         "category": "photography"
     },
     {
         "activity"  : "landscape photography",
-        "tags"      : ["landscape photographer", "landscape photography"],
+        "tags"      : ["landscape photographer", "landscape photography", "fotografia paesaggistica"],
         "category": "photography"
     },
     {
@@ -27,72 +27,67 @@
     },
     {
         "activity"  : "wildlife photography",
-        "tags"      : ["wildlife photography", "wildlife photographer"],
+        "tags"      : ["wildlife photography", "wildlife photographer", "fotografia naturalistica"],
         "category": "photography"
     },
     {
         "activity"  : "aerial photography",
-        "tags"      : ["drone", "aerial photography", "aerial photo", "aerial shots"],
+        "tags"      : ["drone", "aerial photography", "aerial photo", "aerial shots", "fotografia aerea", "aerofotografia"],
         "category": "photography"
     },
     {
         "activity"  : "astrophotography",
-        "tags"      : ["astrophotography", "astrophoto", "astroshoots", "astrophotographer"],
-        "category": "photography"
-    },
-    {
-        "activity"  : "macro photography",
-        "tags"      : ["macro photography", "macro shoots"],
+        "tags"      : ["astrophotography", "astrophoto", "astroshoots", "astrophotographer", "astro fotografia"],
         "category": "photography"
     },
     {
         "activity"  : "skiing",
-        "tags"      : ["skiing", "ski", "snow", "powderski", "skier", "freeski"],
+        "tags"      : ["skiing", "ski", "snow", "powderski", "skier", "freeski", "sci", "sciare", "sciatore"],
         "category": "sport"
     },
     {
         "activity"  : "surfing",
-        "tags"      : ["waves", "surfing", "surf", "surftrip", "surfer", "surfboard", "surf culture"],
+        "tags"      : ["waves", "surfing", "surf", "surftrip", "surfer", "surfboard", "surf culture", "surfare", "surfista"],
         "category": "sport"
     },
     {
         "activity"  : "trekking",
-        "tags"      : ["trekking", "hiking"],
+        "tags"      : ["trekking", "hiking", "trail"],
         "category": "sport"
     },
     {
         "activity"  : "climbing",
-        "tags"      : ["climbing", "bouldering", "climb"],
+        "tags"      : ["climbing", "bouldering", "climb", "arrampicata", "scalare", "scalatore"],
         "category": "sport"
     },
     {
         "activity"  : "paragliding",
-        "tags"      : ["paragliding", "paragliders", "paraglide"],
+        "tags"      : ["paragliding", "paragliders", "paraglide", "parapendio"],
         "category": "sport"
     },
     {
         "activity"  : "canoeing",
-        "tags"      : ["canoeing","canoe"],
+        "tags"      : ["canoeing","canoe", "canoa", "canottaggio", "kayak"],
         "category": "sport"
     },
     {
         "activity"  : "cycling",
-        "tags"      : ["cycling","bike","mtb","cyclist","bicycle","mountainbike"],
+        "tags"      : ["cycling","bike","mtb","cyclist","bicycle","mountainbike", "bici", "bicicletta"],
         "category": "sport"
     },
     {
         "activity"  : "running",
-        "tags"      : ["running","run","runners","marathon"],
+        "tags"      : ["running","run","runners","marathon", "maratona", "corsa", "footing"],
         "category": "sport"
     },
     {
         "activity"  : "triathlon",
-        "tags"      : ["triatlon", "triathletes"],
+        "tags"      : ["triatlon", "triathletes", "triatleta"],
         "category": "sport"
     },
     {
         "activity"  : "fishing",
-        "tags"      : ["fishing", "fisherman"],
+        "tags"      : ["fishing", "fisherman", "pesca", "pescatore"],
         "category": "sport"
     }
     ]
