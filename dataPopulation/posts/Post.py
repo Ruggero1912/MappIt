@@ -29,6 +29,7 @@ class Post:
 
     KEY_ID              = os.getenv("POST_ID_KEY")
     KEY_AUTHOR          = os.getenv("POST_AUTHOR_KEY")
+    KEY_PLACE           = os.getenv("POST_PLACE_KEY")
     KEY_TITLE           = os.getenv("POST_TITLE_KEY")
     KEY_DESC            = os.getenv("POST_DESCRIPTION_KEY")
     KEY_THUMBNAIL       = os.getenv("POST_THUMBNAIL_KEY")
@@ -40,7 +41,7 @@ class Post:
 
     DICT_IGNORED_ATTRIBUTES = []
 
-    def __init__(self, author_id, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
+    def __init__(self, author_id, place_id, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
         setattr(self, Post.KEY_TITLE            , title         if title        is not None else Post.fake.sentence(nb_words=4)        ) #short sentence as fake title
         setattr(self, Post.KEY_DESC             , description   if description  is not None else Post.fake.paragraph()                 )
 
@@ -56,6 +57,7 @@ class Post:
 
         #MANDATORY PARAMETERS:
         setattr(self, Post.KEY_AUTHOR           , author_id     )
+        setattr(self, Post.KEY_PLACE            , place_id      )
 
         
     def determine_activity(self):
@@ -72,6 +74,11 @@ class Post:
                     return act_name
 
         return Post.DEFAULT_ACTIVITY
+
+    def get_activity(self):
+        activity_name = getattr(self, Post.KEY_ACTIVITY)
+        assert isinstance(activity_name,str)
+        return activity_name
 
     def get_title(self):
         title = getattr(self, Post.KEY_TITLE)
@@ -114,6 +121,15 @@ class Post:
             experience_date = parser.parse(experience_date).date()
         return experience_date
 
+    def get_thumbnail(self) -> str:
+        return getattr(self, Post.KEY_THUMBNAIL, None)
+
+    def get_author(self) -> str:
+        return getattr(self, Post.KEY_AUTHOR)
+    
+    def get_place(self) -> str:
+        return getattr(self, Post.KEY_PLACE)
+
     def get_dict(self) -> dict:
         ret_dict = self.__dict__
 
@@ -126,6 +142,6 @@ class Post:
 
         exp_date = ret_dict[Post.KEY_EXPERIENCE_DATE]
         assert isinstance(exp_date, date)
-        ret_dict[Post.KEY_EXPERIENCE_DATE] = datetime(exp_date.year, exp_date.month, exp_date.day) #.isoformat()
+        ret_dict[Post.KEY_EXPERIENCE_DATE] = Utils.convert_date_to_datetime(exp_date) #datetime(exp_date.year, exp_date.month, exp_date.day)
 
         return ret_dict

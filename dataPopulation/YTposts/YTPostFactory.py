@@ -1,13 +1,20 @@
 import json
 import pymongo
 
+from neo4j import (
+    GraphDatabase,
+    WRITE_ACCESS,
+)
+
 from YTposts.YTClient import YTClient
 from YTposts.YTPost import YTPost
 from users.userFactory import UserFactory
+from places.placeFactory import PlaceFactory
 
 from utilities.utils import Utils
 
 import logging
+from datetime import datetime, date
 
 
 def start_logger(logger_name):
@@ -33,50 +40,22 @@ class YTPostFactory:
     POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
     YT_DETAILS_COLLECTION_NAME  = Utils.load_config("COLLECTION_NAME_YT_DETAILS")
 
+    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
+    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
+    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
+    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
+    NEO4J_POST_LABEL    = Utils.load_config("NEO4J_POST_LABEL")
+    NEO4J_USER_LABEL    = Utils.load_config("NEO4J_USER_LABEL")
+    NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
+    NEO4J_RELATION_POST_PLACE = Utils.load_config("NEO4J_RELATION_POST_PLACE")
+    NEO4J_RELATION_POST_USER = Utils.load_config("NEO4J_RELATION_POST_USER")
+
+    neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
+
     POSTS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     YT_DETAILS_COLLECTION   = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][YT_DETAILS_COLLECTION_NAME]
-
-    @DeprecationWarning
-    def posts_in_given_place_iterative_queries(place_name, place_lon, place_lat, activities : list):
-        print( """
-        do not use this method, use 'posts_in_given_place' instead
-        """ ) 
-        return False
-        for activity in activities:
-            assert isinstance(activity, dict)
-            activity_name = activity[YTPostFactory.ACTIVITY_NAME_KEY]
-            activity_category = activity[YTPostFactory.ACTIVITY_CATEGORY_KEY]
-            activity_tags = activity[YTPostFactory.ACTIVITY_TAG_KEY]
-
-            for activity_tag in activity_tags:
-                #query YT
-                yt_videos = YTClient.youtube_search_query(place_name=place_name, activity_tag=activity_tag, lon=place_lon, lat=place_lat)
-
-                
-                for yt_video in yt_videos:
-                    
-                    #retrieve useful infos for the post
-                    yt_infos      = {
-                        "title"             : yt_video['snippet']['title'],
-                        "desc"              : yt_video['snippet']['description'],
-                        "thumbnail"         : yt_video['snippet']['thumbnails']['medium']['url'],    #320 x 180px
-                        "publish_date"      : yt_video['snippet']['publishedAt'],
-                        "channel_id"        : yt_video['snippet']['channelId'],
-                        "channel_name"      : yt_video['snippet']['channelTitle']
-                    }
-                    #TODO: 
-                    # - the date attribute (the one which states when the experience took place) will be empty if we do not execute another API call to YT to obtain this info (but we do not have enough credits)
-                    # - tags : what should it contain? the activity_tag that was used to find this video? if it is found more than with only one query (and so with different tags), the other should be added? 
-                    # - determine the id of the activity for this post
-                    # - the thumbnail for the video which key should have? is it useful (I think that could be useful to use it as preview during posts listing)
-                    # - the YT video link which key should have? 
-                    # - all the other YT infos should be stored? in case, where? inside an attribute 'yt'? or in a different collection to prevent the document to become too big?
-                    author_id = UserFactory.get_author_id_from_YTchannel(channel_id=yt_infos["channel_id"], channel_name=yt_infos["channel_name"])
-                    #TODO: store_in_mongo method
-                    store_in_mongo(details=yt_infos, yt_all_details=yt_video)
-                    pass
     
-    def posts_in_given_place(place_name, place_lon, place_lat):
+    def posts_in_given_place(place_name, place_lon, place_lat, place_id):
 
         yt_videos = YTClient.youtube_search_query(place_name=place_name, lon=place_lon, lat=place_lat)
 
@@ -99,21 +78,25 @@ class YTPostFactory:
 
             yt_video_full_details = YTClient.youtube_video_details(video_id=yt_video_id)
 
-            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details)
+            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id)
 
             YTPostFactory.store_in_persistent_db(yt_post=yt_post, all_yt_details=yt_video_full_details)
+
+            #here we should update the place document fits
+            PlaceFactory.add_activity_to_fits(place_id=place_id, activity_name=yt_post.get_activity())
+            
             
             posts.append(yt_post)
         
         return posts
 
-    def parse_post_from_details(yt_video_full_details : dict) -> str:
+    def parse_post_from_details(yt_video_full_details : dict, place_id : str) -> YTPost:
         """
         receives a dict with the yt video details and crafts the post starting from them
         - the activity category can be determined by the YTPost constructor
         - the author is loaded by 'UserFactory.get_author_id_from_YTchannel' that is called inside this method
         :param yt_video_full_details dict
-        :return the _id of the created post
+        :return the YTPost object of the created post (to be stored in the database still)
         """
         channel_id = YTPostFactory.get_channelId_yt_resp(yt_video_full_details)
         channel_name=YTPostFactory.get_channelName_yt_resp(yt_video_full_details)
@@ -130,7 +113,7 @@ class YTPostFactory:
         #we will not specify pics_array, activity and experience date
         yt_post=YTPost(author_id=author_id  , yt_video_id=yt_video_id, yt_channel_id=channel_id ,
                        title=title          , description=description, post_date=yt_post_date   ,
-                       tags_array=yt_tags   , thumbnail=yt_thumb_link
+                       tags_array=yt_tags   , thumbnail=yt_thumb_link, place_id=place_id
         ) 
         return yt_post
 
@@ -145,7 +128,44 @@ class YTPostFactory:
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
 
+        #we add the post_id to posts fields of User and Place Documents
+
+        user_modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        if user_modified_rows != 1:
+            YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the User posts field, modified_rows = " + str(user_modified_rows))
+
+        place_modified_rows = PlaceFactory.add_post_id_to_post_array( yt_post.get_place(), yt_post_doc_id)
+        if place_modified_rows != 1:
+            YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
+
+        YTPostFactory.store_in_neo(yt_post_doc_id, yt_post.get_title(), yt_post.get_description(), yt_post.get_thumbnail(), yt_post.get_place(), yt_post.get_author(), yt_post.get_experience_date())
+
         return (yt_post_doc_id, yt_details_doc_id)
+
+    def store_in_neo(post_id, title, desc, thumbnail, place_id, author_id, date_visit : date):
+        """
+        the Post node should have the attributes:
+        - id
+        - title
+        - description   (just an excerpt)
+        - thumbnail
+        We have to create the relationship between the Post node and the Place node (relation "LOCATION")
+        We have to create the relationship between the Post node and the User node (relation "AUTHOR")
+        """
+        desc = desc[:75]    #first 75 chars of the description
+        session = YTPostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        
+        query = """ MATCH (u:"""+YTPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+str(author_id)+"""')
+                    MATCH (p:"""+YTPostFactory.NEO4J_PLACE_LABEL+""" WHERE p.id = '"""+str(place_id)+"""')
+                    MERGE (a:"""+YTPostFactory.NEO4J_POST_LABEL+""" {id: $id, title: $title, description: $description, thumbnail: $thumbnail})
+                    CREATE (u)-[:"""+YTPostFactory.NEO4J_RELATION_POST_USER+"""]->(a)
+                    CREATE (a)-[:"""+YTPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
+                """
+        ret = session.run(query, {"id": str(post_id), "title": title, "description": desc, "thumbnail" : thumbnail})
+        session.close()
+        result_summary = ret.consume()
+        UserFactory.user_visited_place(str(author_id), str(place_id), datetime_visit=Utils.convert_date_to_datetime(date_visit))
+        return result_summary
 
     def load_post_from_video_id(yt_video_id):
         """

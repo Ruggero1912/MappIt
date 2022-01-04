@@ -24,6 +24,7 @@ class User:
     KEY_PASSWORD        = os.getenv("USER_PASSWORD_KEY")
     KEY_ROLE            = os.getenv("USER_ROLE_KEY")
     KEY_PROFILE_PIC     = os.getenv("USER_PROFILE_PIC_KEY")
+    KEY_POST_ARRAY      = os.getenv("USER_POST_ARRAY_KEY")
 
     DEFAULT_PROFILE_PIC = os.getenv("USER_DEFAULT_PROFILE_PIC")
     DEFAULT_HASHED_PWD  = os.getenv("USER_DEFAULT_HASHED_PWD")
@@ -31,7 +32,7 @@ class User:
 
     fake                = Utils.fake
 
-    def __init__(self, username=None, name=None, surname=None, mail=None, profile_pic=None) -> None:
+    def __init__(self, username=None, name=None, surname=None, mail=None, profile_pic=None, post_array=[]) -> None:
         """
         generates a random user object using given parameter if any, or the faker generator
         """
@@ -45,6 +46,7 @@ class User:
         setattr(self, User.KEY_PASSWORD    , User.DEFAULT_HASHED_PWD                                                    )
         setattr(self, User.KEY_ROLE        , User.DEFAULT_USER_ROLE                                                     )
         setattr(self, User.KEY_PROFILE_PIC , profile_pic if profile_pic is not None else User.DEFAULT_PROFILE_PIC       )
+        setattr(self, User.KEY_POST_ARRAY  , post_array                                                                 )
 
     def get_dict(self) -> dict:
         ret_dict = self.__dict__
@@ -55,3 +57,15 @@ class User:
 
     def get_birth_date(self):
         return getattr(self, User.KEY_BIRTH_DATE)
+
+    def set_id(self, id : str):
+        if self.get_id() == None:
+            setattr(self, User.KEY_ID, id)
+        return self.get_id()
+
+    def get_id(self):
+        return getattr(self, User.KEY_ID, None)
+
+    def get_username(self):
+        return getattr(self, User.KEY_USERNAME, None)
+        
