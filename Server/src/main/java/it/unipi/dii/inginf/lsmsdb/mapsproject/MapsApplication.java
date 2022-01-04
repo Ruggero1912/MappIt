@@ -67,12 +67,14 @@ public class MapsApplication {
 		System.out.println(inserted_post);
 		*/
 
+		/*
 		//TEST FOR NEW FLICKR POST
 		SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 		Date d = new Date(System.currentTimeMillis());
-		FlickrPost newPost = new FlickrPost("mongo_id", "author", "authorID", "TEST_NEW_FLICKR_POST", d, "descr", null, null, null, null, Arrays.asList("img_link_1","img_link_2"), Arrays.asList("trekking","aerialphotography"));
+		FlickrPost newPost = new FlickrPost("mongo_id", "author", "authorID", "TEST_NEW_FLICKR_POST", d, "descr", Arrays.asList("img_link_1","img_link_2"), Arrays.asList("trekking","aerialphotography"));
 		FlickrPost inserted_post = PostService.createNewFlickrPost(newPost);
 		System.out.println(inserted_post);
+		*/
 
 	}
 }
