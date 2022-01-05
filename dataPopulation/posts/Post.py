@@ -29,7 +29,9 @@ class Post:
 
     KEY_ID              = os.getenv("POST_ID_KEY")
     KEY_AUTHOR          = os.getenv("POST_AUTHOR_KEY")
+    KEY_AUTHOR_USERNAME = os.getenv("POST_AUTHOR_USERNAME_KEY")
     KEY_PLACE           = os.getenv("POST_PLACE_KEY")
+    KEY_PLACE_NAME      = os.getenv("POST_PLACE_NAME_KEY")
     KEY_TITLE           = os.getenv("POST_TITLE_KEY")
     KEY_DESC            = os.getenv("POST_DESCRIPTION_KEY")
     KEY_THUMBNAIL       = os.getenv("POST_THUMBNAIL_KEY")
@@ -38,10 +40,11 @@ class Post:
     KEY_EXPERIENCE_DATE = os.getenv("POST_EXPERIENCE_DATE_KEY")
     KEY_ACTIVITY        = os.getenv("POST_ACTIVITY_KEY")
     KEY_TAGS            = os.getenv("POST_TAGS_KEY")
+    KEY_LIKES_COUNTER   = os.getenv("POST_LIKES_COUNTER_KEY")
 
     DICT_IGNORED_ATTRIBUTES = []
 
-    def __init__(self, author_id, place_id, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
+    def __init__(self, author_id, place_id, author_username : str, place_name : str, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
         setattr(self, Post.KEY_TITLE            , title         if title        is not None else Post.fake.sentence(nb_words=4)        ) #short sentence as fake title
         setattr(self, Post.KEY_DESC             , description   if description  is not None else Post.fake.paragraph()                 )
 
@@ -53,11 +56,16 @@ class Post:
         setattr(self, Post.KEY_POST_DATE        , post_date     if post_date    is not None else datetime.now()                        )
         post_date = self.get_post_datetime().date()
         setattr(self, Post.KEY_EXPERIENCE_DATE  , exp_date      if exp_date     is not None else Post.fake.date_between(end_date=post_date, start_date=(post_date - timedelta(days=365*Post.MAX_YEARS_BETWEEN_EXP_AND_POST)))                      )
+
+        #empty params:
+        setattr(self, Post.KEY_LIKES_COUNTER    ,   0)
         
 
         #MANDATORY PARAMETERS:
         setattr(self, Post.KEY_AUTHOR           , author_id     )
+        setattr(self, Post.KEY_AUTHOR_USERNAME  , author_username)
         setattr(self, Post.KEY_PLACE            , place_id      )
+        setattr(self, Post.KEY_PLACE_NAME       , place_name    )
 
         
     def determine_activity(self):

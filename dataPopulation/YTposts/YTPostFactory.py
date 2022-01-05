@@ -78,7 +78,7 @@ class YTPostFactory:
 
             yt_video_full_details = YTClient.youtube_video_details(video_id=yt_video_id)
 
-            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id)
+            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id, place_name)
 
             YTPostFactory.store_in_persistent_db(yt_post=yt_post, all_yt_details=yt_video_full_details)
 
@@ -90,7 +90,7 @@ class YTPostFactory:
         
         return posts
 
-    def parse_post_from_details(yt_video_full_details : dict, place_id : str) -> YTPost:
+    def parse_post_from_details(yt_video_full_details : dict, place_id : str, place_name : str) -> YTPost:
         """
         receives a dict with the yt video details and crafts the post starting from them
         - the activity category can be determined by the YTPost constructor
@@ -107,13 +107,16 @@ class YTPostFactory:
         yt_tags     = YTPostFactory.get_tags_yt_resp(yt_video_full_details)
         yt_thumb_link = YTPostFactory.get_thumb_link_yt_resp(yt_video_full_details)
 
-        author_id = UserFactory.get_author_id_from_YTchannel(channel_id=channel_id,
+        author_obj = UserFactory.get_author_obj_from_YTchannel(channel_id=channel_id,
                                  channel_name=channel_name)
+        author_id = author_obj.get_id()
+        author_username = author_obj.get_username()
 
         #we will not specify pics_array, activity and experience date
         yt_post=YTPost(author_id=author_id  , yt_video_id=yt_video_id, yt_channel_id=channel_id ,
                        title=title          , description=description, post_date=yt_post_date   ,
-                       tags_array=yt_tags   , thumbnail=yt_thumb_link, place_id=place_id
+                       tags_array=yt_tags   , thumbnail=yt_thumb_link, place_id=place_id        ,
+                       author_username=author_username, place_name=place_name
         ) 
         return yt_post
 
