@@ -299,8 +299,9 @@ class UserFactory:
                     MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_FAVOURITES_PLACE+""" {datetime: $datetime}]->(p)
                 """
         ret = session.run(query, {"datetime" : datetime_fav})
-        session.close()
         result_summary = ret.consume()
+        session.close()
+        PlaceFactory.update_favourites_counter(place_id=place_id, num=1)
         return result_summary
 
     def generate_follows(user_id : str, how_many : int = 10):
