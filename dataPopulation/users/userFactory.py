@@ -274,8 +274,10 @@ class UserFactory:
                     MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_LIKES_POST+""" {datetime: $datetime}]->(p)
                 """
         ret = session.run(query, {"datetime" : datetime_like})
-        session.close()
         result_summary = ret.consume()
+        session.close()
+        #update the mongo redundancy likes counter
+        PostFactory.update_likes_counter(post_id=post_id, num=1) 
         return result_summary
 
     def user_adds_place_to_favourites(user_id : str, place_id : str, datetime_fav : datetime = datetime.now()):

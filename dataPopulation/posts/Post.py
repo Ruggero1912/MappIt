@@ -40,6 +40,7 @@ class Post:
     KEY_EXPERIENCE_DATE = os.getenv("POST_EXPERIENCE_DATE_KEY")
     KEY_ACTIVITY        = os.getenv("POST_ACTIVITY_KEY")
     KEY_TAGS            = os.getenv("POST_TAGS_KEY")
+    KEY_LIKES_COUNTER   = os.getenv("POST_LIKES_COUNTER_KEY")
 
     DICT_IGNORED_ATTRIBUTES = []
 
@@ -55,6 +56,9 @@ class Post:
         setattr(self, Post.KEY_POST_DATE        , post_date     if post_date    is not None else datetime.now()                        )
         post_date = self.get_post_datetime().date()
         setattr(self, Post.KEY_EXPERIENCE_DATE  , exp_date      if exp_date     is not None else Post.fake.date_between(end_date=post_date, start_date=(post_date - timedelta(days=365*Post.MAX_YEARS_BETWEEN_EXP_AND_POST)))                      )
+
+        #empty params:
+        setattr(self, Post.KEY_LIKES_COUNTER    ,   0)
         
 
         #MANDATORY PARAMETERS:
