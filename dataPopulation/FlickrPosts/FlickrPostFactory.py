@@ -69,7 +69,7 @@ class FlickrPostFactory:
                 flickr_photo_details = FlickrClient.photos_getInfo(flickr_photo_id)
 
                 #parse the flickr-origin post from the json response
-                flickr_post = FlickrPostFactory.parse_post_from_details(flickr_photo_details, place_id)
+                flickr_post = FlickrPostFactory.parse_post_from_details(flickr_photo_details, place_id, place_name)
 
                 #store the post
                 FlickrPostFactory.store_in_persistent_db(flickr_post=flickr_post, all_flickr_details=flickr_photo_details)
@@ -82,7 +82,7 @@ class FlickrPostFactory:
         #return the list of creatd posts
         return posts
 
-    def parse_post_from_details(flickr_post_full_details : dict, place_id : str) -> FlickrPost:
+    def parse_post_from_details(flickr_post_full_details : dict, place_id : str, place_name : str) -> FlickrPost:
         """
         receives a dict with the FlickrPost details and crafts the post starting from them
         - the activity category can be determined by the FlickrPost constructor
@@ -107,16 +107,17 @@ class FlickrPostFactory:
 
         #NOTE: at the moment the comments are ignored for anything, included category detection
 
-        author_id = UserFactory.get_author_id_from_flickr_account_id(flickr_author_id, flickr_author_username, flickr_realname=flickr_author_realname)
-
-        #FlickrPostFactory.LOGGER.debug("pic link: {link}".format(link=flickr_pic_link))
+        author_obj = UserFactory.get_author_obj_from_flickr_account_id(flickr_author_id, flickr_author_username, flickr_realname=flickr_author_realname)
+        author_id = author_obj.get_id()
+        author_username = author_obj.get_username()
 
         #we specify everything to the constructor except for the activity, that will be determined by the script
-        flickr_post = FlickrPost(author_id=author_id    ,  place_id=place_id, title=flickr_title      ,   description=flickr_description, post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array, 
-        pics_array=[flickr_pic_link], thumbnail=flickr_thumb_link, flickr_post_id=flickr_post_id)
+        flickr_post = FlickrPost(author_id=author_id    ,  place_id=place_id, title=flickr_title      ,   description=flickr_description, 
+                                post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array, 
+                                pics_array=[flickr_pic_link], thumbnail=flickr_thumb_link, flickr_post_id=flickr_post_id    ,
+                                place_name=place_name,      author_username=author_username)
 
         #FlickrPostFactory.LOGGER.debug("pics_array: {pics_arr}".format(pics_arr=flickr_post.get_pics_array()))
-
         return flickr_post
 
     def store_in_persistent_db(flickr_post : FlickrPost, all_flickr_details : dict):
