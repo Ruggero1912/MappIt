@@ -52,7 +52,7 @@
     },
     {
         "activity"  : "trekking",
-        "tags"      : ["trekking", "hiking", "trail"],
+        "tags"      : ["trekking", "hiking", "trail", "esplorazione", "escursione", "escursionisti"],
         "category": "sport"
     },
     {
@@ -88,6 +88,11 @@
     {
         "activity"  : "fishing",
         "tags"      : ["fishing", "fisherman", "pesca", "pescatore"],
+        "category": "sport"
+    },
+    {
+        "activity"  : "archeology",
+        "tags"      : ["archeology", "archeologist", "archeoreporter", "acropoli", "archeologia", "archeologo", "scavo archeologico"],
         "category": "sport"
     }
     ]
