@@ -63,6 +63,8 @@ public class UserService {
         }
 
         User insertedUser = um.storeUser(newRegistrationUser);
+        // TODO: here it should call the userSocialManager to store the informations in Neo4j
+        // we should also handle the case in which the insert in mongo or neo throws an error (we should revert the changes on the other db / log the error to file)
         return insertedUser;
     }
 

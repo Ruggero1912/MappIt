@@ -32,5 +32,27 @@ public class PlaceController {
         return PlaceService.getPlacesGivenCoordinateAndActivity(coordinate, activity);
     }
 
+    // suggested places for the current user
 
+    // popular places in a given radius (nearby or near to a given point) 
+
+    // your favourites places
+
+    // places that are favourites of a given user (it should receive the id of the user)
+
+    // most popular places
+
+    // most popular places for given category
+
+    // places that you visited
+
+    // places visited by a given user
+
+    // add to favourite a place (wants the id of the place)
+
+    // add to visited a place (wants the id of the pleace)
+
+    // remove from favourite a place (wants the id of the place)
+
+    // remove from visited a place (wants the id of the pleace)
 }
