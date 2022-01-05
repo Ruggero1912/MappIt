@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,11 @@ public class UserServiceTest {
     void GIVEN_register_WHEN_null_RegistrationUser_is_passed_THEN_return_null(){
         RegistrationUser regUsr = mock(RegistrationUser.class);
         // regUsr is a mock object with all fields set to null, so the register method must return null as well
-        assertNull(UserService.register(regUsr));
+        try {
+            assertNull(UserService.register(regUsr));
+        } catch(DatabaseUnavailableException e){
+            e.printStackTrace();
+        }
     }
 
     @DisplayName("Test UserService.checkPassword with empty or wrong password")

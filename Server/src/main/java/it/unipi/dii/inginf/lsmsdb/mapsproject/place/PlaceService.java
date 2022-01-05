@@ -20,6 +20,7 @@ public class PlaceService {
         return um.getPlaceFromId(id);
     }
 
+
     public static List<Place> getPlacesGivenCoordinate(Coordinate coordinate) {
         //...
         return null;

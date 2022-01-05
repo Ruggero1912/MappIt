@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection;
 
+import com.mongodb.client.MongoCollection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import org.neo4j.driver.*;
 
@@ -9,13 +10,17 @@ public class Neo4jConnection implements AutoCloseable{
     private static final String Neo4jURI = PropertyPicker.getProperty(PropertyPicker.Neo4jURI);
     private final String Neo4jUsername = PropertyPicker.getProperty(PropertyPicker.Neo4jUsername);
     private final String Neo4jPassword = PropertyPicker.getProperty(PropertyPicker.Neo4jPassword);
-    private final Driver driver;
+    private static Driver driver;
 
     public Neo4jConnection() {
         driver = GraphDatabase.driver(Neo4jURI, AuthTokens.basic( Neo4jUsername, Neo4jPassword ));
     }
 
-    public void neo4jFirstTest( final String message )
+    public static Driver getDriver() {
+        return driver;
+    }
+
+    /*public void neo4jFirstTest(final String message )
     {
         try ( Session session = driver.session() )
         {
@@ -29,7 +34,7 @@ public class Neo4jConnection implements AutoCloseable{
             } );
             System.out.println( greeting );
         }
-    }
+    }*/
 
     @Override
     public void close() throws Exception {
