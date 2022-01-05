@@ -251,8 +251,9 @@ class UserFactory:
                     MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_FOLLOWS_USER+""" {datetime: $datetime}]->(f)
                 """
         ret = session.run(query, {"datetime" : datetime_follow})
-        session.close()
         result_summary = ret.consume()
+        session.close()
+        UserFactory.update_follower_counter(user_id=followed_id, num=1)
         return result_summary
 
     def user_likes_post(user_id : str, post_id : str, datetime_like : datetime = datetime.now()):
@@ -333,6 +334,18 @@ class UserFactory:
         for place_id in places_ids:
             UserFactory.user_visited_place(user_id=user_id, place_id=place_id)
         return
+
+    def update_follower_counter(user_id : str, num : int):
+        """
+        updates the follower counter of the given user (if the user_id corresponds to a user)
+        - num should be the a relative number
+        - adds num to the current value of the likes counter
+        - :returns the modified_count 
+        """
+        #the '$inc' operator creates the field if it does not exists,
+        # it increase the counter of the given 'num' quantity (can be positive or negative) 
+        ret = PostFactory.POSTS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : str(user_id)}, update={"$inc":{User.KEY_FOLLOWER_COUNTER : num}})
+        return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :
         """
