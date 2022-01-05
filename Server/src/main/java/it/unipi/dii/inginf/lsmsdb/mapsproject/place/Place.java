@@ -1,45 +1,50 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Place {
-    public enum PlaceType {WOODLAND, URBAN, MOUNTAIN, SEASIDE, MONUMENT, COUNTRYSIDE, ABANDONED}
 
-    private int id;
+    private String _id;
     private String name;
-    private List<String> alternativeNames;
-    List<Coordinate> coordinates;
-    private List<PlaceType> placeTypes;
-    private String houseNumber;
-    private String street;
-    private String countryCode;
-    private int postCode;
-    private String county;      //province
-    private String city;
-    private String district;    //fraction of the province
+    private List<Coordinate> coordinates;
+    private List<String> fits;
+    private List<Post> posts;
     private Image image;
 
-    public Place(int id, String name, List<Coordinate> coords, List<String> aliases, List<PlaceType> pTypes, Image img) {
-        this.id = id;
+    public Place(String id, String name, List<Coordinate> coords, Image img) {
+        this._id = id;
         this.name = name;
         this.coordinates = new ArrayList<Coordinate>();
         for(Coordinate c : coords){
             this.coordinates.add(c);
         }
-        this.alternativeNames = aliases;
-        this.placeTypes = pTypes;
         this.image = img;
     }
 
-    public int getId() {
-        return id;
+    public Place (Document doc){
+        this._id = doc.get("_id").toString();
+        this.name = doc.get("name").toString();
+        /*
+        this.coordinates = ?
+        this.fits = ?
+        this.posts = ?
+        */
+        this.image = new Image();
+        this.image.setPath(doc.get("image").toString());
     }
 
-    public void setId(int id) {
-        this.id = id;
+
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String id) {
+        this._id = id;
     }
 
     public String getName() {
@@ -50,36 +55,12 @@ public class Place {
         this.name = name;
     }
 
-    public List<String> getAlternativeNames() {
-        return this.alternativeNames;
-    }
-
-    public void setAlternativeNames(List<String> aliases) {
-        this.alternativeNames = aliases;
-    }
-
-    public void setPlaceTypes(List<PlaceType> pTypes) {
-        this.placeTypes = pTypes;
-    }
-
-    public List<PlaceType> getPlaceTypes() {
-        return this.placeTypes;
-    }
-
     public List<Coordinate> getCoordinates() {
         return this.coordinates;
     }
 
     public void addCoordinates(Coordinate c) {
         this.coordinates.add(c);
-    }
-
-    public String getAddress() {
-        return street;
-    }
-
-    public void setAddress(String street) {
-        this.street = street;
     }
 
     public Image getImagePath() {
@@ -93,23 +74,10 @@ public class Place {
     @Override
     public String toString() {
         String ret = "Place{" +
-                    "id=" + id +
+                    "id=" + _id +
                     ", name='" + name + '\'' +
-                    ", aliases='";
-                    if(this.alternativeNames != null)
-                        for (String an : this.alternativeNames) {
-                            ret+=an+", ";
-                        }
-                    ret+="'";
-                    if(this.placeTypes != null) {
-                        ret += " place types='";
-
-                        for (PlaceType pt : placeTypes) {
-                            ret += pt.toString() + ", ";
-                        }
-                    }
-                    ret+="' ";
-                    ret += "GeoLocation{ id=" + id;
+                    ", aliases='" +
+                    ", Coordinates{ ";
 
                     for(Coordinate c : this.coordinates){
                         ret += c.toString();

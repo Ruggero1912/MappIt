@@ -13,8 +13,8 @@ public class FlickrPost extends Post{
 
     private List<String> pics;
 
-    public FlickrPost(String id, String author, String authorID, String title, Date d, String des, Post.Season s, Post.Weather tw, Post.Weather sw, Post.Difficulty diff, List<String> imgs, List<String> tags) {
-        super(id, author, authorID, title, d, des, s, tw, sw, diff, tags);
+    public FlickrPost(String id, String author, String authorID, String title, Date d, String des, List<String> imgs, List<String> tags) {
+        super(id, author, authorID, title, d, des, tags);
         if(imgs!=null)
             this.pics = imgs;
         else

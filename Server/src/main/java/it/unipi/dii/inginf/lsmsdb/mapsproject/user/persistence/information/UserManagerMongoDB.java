@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 public class UserManagerMongoDB implements UserManager{
 
-    private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UserManagerMongoDB.class.getName());
 
     private static final UserManagerMongoDB obj = new UserManagerMongoDB(); //TODO
 
