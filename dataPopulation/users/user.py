@@ -25,6 +25,7 @@ class User:
     KEY_ROLE            = os.getenv("USER_ROLE_KEY")
     KEY_PROFILE_PIC     = os.getenv("USER_PROFILE_PIC_KEY")
     KEY_POST_ARRAY      = os.getenv("USER_POST_ARRAY_KEY")
+    KEY_FOLLOWER_COUNTER= os.getenv("USER_FOLLOWER_COUNTER")
 
     DEFAULT_PROFILE_PIC = os.getenv("USER_DEFAULT_PROFILE_PIC")
     DEFAULT_HASHED_PWD  = os.getenv("USER_DEFAULT_HASHED_PWD")
@@ -47,6 +48,8 @@ class User:
         setattr(self, User.KEY_ROLE        , User.DEFAULT_USER_ROLE                                                     )
         setattr(self, User.KEY_PROFILE_PIC , profile_pic if profile_pic is not None else User.DEFAULT_PROFILE_PIC       )
         setattr(self, User.KEY_POST_ARRAY  , post_array                                                                 )
+
+        setattr(self, User.KEY_FOLLOWER_COUNTER, 0)
 
     def get_dict(self) -> dict:
         ret_dict = self.__dict__

@@ -22,6 +22,7 @@ class PlaceFactory:
     PLACE_ID_KEY                    = Utils.load_config("PLACE_ID_KEY")
     PLACE_FITS_KEY                  = Utils.load_config("PLACE_FITS_KEY")
     PLACE_POST_ARRAY_KEY            = Utils.load_config("PLACE_POST_ARRAY_KEY")
+    PLACE_FAVOURITES_COUNTER_KEY    = Utils.load_config("PLACE_FAVOURITES_COUNTER_KEY")
 
     NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
     NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
@@ -53,6 +54,18 @@ class PlaceFactory:
         adds post_id related to a specific place into its post_array 
         """
         ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(place_id)}, update={'$addToSet' : {PlaceFactory.PLACE_POST_ARRAY_KEY : str(post_id)}})
+        return ret.modified_count
+
+    def update_favourites_counter(place_id : str, num : int):
+        """
+        updates the favourites counter of the given Place (if the place_id corresponds to a place)
+        - num should be the a relative number
+        - adds num to the current value of the favourites counter
+        - :returns the modified_count 
+        """
+        #the '$inc' operator creates the field if it does not exists,
+        # it increase the counter of the given 'num' quantity (can be positive or negative) 
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : str(place_id)}, update={"$inc":{PlaceFactory.PLACE_FAVOURITES_COUNTER_KEY : num}})
         return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :

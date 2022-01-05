@@ -52,25 +52,26 @@ class UserFactory:
 
     USERS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][USERS_COLLECTION_NAME]
 
-    def get_author_id_from_YTchannel(channel_id, channel_name):
+    def get_author_obj_from_YTchannel(channel_id, channel_name) -> User:
         """
-        return the id of an user associated to the given channel_id
+        return the User obj of an user associated to the given channel_id
         if a user associated with that channel_id does not exists, 
         create a user starting from the given channel_name and returns its user _id
         """
         associated_user = UserFactory.find_user_by_YT_channel_id(channel_id)
         if associated_user is None:
             #if there is no user associated with that channel, we have to create it
-            new_user_id = UserFactory.create_user_by_username(username=channel_name)
+            new_user = UserFactory.create_user_by_username(username=channel_name)
+            new_user_id = new_user.get_id()
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_channel(user_id=new_user_id, channel_id=channel_id)
-            return new_user_id
+            return new_user #new_user_id
         else:
-            return associated_user[UserFactory.USER_ID_KEY]
+            return associated_user #associated_user[UserFactory.USER_ID_KEY]
 
-    def get_author_id_from_flickr_account_id(flickr_account_id, flickr_username, flickr_realname = None):
+    def get_author_obj_from_flickr_account_id(flickr_account_id, flickr_username, flickr_realname = None) -> User:
         """
-        return the id of an user associated to the given flickr_account_id
+        return the User obj of an user associated to the given flickr_account_id
         if a user associated with that flickr_account_id does not exists, 
         create a user starting from the given flickr_username and returns its user _id
         """
@@ -88,19 +89,27 @@ class UserFactory:
                 else:
                     name = flickr_realname
 
-            new_user_id = UserFactory.create_user_by_username(username=flickr_username, name=name, surname=surname)
+            new_user = UserFactory.create_user_by_username(username=flickr_username, name=name, surname=surname)
+            new_user_id = new_user.get_id()
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_Flickr_account(user_id=new_user_id, flickr_account_id=flickr_account_id)
-            return new_user_id
+            return new_user #new_user_id
         else:
-            return associated_user[UserFactory.USER_ID_KEY]
+            return associated_user #associated_user[UserFactory.USER_ID_KEY]
 
-    def create_user_by_username(username, name=None, surname=None):
+    def find_user_by_user_id(user_id : str) -> dict:
+        """
+        returns the user doc associated to the given user_id if exists, else return None
+        """
+        user = UserFactory.USERS_COLLECTION.find_one(filter={UserFactory.USER_ID_KEY : str(user_id)})
+        return user
+
+    def create_user_by_username(username, name=None, surname=None) -> User:
         """
         :param username str 
         :return the user id 
         create an user with the given username
-        returns the _id of the created user
+        returns the user obj of the created user
         """
         user = User(username, name, surname)
         #here it should store it in the database
@@ -114,8 +123,8 @@ class UserFactory:
         if UserFactory.GENERATE_SOCIAL_RELATIONS:
             UserFactory.generate_social_relations_for_the_user(user_id)
 
-        #it should return the associated _id
-        return user_id
+        #it should return the associated User obj
+        return user
 
     def generate_social_relations_for_the_user(user_id : str):
         how_many_seed = random.randint(UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED, UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED * 3)
@@ -242,8 +251,9 @@ class UserFactory:
                     MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_FOLLOWS_USER+""" {datetime: $datetime}]->(f)
                 """
         ret = session.run(query, {"datetime" : datetime_follow})
-        session.close()
         result_summary = ret.consume()
+        session.close()
+        UserFactory.update_follower_counter(user_id=followed_id, num=1)
         return result_summary
 
     def user_likes_post(user_id : str, post_id : str, datetime_like : datetime = datetime.now()):
@@ -265,8 +275,10 @@ class UserFactory:
                     MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_LIKES_POST+""" {datetime: $datetime}]->(p)
                 """
         ret = session.run(query, {"datetime" : datetime_like})
-        session.close()
         result_summary = ret.consume()
+        session.close()
+        #update the mongo redundancy likes counter
+        PostFactory.update_likes_counter(post_id=post_id, num=1) 
         return result_summary
 
     def user_adds_place_to_favourites(user_id : str, place_id : str, datetime_fav : datetime = datetime.now()):
@@ -288,8 +300,9 @@ class UserFactory:
                     MERGE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_FAVOURITES_PLACE+""" {datetime: $datetime}]->(p)
                 """
         ret = session.run(query, {"datetime" : datetime_fav})
-        session.close()
         result_summary = ret.consume()
+        session.close()
+        PlaceFactory.update_favourites_counter(place_id=place_id, num=1)
         return result_summary
 
     def generate_follows(user_id : str, how_many : int = 10):
@@ -321,6 +334,18 @@ class UserFactory:
         for place_id in places_ids:
             UserFactory.user_visited_place(user_id=user_id, place_id=place_id)
         return
+
+    def update_follower_counter(user_id : str, num : int):
+        """
+        updates the follower counter of the given user (if the user_id corresponds to a user)
+        - num should be the a relative number
+        - adds num to the current value of the likes counter
+        - :returns the modified_count 
+        """
+        #the '$inc' operator creates the field if it does not exists,
+        # it increase the counter of the given 'num' quantity (can be positive or negative) 
+        ret = PostFactory.POSTS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : str(user_id)}, update={"$inc":{User.KEY_FOLLOWER_COUNTER : num}})
+        return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :
         """

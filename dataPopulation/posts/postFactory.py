@@ -2,12 +2,20 @@ from neo4j import (
     GraphDatabase,
     WRITE_ACCESS,
 )
+import pymongo
 
 from utilities.utils import Utils
+from posts.Post import Post
 
 class PostFactory:
 
     LOGGER                          = Utils.start_logger("PostFactory")
+
+    CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
+    DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
+    POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
+
+    POSTS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
 
     NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
     NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
@@ -20,6 +28,18 @@ class PostFactory:
     NEO4J_RELATION_POST_USER = Utils.load_config("NEO4J_RELATION_POST_USER")
 
     neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
+
+    def update_likes_counter(post_id : str, num : int):
+        """
+        updates the likes counter of the given post (if the post_id corresponds to a post)
+        - num should be the a relative number
+        - adds num to the current value of the likes counter
+        - :returns the modified_count 
+        """
+        #the '$inc' operator creates the field if it does not exists,
+        # it increase the counter of the given 'num' quantity (can be positive or negative) 
+        ret = PostFactory.POSTS_COLLECTION.update_one(filter={Post.KEY_ID : str(post_id)}, update={"$inc":{Post.KEY_LIKES_COUNTER : num}})
+        return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :
         """
