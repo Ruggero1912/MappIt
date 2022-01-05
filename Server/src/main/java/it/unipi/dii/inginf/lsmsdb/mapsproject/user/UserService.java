@@ -1,6 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
