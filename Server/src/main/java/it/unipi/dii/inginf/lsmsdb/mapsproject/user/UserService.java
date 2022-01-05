@@ -4,6 +4,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableExce
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -165,5 +166,84 @@ public class UserService {
         UserManager um = UserManagerFactory.getUserManager();
         boolean ret = um.changePassword(userID, newPassword);
         return ret;
+    }
+
+    /**
+     * returns the list of places that the specified user has added to its favourites
+     * @param user the user owner of the favourites list
+     * @return list of Places or null if the list is empty or if the user param is null
+     */
+    public static List<Place> getFavouritePlaces(User user){
+        if(user == null){
+            return null;
+        }
+        // TODO: implement this method
+        return null;
+    }
+    /**
+     * returns the list of places that the specified user has visited
+     * @param user the user owner of the favourites list
+     * @return list of Places or null if the list is empty or if the user param is null
+     */
+    public static List<Place> getVisitedPlaces(User user){
+        if(user == null){
+            return null;
+        }
+        // TODO: implement this method
+        return null;
+    }
+    /**
+     * adds the specified place to the favourite places of the specified user
+     * @param user the user owner of the favourites list
+     * @param place the place to add
+     * @return true if the place is correctly added, else false
+     */
+    public static boolean addPlaceToFavourites(User user, Place place){
+        if(user == null){
+            return false;
+        }
+        if(place == null){
+            return false;
+        }
+        // TODO: implement this method
+        // the timestamp of the add is handled by the manager?
+        // handle the case in which the relationship between the specified user and the specified place already exists
+        return false;
+    }
+    /**
+     * removes the specified place from the favourite places of the specified user
+     * @param user the user owner of the favourites list
+     * @param place the place to add
+     * @return true if the place is correctly removed, else false
+     */
+    public static boolean removePlaceFromFavourites(User user, Place place){
+        if(user == null){
+            return false;
+        }
+        if(place == null){
+            return false;
+        }
+        // TODO: implement this method
+        // handle the case in which the relationship between the specified user and the specified place does not exist
+        return false;
+    }
+    /**
+     * adds the place to the visited places of the specified user
+     * @param user the user owner of the visited list
+     * @param place the place to add
+     * @return true if the place is correctly added, else false
+     */
+    public static boolean addPlaceToVisited(User user, Place place, LocalDateTime timestampVisit){
+        if(user == null){
+            return false;
+        }
+        if(place == null){
+            return false;
+        }
+        if(timestampVisit == null){
+            timestampVisit = LocalDateTime.now();
+        }
+        // TODO: implement this method
+        return false;
     }
 }
