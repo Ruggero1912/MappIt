@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import org.bson.Document;
@@ -9,33 +10,48 @@ import java.util.List;
 
 public class Place {
 
+    public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "id");
+    public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "name");
+    public static final String KEY_FITS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "fits");
+    public static final String KEY_LOC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "loc");
+    public static final String KEY_LON = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "lon");
+    public static final String KEY_LAT = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "lat");
+    public static final String KEY_IMAGE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "image");
+    public static final String KEY_OSMID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "osmID");
+    public static final String KEY_POSTS_ARRAY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
+    public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "favouritesCounter");
+
+
+
     private String _id;
     private String name;
-    private List<Coordinate> coordinates;
+    private Coordinate coordinates;
     private List<String> fits;
-    private List<Post> posts;
+    private List<String> posts; // here we store the ids of the posts done by the user
     private Image image;
+    private String osmId;
+    private int favouritesCounter;
 
-    public Place(String id, String name, List<Coordinate> coords, Image img) {
+    public Place(String id, String name, Coordinate coords, Image img) {
         this._id = id;
         this.name = name;
-        this.coordinates = new ArrayList<Coordinate>();
-        for(Coordinate c : coords){
-            this.coordinates.add(c);
-        }
+        this.coordinates = coords;
         this.image = img;
     }
 
     public Place (Document doc){
-        this._id = doc.get("_id").toString();
-        this.name = doc.get("name").toString();
-        /*
-        this.coordinates = ?
-        this.fits = ?
-        this.posts = ?
-        */
+        this._id = doc.get(KEY_ID).toString();
+        this.name = doc.get(KEY_NAME).toString();
+        this.fits = (List<String>) doc.get(KEY_FITS, List.class);   // TODO: test it (does this cast works properly)
+        this.posts = (List<String>) doc.get(KEY_POSTS_ARRAY, List.class);
+        Document loc = doc.get(KEY_LOC, Document.class);
+        double lon = loc.getDouble(KEY_LON);
+        double lat = loc.getDouble(KEY_LAT);
+        this.coordinates = new Coordinate(lat, lon);
+        this.osmId = doc.getString(KEY_OSMID);
+        this.favouritesCounter = doc.getInteger(KEY_FAVOURITES);
         this.image = new Image();
-        this.image.setPath(doc.get("image").toString());
+        this.image.setPath(doc.get(KEY_IMAGE).toString());
     }
 
 
@@ -55,12 +71,12 @@ public class Place {
         this.name = name;
     }
 
-    public List<Coordinate> getCoordinates() {
+    public Coordinate getCoordinates() {
         return this.coordinates;
     }
 
-    public void addCoordinates(Coordinate c) {
-        this.coordinates.add(c);
+    public void setCoordinates(Coordinate c) {
+        this.coordinates = c;
     }
 
     public Image getImagePath() {
@@ -79,10 +95,7 @@ public class Place {
                     ", aliases='" +
                     ", Coordinates{ ";
 
-                    for(Coordinate c : this.coordinates){
-                        ret += c.toString();
-                        ret += " / ";
-                    }
+                    ret += coordinates.toString();
 
                     ret+='}';
 
