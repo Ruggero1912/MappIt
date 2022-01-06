@@ -23,7 +23,8 @@ public class PropertyPicker {
     public static final String Neo4jUsername = "persistence.db.neo4j.username";
     public static final String Neo4jPassword = "persistence.db.neo4j.password";
 
-    //public final static String userCollectionName = "persistence.db.mongo.collection.user.collectionname";
+    public static final String userCollection = "persistence.db.mongo.collection.user";
+    public final static String collectionName = "collectionName";
 
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -47,5 +48,9 @@ public class PropertyPicker {
         PropertyPicker p = new PropertyPicker();
         LOGGER.log(Level.FINEST, "getProperty on " + propertyName);
         return p.getPropertyPriv(propertyName);
+    }
+
+    public static String getCollectionPropertyKey(String collection, String attribute){
+        return getProperty(collection + "." + attribute);
     }
 }
