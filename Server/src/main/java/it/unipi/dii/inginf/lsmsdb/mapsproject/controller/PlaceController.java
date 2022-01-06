@@ -37,15 +37,8 @@ public class PlaceController {
         // check the validity of the given radius (in km)
         // parse the coordinates from lon, lat
         Coordinate coordinates = new Coordinate(lat, lon);
-        List<String> orderingMethods = new ArrayList<String>();
-        // TODO: the ordering methods array should be declared inside PlaceService
-        orderingMethods.add("distance");
-        orderingMethods.add("popularity");
-        if(! orderingMethods.contains(orderBy)){
-            // the case in which the user has specified an invalid ordering method
-            //we use the default ordering method
-            orderBy = "distance";
-        }
+
+        // the orderBy String content is checked by PlaceService
         if(activityFilter == "any"){
           return PlaceService.getPlacesInRadius(coordinates, radius, orderBy);
         }
