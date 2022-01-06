@@ -84,8 +84,8 @@ public class UserManagerMongoDB implements UserManager{
         try{
             userCollection.insertOne(userDoc);
             //add inserted object id to the document
-            String id = userDoc.getObjectId("_id").toString();
-            userDoc.append("_id", id);
+            String id = userDoc.getObjectId(IDKEY).toString();
+            userDoc.append(IDKEY, id);
             return new User(userDoc);
         } catch(Exception e){
             return null;

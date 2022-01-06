@@ -16,6 +16,9 @@ public class PropertyPicker {
     public static final String documentDBkey = "persistence.db.kind.information";
     public static final String documentDbMongoKey = "mongodb";
 
+    public static final String graphDBkey = "persistence.db.kind.social";
+    public static final String graphDbNeoKey = "neo4j";
+
     public static final String MongoURI = "persistence.db.mongo.URI";
     public static final String MongoDBName = "persistence.db.mongo.dbName";
 
