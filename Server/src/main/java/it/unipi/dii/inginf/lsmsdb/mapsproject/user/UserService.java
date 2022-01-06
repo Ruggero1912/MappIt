@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerNeo4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
@@ -178,8 +179,8 @@ public class UserService {
         if(user == null){
             return null;
         }
-        // TODO: implement this method
-        return null;
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        return usm.retrieveFavouritePlaces(user);
     }
     /**
      * returns the list of places that the specified user has visited
@@ -190,8 +191,8 @@ public class UserService {
         if(user == null){
             return null;
         }
-        // TODO: implement this method
-        return null;
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        return usm.retrieveVisitedPlaces(user);
     }
     /**
      * adds the specified place to the favourite places of the specified user
@@ -206,10 +207,12 @@ public class UserService {
         if(place == null){
             return false;
         }
-        // TODO: implement this method
-        // the timestamp of the add is handled by the manager?
-        // handle the case in which the relationship between the specified user and the specified place already exists
-        return false;
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        if(usm.checkAlreadyExistingRelationship(user, place, "favourite")){
+            LOGGER.log(Level.SEVERE, "Error during adding place to favourite: relationship already exist");
+            return false;
+        }
+        return usm.storeNewFavouritePlace(user, place);
     }
     /**
      * removes the specified place from the favourite places of the specified user
@@ -224,9 +227,12 @@ public class UserService {
         if(place == null){
             return false;
         }
-        // TODO: implement this method
-        // handle the case in which the relationship between the specified user and the specified place does not exist
-        return false;
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        if(!usm.checkAlreadyExistingRelationship(user, place, "favourite")){
+            LOGGER.log(Level.SEVERE, "Error during removing place from favourite: relationship does not exist");
+            return false;
+        }
+        return usm.deleteFavouritePlace(user, place);
     }
     /**
      * adds the place to the visited places of the specified user
@@ -244,7 +250,11 @@ public class UserService {
         if(timestampVisit == null){
             timestampVisit = LocalDateTime.now();
         }
-        // TODO: implement this method
-        return false;
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        if(usm.checkAlreadyExistingRelationship(user, place, "visited")){
+            LOGGER.log(Level.SEVERE, "Error during adding place to visited: relationship already exist");
+            return false;
+        }
+        return usm.storeNewVisitedPlace(user, place, timestampVisit);
     }
 }
