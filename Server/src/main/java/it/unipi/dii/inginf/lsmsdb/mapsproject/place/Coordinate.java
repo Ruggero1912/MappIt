@@ -1,5 +1,8 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 
+import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.model.geojson.Position;
+
 public class Coordinate {
 
     private double latitude;
@@ -24,6 +27,11 @@ public class Coordinate {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public Point toPoint(){
+        Position position = new Position(this.longitude, this.latitude);
+        return new Point(position);
     }
 
     @Override
