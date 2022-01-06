@@ -13,8 +13,8 @@ public class YtPost extends Post {
     private String videoId;
     private String ytThumbnail;
 
-    public YtPost(String id, String author, String authorID, String title, Date d, String des, Season s, Weather tw, Weather sw, Difficulty diff, String v_id, String thumb, List<String> tags) {
-        super(id, author, authorID, title, d, des, s, tw, sw, diff, tags);
+    public YtPost(String id, String author, String authorID, String title, Date d, String des, String v_id, String thumb, List<String> tags) {
+        super(id, author, authorID, title, d, des, tags);
         this.videoId = v_id;
         this.ytThumbnail = thumb;
     }
