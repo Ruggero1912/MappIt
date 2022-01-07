@@ -5,12 +5,16 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Coordinate;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.FlickrPost;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.YtPost;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.FileNotFoundException;
@@ -27,7 +31,7 @@ import java.util.List;
 public class MapsApplication {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		//SpringApplication.run(MapsApplication.class, args);
+		SpringApplication.run(MapsApplication.class, args);
 
 
 

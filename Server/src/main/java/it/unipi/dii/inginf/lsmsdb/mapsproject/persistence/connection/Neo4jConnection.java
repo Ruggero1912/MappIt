@@ -8,12 +8,18 @@ import static org.neo4j.driver.Values.parameters;
 
 public class Neo4jConnection implements AutoCloseable{
     private static final String Neo4jURI = PropertyPicker.getProperty(PropertyPicker.Neo4jURI);
-    private final String Neo4jUsername = PropertyPicker.getProperty(PropertyPicker.Neo4jUsername);
-    private final String Neo4jPassword = PropertyPicker.getProperty(PropertyPicker.Neo4jPassword);
+    private static final String Neo4jUsername = PropertyPicker.getProperty(PropertyPicker.Neo4jUsername);
+    private static final String Neo4jPassword = PropertyPicker.getProperty(PropertyPicker.Neo4jPassword);
+
+    private static final Neo4jConnection obj = new Neo4jConnection();
     private static Driver driver;
 
     public Neo4jConnection() {
         driver = GraphDatabase.driver(Neo4jURI, AuthTokens.basic( Neo4jUsername, Neo4jPassword ));
+    }
+
+    public static Neo4jConnection getObj(){
+        return obj;
     }
 
     public static Driver getDriver() {

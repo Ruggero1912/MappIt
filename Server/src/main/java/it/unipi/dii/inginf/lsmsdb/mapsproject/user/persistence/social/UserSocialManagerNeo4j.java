@@ -43,10 +43,13 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         String id = newUser.getId();
         String username = newUser.getUsername();
 
-        try (Session session = Neo4jConnection.getDriver().session()) {
+        Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
+
+        try (Session session = neo4jConnection.getDriver().session()) {
             session.writeTransaction((TransactionWork<User>) tx -> {
-                tx.run("CREATE (u:"+ USERLABEL +" { "+ IDKEY +": $id, "+ USERNAMEKEY +": $username })",
-                        parameters(IDKEY, id, USERNAMEKEY, username));
+
+                tx.run("CREATE (u:User { id: '61d3428101336eeafcb438e7', username: 'abc' })");
+                //tx.run("CREATE (u:"+ USERLABEL +" { "+ IDKEY +": '$id', "+ USERNAMEKEY +": '$username' })", parameters(IDKEY, id, USERNAMEKEY, username));
                 return newUser;
             });
         } catch (Neo4jException ne){
