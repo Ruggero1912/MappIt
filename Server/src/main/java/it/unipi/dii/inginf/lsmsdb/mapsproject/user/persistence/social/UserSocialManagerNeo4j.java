@@ -36,7 +36,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public User storeUser(User newUser) throws DatabaseConstraintViolation {
+    public User storeUser(User newUser) throws DatabaseConstraintViolation, Neo4jException {
 
         String id = newUser.getId();
         String username = newUser.getUsername();
@@ -63,7 +63,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             if (ne.code().equals("Neo.ClientError.Schema.ConstraintValidationFailed")){
                 throw new DatabaseConstraintViolation("A User node with passed id already exists");
             } else{
-                return null;
+                throw ne;
             }
         }
     }

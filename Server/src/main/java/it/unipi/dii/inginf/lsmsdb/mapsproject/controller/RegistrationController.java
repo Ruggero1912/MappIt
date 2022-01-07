@@ -15,13 +15,13 @@ public class RegistrationController {
     public ResponseEntity<?> registerNewUser(@RequestBody RegistrationUser newRegistrationUser) {
 
         // checks on username and password duplicates are done inside UserService.register()
-        User insertedUser = null;
+        User insertedUser;
 
         try{
             insertedUser = UserService.register(newRegistrationUser);
         } catch (Exception e){
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Registration not completed:" + e.getMessage());
         }
 
         //TODO: decide if combining some controllers

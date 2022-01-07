@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
+import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
@@ -80,14 +81,15 @@ public class UserService {
         }
 
         // try to add the new User on Neo4j
-        User insertedUserInNeo4j = null;
+        User insertedUserInNeo4j;
 
-        // try to insert, exception occurs if one constraint is violated
         try {
             insertedUserInNeo4j = usm.storeUser(insertedUserInMongo);
-        } catch (DatabaseConstraintViolation e) {
+        } catch (DatabaseConstraintViolation dcv) {
             LOGGER.log(Level.SEVERE, "Error during registration: Neo4j insertion failed due to constraint violation!");
             throw new DatabaseConstraintViolation("Neo4j constraint violation");
+        } catch (Neo4jException ne){
+            throw ne;
         }
 
         if(insertedUserInNeo4j == null){
