@@ -10,10 +10,7 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.Neo4jException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 import static org.neo4j.driver.Values.parameters;
@@ -46,16 +43,17 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
 
         try (Session session = neo4jConnection.getDriver().session()) {
-            session.writeTransaction((TransactionWork<User>) tx -> {
-
-                tx.run("CREATE (u:User { id: '61d3428101336eeafcb438e7', username: 'abc' })");
-                //tx.run("CREATE (u:"+ USERLABEL +" { "+ IDKEY +": '$id', "+ USERNAMEKEY +": '$username' })", parameters(IDKEY, id, USERNAMEKEY, username));
+            return session.writeTransaction((TransactionWork<User>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", id );
+                params.put( "username", username );
+                tx.run("CREATE (u:"+ USERLABEL +" { "+ IDKEY +": $id, "+ USERNAMEKEY +": $username})", params);
                 return newUser;
             });
         } catch (Neo4jException ne){
+            System.out.println(ne.getMessage());
             return null;
         }
-        return null;
     }
 
     @Override
