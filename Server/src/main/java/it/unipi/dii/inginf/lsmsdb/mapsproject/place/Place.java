@@ -14,13 +14,11 @@ public class Place {
     public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "name");
     public static final String KEY_FITS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "fits");
     public static final String KEY_LOC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "loc");
-    public static final String KEY_LON = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "lon");
-    public static final String KEY_LAT = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "lat");
     public static final String KEY_IMAGE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "image");
     public static final String KEY_OSMID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "osmID");
     public static final String KEY_POSTS_ARRAY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
     public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "favouritesCounter");
-
+    public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "coordinates");
 
 
     private String _id;
@@ -45,13 +43,14 @@ public class Place {
         this.fits = (List<String>) doc.get(KEY_FITS, List.class);   // TODO: test it (does this cast works properly)
         this.posts = (List<String>) doc.get(KEY_POSTS_ARRAY, List.class);
         Document loc = doc.get(KEY_LOC, Document.class);
-        double lon = loc.getDouble(KEY_LON);
-        double lat = loc.getDouble(KEY_LAT);
+        List<Double> coord = loc.getList(KEY_COORDINATES, Double.class);
+        double lon = coord.get(0);
+        double lat = coord.get(1);
         this.coordinates = new Coordinate(lat, lon);
         this.osmId = doc.getString(KEY_OSMID);
-        this.favouritesCounter = doc.getInteger(KEY_FAVOURITES);
+        this.favouritesCounter = doc.getInteger(KEY_FAVOURITES, 0);
         this.image = new Image();
-        this.image.setPath(doc.get(KEY_IMAGE).toString());
+        this.image.setPath(doc.getString(KEY_IMAGE));
     }
 
     //TODO: consider to create a PlacePreview class that keeps the only info available to neo4j (mongo id, name)
