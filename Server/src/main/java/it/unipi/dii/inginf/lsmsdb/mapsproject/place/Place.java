@@ -30,6 +30,12 @@ public class Place {
     private String osmId;
     private int favouritesCounter;
 
+    //TODO: consider to create a PlacePreview class that keeps the only info available to neo4j (mongo id, name)
+    public Place(String id, String placeName) {
+        this._id=id;
+        this.name=placeName;
+    }
+
     public Place(String id, String name, Coordinate coords, Image img) {
         this._id = id;
         this.name = name;
@@ -52,13 +58,6 @@ public class Place {
         this.image = new Image();
         this.image.setPath(doc.getString(KEY_IMAGE));
     }
-
-    //TODO: consider to create a PlacePreview class that keeps the only info available to neo4j (mongo id, name)
-    public Place(String id, String placeName) {
-        this._id=id;
-        this.name=placeName;
-    }
-
 
     public String getId() {
         return _id;
@@ -100,7 +99,8 @@ public class Place {
                     ", aliases='" +
                     ", Coordinates{ ";
 
-                    ret += coordinates.toString();
+                    if(this.coordinates!=null)
+                        ret += coordinates.toString();
 
                     ret+='}';
 
