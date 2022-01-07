@@ -3,7 +3,9 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.Neo4jException;
@@ -47,7 +49,6 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
         try (Session session = neo4jConnection.getDriver().session()) {
             return session.writeTransaction((TransactionWork<User>) tx -> {
-
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
                 params.put( "username", username );
@@ -76,8 +77,10 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
             favouritePlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
-                Result result = tx.run( "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_FAVOURITES_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +": $id RETURN pl",
-                        parameters(USER_ID_KEY, id) );
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", id );
+                String query = "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_FAVOURITES_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +"= $id RETURN pl as FavouritePlace";
+                Result result = tx.run(query,params);
                 ArrayList<Place> places = new ArrayList<>();
                 while(result.hasNext())
                 {
@@ -87,11 +90,12 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 }
                 return places;
             });
-        }catch (Exception e){
-            favouritePlaces = null;
-        }
 
-        return favouritePlaces;
+            return favouritePlaces;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -103,22 +107,26 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
             visitedPlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
-                Result result = tx.run( "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_VISITED_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +": $id RETURN pl",
-                        parameters(USER_ID_KEY, id) );
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", id );
+                String query = "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_VISITED_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +"= $id RETURN pl as VisitedPlace";
+                Result result = tx.run(query,params);
                 ArrayList<Place> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
-                    Place p = new Place(r.get(PLACE_ID_KEY).asString(), r.get(PLACE_NAME_KEY).asString());
+                    Value place=r.get("VisitedPlace");
+                    Place p = new Place(place.get(PLACE_ID_KEY).asString(), place.get(PLACE_NAME_KEY).asString());
                     places.add(p);
                 }
                 return places;
             });
-        }catch (Exception e){
-            visitedPlaces = null;
-        }
 
-        return visitedPlaces;
+            return visitedPlaces;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @Override

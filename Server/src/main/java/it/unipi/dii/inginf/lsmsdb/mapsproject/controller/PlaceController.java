@@ -66,7 +66,7 @@ public class PlaceController {
     // places that are favourites of a given user (it should receive the id of the user)
     @ApiOperation(value = "returns the list of favourite places for the specified user or for the current if no userId is specified")
     @GetMapping(value = "/places/favourites", produces = "application/json")
-    public List<Place> favouritePlaces(@RequestParam( defaultValue = "current") String userId) {
+    public ResponseEntity<?> favouritePlaces(@RequestParam( defaultValue = "current") String userId) {
         User u;
         if(userId == "current"){
             //should retrieve the current user
@@ -74,14 +74,14 @@ public class PlaceController {
         }else{
             u = UserService.getUserFromId(userId);
         }
-        // NOTE: u could be null, getFavouritePlaces should handle this case
-        return UserService.getFavouritePlaces(u);
+        List<Place> places = UserService.getFavouritePlaces(u);
+        return ResponseEntity.status(HttpStatus.OK).body(places);
     }
     // places that you visited
     // places visited by a given user
     @ApiOperation(value = "returns the list of visited places for the specified user or for the current if no userId is specified")
     @GetMapping(value = "/places/visited", produces = "application/json")
-    public List<Place> visitedPlaces(@RequestParam( defaultValue = "current") String userId) {
+    public ResponseEntity<?> visitedPlaces(@RequestParam( defaultValue = "current") String userId) {
         User u;
         if(userId == "current"){
             //should retrieve the current user
@@ -89,8 +89,8 @@ public class PlaceController {
         }else{
             u = UserService.getUserFromId(userId);
         }
-        // NOTE: u could be null, getVisitedPlaces should handle this case
-        return UserService.getVisitedPlaces(u);
+        List<Place> places = UserService.getVisitedPlaces(u);
+        return ResponseEntity.status(HttpStatus.OK).body(places);
     }
 
     // add to favourite a place (wants the id of the place)
