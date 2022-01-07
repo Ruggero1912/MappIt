@@ -1,6 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
-import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
@@ -15,12 +15,13 @@ public class RegistrationController {
     public ResponseEntity<?> registerNewUser(@RequestBody RegistrationUser newRegistrationUser) {
 
         // checks on username and password duplicates are done inside UserService.register()
-        User insertedUser;
+        User insertedUser = null;
 
         try{
             insertedUser = UserService.register(newRegistrationUser);
-        } catch (DatabaseUnavailableException due){
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("DB is unreachable!");
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
         }
 
         //TODO: decide if combining some controllers

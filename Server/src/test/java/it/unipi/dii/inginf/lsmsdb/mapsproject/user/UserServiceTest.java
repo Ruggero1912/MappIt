@@ -1,15 +1,14 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
-import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
 
@@ -37,8 +36,10 @@ public class UserServiceTest {
         // regUsr is a mock object with all fields set to null, so the register method must return null as well
         try {
             assertNull(UserService.register(regUsr));
-        } catch(DatabaseUnavailableException e){
+        } catch(DatabaseErrorException e){
             e.printStackTrace();
+        } catch (DatabaseConstraintViolation databaseConstraintViolation) {
+            databaseConstraintViolation.printStackTrace();
         }
     }
 

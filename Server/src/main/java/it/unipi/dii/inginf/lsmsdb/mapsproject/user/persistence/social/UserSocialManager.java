@@ -1,7 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ public interface UserSocialManager {
      * @param newUser object with information required for registration process
      * @return stored User, else return null
      */
-    User storeUser(User newUser);
+    User storeUser(User newUser) throws DatabaseConstraintViolation;
 
     /**
      * returns a List of places marked as Favourite by the given user, else return null

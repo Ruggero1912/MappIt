@@ -1,10 +1,9 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.Neo4jException;
@@ -19,10 +18,10 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
     private static final Logger LOGGER = Logger.getLogger(UserSocialManagerNeo4j.class.getName());
 
-    private static final String IDKEY = "id";
-    private static final String USERNAMEKEY = "username";
+    private static final String USER_ID_KEY = "id";
+    private static final String USER_USERNAME_KEY = "username";
 
-    private static final String USERLABEL = "User";     // TODO: retrieve the label from the Graph DB, maybe with CALL db.labels
+    private static final String USERLABEL = "User";     // TODO: retrieve the label from the Graph DB, maybe  can use CALL db.labels
     private static final String PLACELABEL = "Place";
     private static final String NEO4J_RELATION_USER_FAVOURITES_PLACE = "FAVOURITES";
     private static final String NEO4J_RELATION_USER_VISITED_PLACE = "VISITED";
@@ -35,24 +34,36 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public User storeUser(User newUser) {
+    public User storeUser(User newUser) throws DatabaseConstraintViolation {
 
         String id = newUser.getId();
         String username = newUser.getUsername();
+
+        // empty object handling
+        if (id == null) return null;
+        if (username == null) return null;
 
         Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
 
         try (Session session = neo4jConnection.getDriver().session()) {
             return session.writeTransaction((TransactionWork<User>) tx -> {
+
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
                 params.put( "username", username );
-                tx.run("CREATE (u:"+ USERLABEL +" { "+ IDKEY +": $id, "+ USERNAMEKEY +": $username})", params);
+
+                String query = "CREATE (u:"+ USERLABEL +" { "+ USER_ID_KEY +": $id, "+ USER_USERNAME_KEY +": $username})";
+
+                tx.run( query, params);
                 return newUser;
             });
         } catch (Neo4jException ne){
             System.out.println(ne.getMessage());
-            return null;
+            if (ne.code().equals("Neo.ClientError.Schema.ConstraintValidationFailed")){
+                throw new DatabaseConstraintViolation("A User node with passed id already exists");
+            } else{
+                return null;
+            }
         }
     }
 
@@ -65,8 +76,8 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
             favouritePlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
-                Result result = tx.run( "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_FAVOURITES_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + IDKEY +": $id RETURN pl",
-                        parameters(IDKEY, id) );
+                Result result = tx.run( "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_FAVOURITES_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +": $id RETURN pl",
+                        parameters(USER_ID_KEY, id) );
                 ArrayList<Place> places = new ArrayList<>();
                 while(result.hasNext())
                 {
@@ -92,8 +103,8 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
             visitedPlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
-                Result result = tx.run( "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_VISITED_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + IDKEY +": $id RETURN pl",
-                        parameters(IDKEY, id) );
+                Result result = tx.run( "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_VISITED_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +": $id RETURN pl",
+                        parameters(USER_ID_KEY, id) );
                 ArrayList<Place> places = new ArrayList<>();
                 while(result.hasNext())
                 {
@@ -120,7 +131,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         {
             //Merge method will handle the duplicate relationship case
             session.writeTransaction(tx -> {
-                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+IDKEY+" = '"+userId+"')");
+                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')");
                 tx.run( "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"')");
                 tx.run( "MERGE (u)-[:"+NEO4J_RELATION_USER_FAVOURITES_PLACE+" {datetime: "+now+"}]->(p)");
                 return true;
@@ -140,7 +151,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         {
             //if relationship doesn't exist the DELETE method leaves the node(s) unaffected.
             session.writeTransaction(tx -> {
-                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+IDKEY+" = '"+userId+"')");
+                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')");
                 tx.run( "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"')");
                 tx.run( "MATCH (u)-[r:"+NEO4J_RELATION_USER_FAVOURITES_PLACE+"]->(p) DELETE r");
                 return true;
@@ -160,7 +171,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         {
             //Merge method will handle the duplicate relationship case
             session.writeTransaction(tx -> {
-                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+IDKEY+" = '"+userId+"')");
+                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')");
                 tx.run( "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"')");
                 tx.run( "MERGE (u)-[:"+NEO4J_RELATION_USER_VISITED_PLACE+" {datetime: "+timestampVisit+"}]->(p)");
                 return true;
@@ -181,7 +192,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
         try ( Session session = Neo4jConnection.getDriver().session() ) {
             session.readTransaction((TransactionWork<Boolean>) tx -> {
-                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+IDKEY+" = '"+userId+"')");
+                tx.run( "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')");
                 tx.run( "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"')");
 
                 String query="";

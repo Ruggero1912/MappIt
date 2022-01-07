@@ -1,6 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
-import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseUnavailableException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
@@ -12,7 +13,6 @@ import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerNeo4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
@@ -46,7 +46,7 @@ public class UserService {
      * //@exception Any exception
      * @return user object or null if already exists
      */
-    public static User register(RegistrationUser newRegistrationUser) throws DatabaseUnavailableException{
+    public static User register(RegistrationUser newRegistrationUser) throws DatabaseErrorException, DatabaseConstraintViolation {
 
         //check restrictions on password
         String password = newRegistrationUser.getPassword();
@@ -71,25 +71,31 @@ public class UserService {
 
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
 
-        // TODO: here it should call the userSocialManager to store the informations in Neo4j
-        // we should also handle the case in which the insert in mongo or neo throws an error (we should revert the changes on the other db / log the error to file)
-
         // try to add the new User on Mongo DB
        User insertedUserInMongo = um.storeUser(newRegistrationUser);
 
         if(insertedUserInMongo == null){
             LOGGER.log(Level.SEVERE, "Error during registration: Mongo insertion failed!");
-            throw new DatabaseUnavailableException("Mongo DB Unreachable");
+            throw new DatabaseErrorException("Mongo DB Error");
         }
 
         // try to add the new User on Neo4j
-        User insertedUserInNeo4j = usm.storeUser(insertedUserInMongo);
+        User insertedUserInNeo4j = null;
+
+        // try to insert, exception occurs if one constraint is violated
+        try {
+            insertedUserInNeo4j = usm.storeUser(insertedUserInMongo);
+        } catch (DatabaseConstraintViolation e) {
+            LOGGER.log(Level.SEVERE, "Error during registration: Neo4j insertion failed due to constraint violation!");
+            throw new DatabaseConstraintViolation("Neo4j constraint violation");
+        }
+
         if(insertedUserInNeo4j == null){
             // we have to delete the user inside Mongo because Neo4j insertion failed
             delete(insertedUserInMongo);
 
             LOGGER.log(Level.SEVERE, "Error during registration: Neo4j insertion failed!");
-            throw new DatabaseUnavailableException("Neo4j Unreachable");
+            throw new DatabaseErrorException("Neo4j Error");
         }
 
         return insertedUserInNeo4j;
