@@ -30,7 +30,6 @@ public class Place {
     private String osmId;
     private int favouritesCounter;
 
-    //TODO: consider to create a PlacePreview class that keeps the only info available to neo4j (mongo id, name)
     public Place(String id, String placeName) {
         this._id=id;
         this.name=placeName;

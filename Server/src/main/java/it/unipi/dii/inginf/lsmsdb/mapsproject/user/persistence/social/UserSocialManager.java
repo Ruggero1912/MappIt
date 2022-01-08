@@ -33,14 +33,6 @@ public interface UserSocialManager {
     List<Place> retrieveVisitedPlaces(User user);
 
     /**
-     * checks whether a relationship between a user and a place already exists
-     * @param user node
-     * @param place node
-     * @return true if there is already a relationship connecting the two nodes
-     */
-    boolean checkAlreadyExistingRelationship(User user, Place place, String relationshipKind);
-
-    /**
      * adds the specified place to the favourite places of the specified user
      * @param user the user owner of the favourites list
      * @param place the place to add

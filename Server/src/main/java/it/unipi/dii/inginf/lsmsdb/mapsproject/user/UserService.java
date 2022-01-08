@@ -216,10 +216,10 @@ public class UserService {
             return false;
         }
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        if(usm.checkAlreadyExistingRelationship(user, place, "favourite")){
+        /*if(usm.checkAlreadyExistingRelationship(user, place, "favourite")){
             LOGGER.log(Level.SEVERE, "Error during adding place to favourite: relationship already exist");
             return false;
-        }
+        }*/
         return usm.storeNewFavouritePlace(user, place);
     }
     /**
@@ -236,10 +236,10 @@ public class UserService {
             return false;
         }
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        if(!usm.checkAlreadyExistingRelationship(user, place, "favourite")){
+        /*if(!usm.checkAlreadyExistingRelationship(user, place, "favourite")){
             LOGGER.log(Level.SEVERE, "Error during removing place from favourite: relationship does not exist");
             return false;
-        }
+        }*/
         return usm.deleteFavouritePlace(user, place);
     }
     /**
@@ -259,10 +259,10 @@ public class UserService {
             timestampVisit = LocalDateTime.now();
         }
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        if(usm.checkAlreadyExistingRelationship(user, place, "visited")){
+        /*if(usm.checkAlreadyExistingRelationship(user, place, "visited")){
             LOGGER.log(Level.SEVERE, "Error during adding place to visited: relationship already exist");
             return false;
-        }
+        }*/
         return usm.storeNewVisitedPlace(user, place, timestampVisit);
     }
 }
