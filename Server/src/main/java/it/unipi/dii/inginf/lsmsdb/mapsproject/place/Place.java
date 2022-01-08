@@ -10,15 +10,15 @@ import java.util.List;
 
 public class Place {
 
-    public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "id");
-    public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "name");
-    public static final String KEY_FITS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "fits");
-    public static final String KEY_LOC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "loc");
-    public static final String KEY_IMAGE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "image");
-    public static final String KEY_OSMID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "osmID");
-    public static final String KEY_POSTS_ARRAY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
-    public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "favouritesCounter");
-    public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "coordinates");
+    public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "id");
+    public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "name");
+    public static final String KEY_FITS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "fits");
+    public static final String KEY_LOC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "loc");
+    public static final String KEY_IMAGE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "image");
+    public static final String KEY_OSMID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "osmID");
+    public static final String KEY_POSTS_ARRAY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "postsArray");
+    public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "favouritesCounter");
+    public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "coordinates");
 
 
     private String _id;

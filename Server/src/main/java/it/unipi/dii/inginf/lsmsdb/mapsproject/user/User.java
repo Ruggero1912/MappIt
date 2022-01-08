@@ -1,6 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
 import com.google.gson.Gson;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.YtPost;
@@ -14,6 +15,18 @@ import java.util.Date;
 
 public class User implements Serializable {
 
+	public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "id");
+	public static final String KEY_USERNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "username");
+	public static final String KEY_EMAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "email");
+	public static final String KEY_PASSWORD = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "password");
+	public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "name");
+	public static final String KEY_SURNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "surname");
+	public static final String KEY_BIRTHDATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "birthdate");
+	public static final String KEY_ROLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "role");
+	public static final String KEY_PROFILE_PIC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "profilepic");
+	public static final String KEY_PUBLISHED_POSTS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
+
+
 	public enum Role {USER,MODERATOR,ADMIN}
 
 	private String _id;
@@ -25,10 +38,10 @@ public class User implements Serializable {
 	private Date birthDate;
 	private Role role;
 	private Image profilePic;
-	private List<YtPost> publishedPost;
-	private List<User> followedUsers;
-	private List<Place> favouritePlaces;
-	private List<YtPost> likedPosts;
+	private List<String> publishedPostsId;
+	private List<String> followedUsersId;
+	private List<String> favouritePlacesId;
+	private List<String> likedPostsId;
 	private int totalPost;
 
 	//need default constructor for JSON Parsing
@@ -37,16 +50,16 @@ public class User implements Serializable {
 	}
 
 	public User(Document doc){
-		this._id = doc.get("_id").toString();
-		this.username = doc.get("username").toString();
-		this.password = doc.get("password").toString();
-		this.email = doc.get("email").toString();
-		this.name = doc.get("name").toString();
-		this.surname = doc.get("surname").toString();
-		this.role = User.Role.valueOf(doc.get("role").toString());
-		this.birthDate = (Date) doc.get("birthDate");
+		this._id = doc.get(KEY_ID).toString();
+		this.username = doc.get(KEY_USERNAME).toString();
+		this.password = doc.get(KEY_PASSWORD).toString();
+		this.email = doc.get(KEY_EMAIL).toString();
+		this.name = doc.get(KEY_NAME).toString();
+		this.surname = doc.get(KEY_SURNAME).toString();
+		this.role = User.Role.valueOf(doc.get(KEY_ROLE).toString());
+		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image();
-		this.profilePic.setPath(doc.get("profilePic").toString());
+		this.profilePic.setPath(doc.get(KEY_PROFILE_PIC).toString());
 	}
 
 	public static User buildUser(@NotNull Document doc){

@@ -27,7 +27,7 @@ public class PropertyPicker {
     public static final String Neo4jPassword = "persistence.db.neo4j.password";
 
     public static final String userCollection = "persistence.db.mongo.collection.user";
-    public final static String collectionName = "collectionName";
+    public final static String placeCollection = "persistence.db.mongo.collection.place";
 
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();
