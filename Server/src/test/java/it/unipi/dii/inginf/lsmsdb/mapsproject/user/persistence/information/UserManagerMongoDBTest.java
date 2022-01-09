@@ -39,7 +39,7 @@ public class UserManagerMongoDBTest {
         @Test
         void GIVEN_check_duplicate_username_WHEN_duplicate_username_is_passed_THEN_return_true(){
             //we use a Username already taken
-            String takenUsername = "gianfranco";
+            String takenUsername = "Micky Techology";
             RegistrationUser regUsr = mock(RegistrationUser.class);
             when(regUsr.getUsername()).thenReturn(takenUsername);
             assertTrue(user.checkDuplicateUsername(regUsr.getUsername()));
@@ -55,7 +55,7 @@ public class UserManagerMongoDBTest {
         @Test
         void GIVEN_check_duplicate_email_WHEN_duplicate_email_is_passed_THEN_return_true(){
             //we use an Email already taken
-            String takenEmail = "gioacchinoantonini@example.com";
+            String takenEmail = "apacelli@example.com";
             RegistrationUser regUsr = mock(RegistrationUser.class);
             when(regUsr.getEmail()).thenReturn(takenEmail);
             assertTrue(user.checkDuplicateEmail(regUsr.getEmail()));
