@@ -28,6 +28,8 @@ public class PropertyPicker {
 
     public static final String userCollection = "persistence.db.mongo.collection.user";
     public final static String placeCollection = "persistence.db.mongo.collection.place";
+    public final static String postCollection = "persistence.db.mongo.collection.post";
+
 
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();

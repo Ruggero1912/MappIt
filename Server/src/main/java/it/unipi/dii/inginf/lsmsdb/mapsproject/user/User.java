@@ -3,8 +3,6 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.post.YtPost;
 import org.bson.Document;
 
 
@@ -60,6 +58,7 @@ public class User implements Serializable {
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image();
 		this.profilePic.setPath(doc.get(KEY_PROFILE_PIC).toString());
+		this.publishedPostsId = (List<String>) doc.get(KEY_PUBLISHED_POSTS, List.class);
 	}
 
 	public static User buildUser(@NotNull Document doc){

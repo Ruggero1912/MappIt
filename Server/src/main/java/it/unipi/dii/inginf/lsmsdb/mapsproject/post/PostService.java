@@ -23,20 +23,10 @@ public class PostService {
      * @param newPost the YouTube Post object containing all the info
      * @return YtPost object if the insert is successful or null otherwise
      */
-    public static YtPost createNewYtPost(YtPost newPost) {
+    public static Post createNewPost(Post newPost) {
         PostManager pm = PostManagerFactory.getPostManager();
-        YtPost insertedPost = pm.storeYtPost(newPost);
+        Post insertedPost = pm.storePost(newPost);
         return insertedPost;
     }
 
-    /**
-     * return the newly created Flickr Post or Null if something goes wrong
-     * @param newPost the Flickr Post object containing all the info
-     * @return FlickrPost object if the insert is successful or null otherwise
-     */
-    public static FlickrPost createNewFlickrPost(FlickrPost newPost) {
-        PostManager pm = PostManagerFactory.getPostManager();
-        FlickrPost insertedPost = pm.storeFlickrPost(newPost);
-        return insertedPost;
-    }
 }
