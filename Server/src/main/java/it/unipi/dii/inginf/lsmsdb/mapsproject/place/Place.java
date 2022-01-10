@@ -21,6 +21,7 @@ public class Place {
     public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "coordinates");
 
     public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "id");
+    public static final String NEO_KEY_NAME = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "name");
 
 
     private String _id;

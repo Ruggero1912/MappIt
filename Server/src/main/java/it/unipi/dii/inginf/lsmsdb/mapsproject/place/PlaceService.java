@@ -3,10 +3,13 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.activity.ActivityService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class PlaceService {
@@ -67,8 +70,18 @@ public class PlaceService {
         return getPlacesInRadius(coordinate, radius, orderBy, noActivityFilterKey);
     }
 
+    /**
+     * returns a list of Places to check out, based on the ones visited by followed users
+     * @param user the User that asks for new places to check out
+     * @return a list of Places (only a subset of information about each Place)
+     */
     public static List<Place> getSuggestedPlaces(User user){
-        return null;
+        if(user == null){
+            return null;
+        }
+        int maxHowMany = DEFAULT_MAX_HOW_MANY_SUGGESTED;
+        PlaceSocialManager pm = PlaceSocialManagerFactory.getPlaceManager();
+        return pm.getSuggestedPlaces(user, maxHowMany);
     }
 
     /**
