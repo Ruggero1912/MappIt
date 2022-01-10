@@ -11,10 +11,16 @@ import java.util.logging.Logger;
 
 public class PlaceService {
 
-    public static List<String> orderByCriterias = Arrays.asList("distance", "popularity");
-    public static String defaultOrderByCriteria = "distance";
-    public static double defaultSearchRadius = 10.0;
-    public static String noActivityFilterKey = "any";
+    public static final String ORDER_CRITERIA_DISTANCE = "distance";
+    public static final String ORDER_CRITERIA_POPULARITY = "popularity";
+    public static final List<String> orderByCriterias = Arrays.asList(ORDER_CRITERIA_DISTANCE, ORDER_CRITERIA_POPULARITY);
+    public static final String defaultOrderByCriteria = ORDER_CRITERIA_DISTANCE;
+    public static final double defaultSearchRadius = 10.0;
+    public static final int DEFAULT_MAXIMUM_QUANTITY = 100;
+    public static final int LIMIT_MAXIMUM_QUANTITY = 300;
+    public static final String noActivityFilterKey = "any";
+
+    public static final int DEFAULT_MAX_HOW_MANY_SUGGESTED = 10;
 
     private static final Logger LOG = Logger.getLogger(PlaceService.class.getName());
 
@@ -68,11 +74,21 @@ public class PlaceService {
     /**
      * return a list of the most popular Place objects ordered by the number of posts and the value of the favourite counter
      * @param activityFilter: the name of the activity that the returned places should fit or "any" if are required the absolute most popular places
+     * @param maxQuantity: the maximum number of places instances to be returned
      * @return a list Place objects
-     * note: to determine which Place is popular maybe we could also return the Places whose post received the greatest number of interactions
      */
-    public static List<Place> getPopularPlaces(String activityFilter) {
-        // TODO: should check the value of activityFilter to determine if is "any" or if it is a valid activity or none of them
-        return null;
+    public static List<Place> getPopularPlaces(String activityFilter, int maxQuantity) {
+        if(activityFilter != noActivityFilterKey){
+            if( ! ActivityService.checkIfActivityExists(activityFilter)){
+                activityFilter = noActivityFilterKey;
+            }
+        }
+        if(maxQuantity <= 0){
+            maxQuantity = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(maxQuantity > LIMIT_MAXIMUM_QUANTITY){
+            maxQuantity = LIMIT_MAXIMUM_QUANTITY;
+        }
+        PlaceManager pm = PlaceManagerFactory.getPlaceManager();
+        return pm.getPopularPlaces(activityFilter, maxQuantity);
     }
 }
