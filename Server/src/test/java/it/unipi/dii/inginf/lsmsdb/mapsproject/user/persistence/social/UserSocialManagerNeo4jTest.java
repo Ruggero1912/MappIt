@@ -123,4 +123,25 @@ public class UserSocialManagerNeo4jTest {
         boolean res = UserService.addPlaceToVisited(u,p, null);
         Assertions.assertFalse(res);
     }
+
+    @DisplayName("Test UserSocialManager.storeNewFollower")
+    @Test
+    void GIVEN_store_new_follower_WHEN_correct_parameters_are_passed_THEN_return_true() {
+        User u1 = UserService.getUserFromId("61d3428101336eeafcb438e5");
+        User u2 = UserService.getUserFromId("61d342a701336eeafcb43922");
+        LocalDateTime now = LocalDateTime.now();
+
+        boolean res = UserService.followUser(u1,u2,now);
+        Assertions.assertTrue(res);
+    }
+
+    @DisplayName("Test UserSocialManager.deleteFollower")
+    @Test
+    void GIVEN_delete_follower_WHEN_correct_parameters_are_passed_THEN_return_true() {
+        User u1 = UserService.getUserFromId("61d3428101336eeafcb438e5");
+        User u2 = UserService.getUserFromId("61d342a701336eeafcb43922");
+
+        boolean res = UserService.unfollowUser(u1,u2);
+        Assertions.assertTrue(res);
+    }
 }
