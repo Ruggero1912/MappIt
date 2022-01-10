@@ -24,6 +24,8 @@ public class User implements Serializable {
 	public static final String KEY_PROFILE_PIC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "profilepic");
 	public static final String KEY_PUBLISHED_POSTS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
 
+	public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.neoUserNode, "id");
+
 
 	public enum Role {USER,MODERATOR,ADMIN}
 
