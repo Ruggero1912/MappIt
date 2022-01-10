@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerNeo4j;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -244,12 +245,18 @@ public class UserService {
         String placeId = place.getId();
         try{
             incrementFavCounterMongo = pm.updateFavouriteCounter(placeId, 1);
+            if(!incrementFavCounterMongo){
+                //we have to delete the relationship in Neo4j
+                LOGGER.log(Level.SEVERE, "Error during new favourite place removing: MongoDB update failed!");
+                usm.deleteFavouritePlace(user, place);
+                return false;
+            }
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
             return false;
         }
 
-        return incrementFavCounterMongo;
+        return true;
     }
     /**
      * removes the specified place from the favourite places of the specified user
@@ -273,12 +280,18 @@ public class UserService {
         String placeId = place.getId();
         try{
             decrementFavCounterMongo = pm.updateFavouriteCounter(placeId, -1);
+            if(!decrementFavCounterMongo){
+                //we have to delete the relationship in Neo4j
+                LOGGER.log(Level.SEVERE, "Error during new favourite place adding: MongoDB update failed!");
+                usm.storeNewFavouritePlace(user, place);
+                return false;
+            }
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
             return false;
         }
 
-        return decrementFavCounterMongo;
+        return true;
     }
     /**
      * adds the place to the visited places of the specified user
