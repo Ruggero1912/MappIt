@@ -3,6 +3,8 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
@@ -70,17 +72,16 @@ public class UserService {
             return null;
         }
 
-        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-
-        // try to add the new User on Mongo DB
+       // try to add the new User on Mongo DB
        User insertedUserInMongo = um.storeUser(newRegistrationUser);
 
         if(insertedUserInMongo == null){
             LOGGER.log(Level.SEVERE, "Error during registration: Mongo insertion failed!");
-            throw new DatabaseErrorException("Mongo DB Error");
+            throw new DatabaseErrorException("Mongo insertion failed");
         }
 
         // try to add the new User on Neo4j
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
         User insertedUserInNeo4j;
 
         try {
@@ -97,7 +98,7 @@ public class UserService {
             delete(insertedUserInMongo);
 
             LOGGER.log(Level.SEVERE, "Error during registration: Neo4j insertion failed!");
-            throw new DatabaseErrorException("Neo4j Error");
+            throw new DatabaseErrorException("Neo4j insertion failed");
         }
 
         return insertedUserInNeo4j;
@@ -153,13 +154,30 @@ public class UserService {
      * @param userToDelete is the user to be deleted
      * @return true if deletion has been successful, false otherwise
      */
-    public static boolean delete(User userToDelete){
+    public static boolean delete(User userToDelete) throws DatabaseErrorException {
         if(userToDelete == null || userToDelete.getId() == null)
             return false;
 
         UserManager um = UserManagerFactory.getUserManager();
         String userId = userToDelete.getId();
-        return um.deleteUserFromId(userId);
+        boolean UserDeletedFromMongo = um.deleteUserFromId(userId);
+
+        if(!UserDeletedFromMongo){
+            LOGGER.log(Level.SEVERE, "Error during delete: Mongo user deletion failed!");
+            throw new DatabaseErrorException("Mongo user deletion failed");
+        }
+
+        //Try to delete also in Neo4j for maintaining the db consistency
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        boolean UserDeletedFromNeo4j;
+        try{
+            UserDeletedFromNeo4j = usm.deleteUserFromId(userId);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
+            return false;
+        }
+
+        return UserDeletedFromNeo4j;
     }
 
     /**
@@ -268,20 +286,13 @@ public class UserService {
      * @return true if the place is correctly added, else false
      */
     public static boolean addPlaceToVisited(User user, Place place, LocalDateTime timestampVisit){
-        if(user == null){
-            return false;
-        }
-        if(place == null){
+        if(user == null || place == null){
             return false;
         }
         if(timestampVisit == null){
             timestampVisit = LocalDateTime.now();
         }
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        /*if(usm.checkAlreadyExistingRelationship(user, place, "visited")){
-            LOGGER.log(Level.SEVERE, "Error during adding place to visited: relationship already exist");
-            return false;
-        }*/
         return usm.storeNewVisitedPlace(user, place, timestampVisit);
     }
 }

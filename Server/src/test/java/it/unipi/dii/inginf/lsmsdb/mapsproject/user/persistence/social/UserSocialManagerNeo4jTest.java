@@ -1,6 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
@@ -68,7 +69,12 @@ public class UserSocialManagerNeo4jTest {
     void GIVEN_add_favourite_place_WHEN_correct_parameters_are_passed_THEN_return_true() {
         User u = UserService.getUserFromId("61d3428101336eeafcb438e5");
         Place p = PlaceService.getPlaceFromId("61d340a6a1dc9d89ac02fa03");
-        boolean res = UserService.addPlaceToFavourites(u,p);
+        boolean res = false;
+        try {
+            res = UserService.addPlaceToFavourites(u,p);
+        } catch (DatabaseErrorException e) {
+            e.printStackTrace();
+        }
         Assertions.assertTrue(res);
     }
 
@@ -77,7 +83,12 @@ public class UserSocialManagerNeo4jTest {
     void GIVEN_add_favourite_place_WHEN_empty_user_or_empty_place_passed_THEN_return_false() {
         User u = null;
         Place p = null;
-        boolean res = UserService.addPlaceToFavourites(u,p);
+        boolean res = false;
+        try {
+            res = UserService.addPlaceToFavourites(u,p);
+        } catch (DatabaseErrorException e) {
+            e.printStackTrace();
+        }
         Assertions.assertFalse(res);
     }
 
@@ -86,7 +97,12 @@ public class UserSocialManagerNeo4jTest {
     void GIVEN_remove_place_from_favourites_WHEN_correct_parameters_are_passed_THEN_return_true() {
         User u = UserService.getUserFromId("61d3428101336eeafcb438e5");
         Place p = PlaceService.getPlaceFromId("61d340a6a1dc9d89ac02fa03");
-        boolean res = UserService.removePlaceFromFavourites(u,p);
+        boolean res = false;
+        try {
+            res = UserService.removePlaceFromFavourites(u,p);
+        } catch (DatabaseErrorException e) {
+            e.printStackTrace();
+        }
         Assertions.assertTrue(res);
     }
 
