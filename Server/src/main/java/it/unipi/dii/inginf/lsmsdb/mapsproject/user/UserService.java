@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
 import org.neo4j.driver.exceptions.Neo4jException;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
@@ -294,5 +295,66 @@ public class UserService {
         }
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
         return usm.storeNewVisitedPlace(user, place, timestampVisit);
+    }
+
+    /**
+     * makes the user follows the userToFollow
+     * @param user the user that follows
+     * @param userToFollow the user to follow
+     * @param timestampFollow the timestamp related to the follow relationship
+     * @return true if the user correctly follows the userToFollow, else false
+     */
+    public static boolean followUser( User user, User userToFollow, LocalDateTime timestampFollow){
+        if(userToFollow == null || user == null){
+            return false;
+        }
+        if(timestampFollow == null){
+            timestampFollow = LocalDateTime.now();
+        }
+
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        boolean storedInNeo = usm.storeNewFollower(user, userToFollow, timestampFollow);
+        if(!storedInNeo){
+            LOGGER.log(Level.SEVERE, "Error during following: Neo4j relationship insertion failed!");
+            return false;
+        }
+
+        UserManager um = UserManagerFactory.getUserManager();
+        boolean updatedInMongo = um.updateFollowersCounter(userToFollow, 1);
+        if(!updatedInMongo){
+            //we have to delete the relationship in Neo4j
+            LOGGER.log(Level.SEVERE, "Error during following: MongoDB update failed!");
+            LocalDateTime timestampFollowRel = usm.deleteFollower(user, userToFollow);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * makes the user unfollows the userToUnfollow
+     * @param user the user that unfollows
+     * @param userToUnfollow the user to unfollow
+     * @return true if the user unfollows the userToUnfollow, else false
+     */
+    public static boolean unfollowUser( User user, User userToUnfollow){
+        if(userToUnfollow == null || user == null){
+            return false;
+        }
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+
+        LocalDateTime timestampFollowRel = usm.deleteFollower(user, userToUnfollow);
+        if(timestampFollowRel == null){
+            LOGGER.log(Level.SEVERE, "Error during unfollowing: Neo4j relationship deletion failed!");
+            return false;
+        }
+
+        UserManager um = UserManagerFactory.getUserManager();
+        boolean updatedInMongo = um.updateFollowersCounter(userToUnfollow, -1);
+        if(!updatedInMongo){
+            //we have to restore the relationship in Neo4j
+            LOGGER.log(Level.SEVERE, "Error during unfollowing: MongoDB update failed!");
+            return usm.storeNewFollower(user, userToUnfollow, timestampFollowRel);
+        }
+        return true;
     }
 }

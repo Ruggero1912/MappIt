@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -138,5 +139,94 @@ public class UserController {
 		}
 
 		return result;
+	}
+
+	/**
+	 * //@ApiOperation(value = "Make a user follow another user",
+	 * notes = "This method makes and user follow another user")
+	 */
+	@PostMapping(value = "/user/follow/{id}", produces = "application/json")
+	public ResponseEntity<?> followUser(@RequestHeader("Authorization") String authToken, @PathVariable (value = "id") String userToFollowId, @RequestBody(required = false) LocalDateTime localDateTime) {
+		//we retrieve the id of the current logged-in user from auth token
+		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
+		String currentUserID;
+		try {
+			currentUserID = JwtTokenUtil.getIdFromToken(token);
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
+			return null;
+		} catch (ExpiredJwtException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
+			return null;
+		}
+
+		// the time of the visit will be considered now if the localDateTime parameter is null
+		if(localDateTime == null){
+			localDateTime = LocalDateTime.now();
+		}
+
+		//we retrieve user objects of current logged-in user and user to follow
+		User currentUser = UserService.getUserFromId(currentUserID);
+		if(currentUser == null){
+			LOGGER.log(Level.WARNING, "user not found for userID: " + currentUserID);
+			return null;
+		}
+
+		User userToFollow = UserService.getUserFromId(userToFollowId);
+		if(userToFollow == null){
+			LOGGER.log(Level.WARNING, "user not found for userID: " + userToFollowId);
+			return null;
+		}
+
+		boolean followerAdded = UserService.followUser( currentUser, userToFollow, localDateTime);
+
+		if (followerAdded){
+			return ResponseEntity.ok("Follower successfully added!");
+		} else {
+			LOGGER.log(Level.INFO, "Error: could not add the follower");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not add the follower");
+		}
+	}
+
+	/**
+	 * //@ApiOperation(value = "Make a user unfollow another user",
+	 * notes = "This method makes and user unfollow another user")
+	 */
+	@DeleteMapping(value = "/user/follow/{id}", produces = "application/json")
+	public ResponseEntity<?> unfollowUser(@RequestHeader("Authorization") String authToken, @PathVariable (value = "id") String userToUnfollowId) {
+		//we retrieve the id of the current logged-in user from auth token
+		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
+		String currentUserID;
+		try {
+			currentUserID = JwtTokenUtil.getIdFromToken(token);
+		} catch (IllegalArgumentException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
+			return null;
+		} catch (ExpiredJwtException e) {
+			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
+			return null;
+		}
+
+		//we retrieve user objects of current logged-in user and user to follow
+		User currentUser = UserService.getUserFromId(currentUserID);
+		if(currentUser == null){
+			LOGGER.log(Level.WARNING, "user not found for userID: " + currentUserID);
+			return null;
+		}
+
+		User userToUnfollow = UserService.getUserFromId(userToUnfollowId);
+		if(userToUnfollow == null){
+			LOGGER.log(Level.WARNING, "user not found for userID: " + userToUnfollowId);
+			return null;
+		}
+
+		boolean followerRemoved = UserService.unfollowUser( currentUser, userToUnfollow);
+
+		if (followerRemoved){
+			return ResponseEntity.ok("Follower successfully removed!");
+		} else {
+			LOGGER.log(Level.INFO, "Error: could not remove the follower");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not remove the follower");
+		}
 	}
 }

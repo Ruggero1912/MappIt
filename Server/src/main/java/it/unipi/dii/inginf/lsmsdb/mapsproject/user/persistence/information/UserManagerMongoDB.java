@@ -5,6 +5,7 @@ import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Updates.set;
 
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
@@ -144,6 +145,18 @@ public class UserManagerMongoDB implements UserManager{
         String newEncryptedPassword = UserService.passwordEncryption(newPassword);
         Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
         UpdateResult res = userCollection.updateOne(idFilter, set("password", newEncryptedPassword));
+        return res.wasAcknowledged();
+    }
+
+    @Override
+    public boolean updateFollowersCounter(User user, int k) {
+        if(user == null || k < -1 || k > 1  || k == 0){
+            return false;
+        }
+        String userId = user.getId();
+
+        Bson idFilter = Filters.eq(IDKEY, new ObjectId(userId));
+        UpdateResult res = userCollection.updateOne(idFilter, Updates.inc("followers", k));
         return res.wasAcknowledged();
     }
 }
