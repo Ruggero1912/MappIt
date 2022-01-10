@@ -1,15 +1,22 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
+import org.neo4j.driver.exceptions.DatabaseException;
 import org.neo4j.driver.exceptions.Neo4jException;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.neo4j.driver.Values.parameters;
@@ -63,6 +70,25 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             } else{
                 throw ne;
             }
+        }
+    }
+
+    @Override
+    public boolean deleteUserFromId(String userId) {
+        if(userId.equals(""))
+            return false;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            //Detach deletes the node and all its relationships
+            return session.writeTransaction(tx -> {
+                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
+                        "DETACH DELETE u";
+                tx.run(query);
+                return true;
+            });
+        }catch (Exception e){
+            return false;
         }
     }
 

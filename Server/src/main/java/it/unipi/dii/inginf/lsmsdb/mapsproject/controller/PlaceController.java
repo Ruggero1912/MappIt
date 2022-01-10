@@ -2,6 +2,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Coordinate;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
@@ -50,8 +51,8 @@ public class PlaceController {
     // most popular places for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/places/most-popular", produces = "application/json")
-    public List<Place> popularPlaces(@RequestParam( defaultValue = "any") String activityFilter) {
-    return PlaceService.getPopularPlaces(activityFilter);
+    public List<Place> popularPlaces(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "0", name = "limit") int maxQuantity) {
+    return PlaceService.getPopularPlaces(activityFilter, maxQuantity);
     }
 
     // suggested places for the current user
@@ -112,15 +113,18 @@ public class PlaceController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"action not allowed\"}");
         }
         // TODO: handle the outcome of the method call and answer to the client consequently
-        if(action == "add")
-            UserService.addPlaceToFavourites(u, place);
-        else if(action == "remove")
-            UserService.removePlaceFromFavourites(u, place);
+        try {
+            if (action == "add")
+                UserService.addPlaceToFavourites(u, place);
+            else if (action == "remove")
+                UserService.removePlaceFromFavourites(u, place);
+        }catch (DatabaseErrorException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\":\"something went wrong\"}");
+        }
 
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body("{\"error\":\"handle correctly the response\"}");
     }
     // add to visited a place (wants the id of the place)
-    // remove from visited a place (wants the id of the place) -> not implemented
     @ApiOperation(value = "adds the specified place to the visited places of the currently logged in user")
     @PostMapping(value = "/place/{id}/visited", produces = "application/json")
     public ResponseEntity handleVisited(@PathVariable(name="id") String placeId, @RequestBody(required = false) LocalDateTime localDateTime) {

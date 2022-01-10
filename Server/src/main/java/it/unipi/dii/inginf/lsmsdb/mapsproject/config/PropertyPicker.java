@@ -30,6 +30,10 @@ public class PropertyPicker {
     public final static String placeCollection = "persistence.db.mongo.collection.place";
     public final static String postCollection = "persistence.db.mongo.collection.post";
 
+    public final static String neoUserNode = "persistence.db.neo.node.user";
+    public final static String neoPlaceNode = "persistence.db.neo.node.place";
+
+    private final static String neoRelation = "persistence.db.neo.relation";
 
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();
@@ -57,5 +61,13 @@ public class PropertyPicker {
 
     public static String getCollectionPropertyKey(String collection, String attribute){
         return getProperty(collection + "." + attribute);
+    }
+
+    public static String getNodePropertyKey(String nodeKind, String attribute){
+        return getProperty(nodeKind + "." + attribute);
+    }
+
+    public static String getGraphRelationKey(String relationName){
+        return getProperty(neoRelation + "." + relationName);
     }
 }

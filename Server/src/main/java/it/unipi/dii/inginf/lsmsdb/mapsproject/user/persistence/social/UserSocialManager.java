@@ -1,6 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
@@ -15,6 +16,13 @@ public interface UserSocialManager {
      * @return stored User, else return null
      */
     User storeUser(User newUser) throws DatabaseConstraintViolation;
+
+    /**
+     * return true if the user deletion process is successful, else return false
+     * @param id is the id of the user to be deleted
+     * @return true if the deletion is successful, false otherwise
+     */
+    boolean deleteUserFromId(String id) throws DatabaseErrorException;
 
     /**
      * returns a List of places marked as Favourite by the given user, else return null

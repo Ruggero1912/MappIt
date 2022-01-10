@@ -58,7 +58,22 @@ public class UserServiceTest {
     @Test
     void GIVEN_delete_WHEN_null_user_is_passed_THEN_return_false(){
         User userToDelete = mock(User.class);
-        assertFalse(UserService.delete(userToDelete));
+        try {
+            assertFalse(UserService.delete(userToDelete));
+        } catch (DatabaseErrorException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @DisplayName("Test UserService.delete with existing userToDelete")
+    @Test
+    void GIVEN_delete_WHEN_extisting_user_is_passed_THEN_return_true(){
+        User userToDelete = UserService.getUserFromId("61d3424c01336eeafcb43854");
+        try {
+            Assertions.assertTrue(UserService.delete(userToDelete));
+        } catch (DatabaseErrorException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @DisplayName("Test UserService.updatePassword with empty userID or empty newPassword")

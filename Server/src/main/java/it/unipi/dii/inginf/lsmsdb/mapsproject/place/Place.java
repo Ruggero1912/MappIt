@@ -20,6 +20,10 @@ public class Place {
     public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "favouritesCounter");
     public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "coordinates");
 
+    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "id");
+    public static final String NEO_KEY_FAVS = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "favs");
+    public static final String NEO_KEY_NAME = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "name");
+
 
     private String _id;
     private String name;
