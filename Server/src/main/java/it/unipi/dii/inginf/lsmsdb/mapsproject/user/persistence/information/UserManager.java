@@ -62,4 +62,12 @@ public interface UserManager {
      * @return true if password change has been successful, false otherwise
      */
     boolean changePassword(String id, String newPassword);
+
+    /**
+     * return true if followers counter was correctly increased, else return false
+     * @param user we want to increase the followers number
+     * @param k value of the increment or decrement
+     * @return true if followers counter was correctly increased, false otherwise
+     */
+    boolean updateFollowersCounter(User user, int k);
 }

@@ -28,8 +28,9 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     private static final String USER_ID_KEY = "id";
     private static final String USER_USERNAME_KEY = "username";
 
-    private static final String USERLABEL = "User";     // TODO: retrieve the label from the Graph DB, maybe  can use CALL db.labels
+    private static final String USERLABEL = "User";
     private static final String PLACELABEL = "Place";
+    private static final String NEO4J_RELATION_USER_FOLLOWS_USER = "FOLLOWS";
     private static final String NEO4J_RELATION_USER_FAVOURITES_PLACE = "FAVOURITES";
     private static final String NEO4J_RELATION_USER_VISITED_PLACE = "VISITED";
     private static final String PLACE_NAME_KEY = "name";
@@ -213,6 +214,58 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             });
         }catch (Exception e){
             return false;
+        }
+    }
+
+    @Override
+    public boolean storeNewFollower(User user, User userToFollow, LocalDateTime timestampFollow) {
+        String userId = user.getId();
+        String userToFollowId = userToFollow.getId();
+
+        try( Session session = Neo4jConnection.getDriver().session())
+        {
+            //Merge method will handle the duplicate relationship case
+            return session.writeTransaction(tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "datetime", timestampFollow);
+                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')" +
+                                "MATCH (uToFollow:"+USERLABEL+" WHERE uToFollow."+USER_ID_KEY+" = '"+userToFollowId+"')" +
+                                "MERGE (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+" {datetime: $datetime}]->(uToFollow)";
+                tx.run(query, params);
+                return true;
+            });
+        } catch ( Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public LocalDateTime deleteFollower(User user, User userToUnfollow) {
+        String userId = user.getId();
+        String userToUnfollowId = userToUnfollow.getId();
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            //if relationship doesn't exist the DELETE method leaves the node(s) unaffected.
+            return session.writeTransaction(tx -> {
+                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
+                                "MATCH (uToUnfollow:"+USERLABEL+" WHERE uToUnfollow."+USER_ID_KEY+" = '"+userToUnfollowId+"') " +
+                                "MATCH (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+"]->(uToUnfollow) "+
+                                "WITH r.datetime as timestamp "+
+                                "DELETE r "+
+                                "RETURN timestamp";
+                Result result = tx.run(query);
+                LocalDateTime timestamp = null;
+                if(result.hasNext())
+                {
+                    Record r = result.next();
+                    Value value = r.get("timestamp");
+                    timestamp = value.asLocalDateTime();
+                }
+                return timestamp;
+            });
+        }catch (Exception e){
+            return null;
         }
     }
 }

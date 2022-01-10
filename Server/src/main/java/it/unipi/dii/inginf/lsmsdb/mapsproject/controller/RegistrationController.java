@@ -31,7 +31,7 @@ public class RegistrationController {
             insertedUser.setPassword("");
             return ResponseEntity.ok(insertedUser);
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username or Email already taken");
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Username or Email already taken");
         }
     }
 }

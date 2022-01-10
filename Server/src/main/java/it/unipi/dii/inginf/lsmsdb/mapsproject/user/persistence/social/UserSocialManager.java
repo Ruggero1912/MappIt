@@ -63,4 +63,22 @@ public interface UserSocialManager {
      * @return true if the place is correctly added, else false
      */
     boolean storeNewVisitedPlace(User user, Place place, LocalDateTime timestampVisit);
+
+    /**
+     * makes the user follows the userToFollow
+     * @param user the user that follows
+     * @param userToFollow the user to follow
+     * @param timestampFollow the timestamp related to the follow relationship
+     * @return true if the user correctly follows the userToFollow, else false
+     */
+    boolean storeNewFollower(User user, User userToFollow, LocalDateTime timestampFollow);
+
+    /**
+     * makes the user unfollows the userToUnfollow
+     * @param user user that unfollows
+     * @param userToUnfollow user to unfollow
+     * @return LocalDateTime containing the timestamp of the deleted relationship if the user correctly unfollows the userToUnfollow, else null
+     */
+    LocalDateTime deleteFollower(User user, User userToUnfollow);
+
 }
