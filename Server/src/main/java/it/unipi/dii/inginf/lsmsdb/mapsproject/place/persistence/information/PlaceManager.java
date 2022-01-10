@@ -43,4 +43,11 @@ public interface PlaceManager {
      */
     List<Place> getPopularPlaces(String activityName, int maxQuantity);
 
+    /**
+     * return true if the increment/decrement of the favs counter value is successfull, else return false
+     * @param placeId of the place
+     * @param k will be +1 or -1 respectively if the method is called from addPlaceToFavourites or removePlaceToFavourites
+     * @return true if increment has been successful, false otherwise
+     */
+    boolean updateFavouriteCounter(String placeId, int k);
 }

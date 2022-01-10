@@ -208,19 +208,29 @@ public class UserService {
      * @param place the place to add
      * @return true if the place is correctly added, else false
      */
-    public static boolean addPlaceToFavourites(User user, Place place){
-        if(user == null){
+    public static boolean addPlaceToFavourites(User user, Place place) throws DatabaseErrorException {
+        if(user == null || place == null){
             return false;
         }
-        if(place == null){
-            return false;
-        }
+
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        /*if(usm.checkAlreadyExistingRelationship(user, place, "favourite")){
-            LOGGER.log(Level.SEVERE, "Error during adding place to favourite: relationship already exist");
+        boolean addedNewFavPlaceNeo4j = usm.storeNewFavouritePlace(user, place);
+        if(!addedNewFavPlaceNeo4j){
+            LOGGER.log(Level.SEVERE, "Error during insert: Neo4j new favourite place failed!");
+            throw new DatabaseErrorException("Neo4j new favourite place insert failed");
+        }
+
+        PlaceManager pm = PlaceManagerFactory.getPlaceManager();
+        boolean incrementFavCounterMongo;
+        String placeId = place.getId();
+        try{
+            incrementFavCounterMongo = pm.updateFavouriteCounter(placeId, 1);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
             return false;
-        }*/
-        return usm.storeNewFavouritePlace(user, place);
+        }
+
+        return incrementFavCounterMongo;
     }
     /**
      * removes the specified place from the favourite places of the specified user
@@ -228,19 +238,28 @@ public class UserService {
      * @param place the place to add
      * @return true if the place is correctly removed, else false
      */
-    public static boolean removePlaceFromFavourites(User user, Place place){
-        if(user == null){
-            return false;
-        }
-        if(place == null){
+    public static boolean removePlaceFromFavourites(User user, Place place) throws DatabaseErrorException {
+        if(user == null || place == null){
             return false;
         }
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        /*if(!usm.checkAlreadyExistingRelationship(user, place, "favourite")){
-            LOGGER.log(Level.SEVERE, "Error during removing place from favourite: relationship does not exist");
+        boolean removedFavPlaceNeo4j = usm.deleteFavouritePlace(user, place);
+        if(!removedFavPlaceNeo4j){
+            LOGGER.log(Level.SEVERE, "Error during insert: Neo4j new favourite place failed!");
+            throw new DatabaseErrorException("Neo4j new favourite place insert failed");
+        }
+
+        PlaceManager pm = PlaceManagerFactory.getPlaceManager();
+        boolean decrementFavCounterMongo;
+        String placeId = place.getId();
+        try{
+            decrementFavCounterMongo = pm.updateFavouriteCounter(placeId, -1);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
             return false;
-        }*/
-        return usm.deleteFavouritePlace(user, place);
+        }
+
+        return decrementFavCounterMongo;
     }
     /**
      * adds the place to the visited places of the specified user

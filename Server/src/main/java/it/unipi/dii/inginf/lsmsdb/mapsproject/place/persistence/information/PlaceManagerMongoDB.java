@@ -3,15 +3,17 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.model.geojson.Point;
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Coordinate;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.mongodb.client.model.Updates.set;
 
 public class PlaceManagerMongoDB implements PlaceManager{
 
@@ -54,6 +58,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
             return ret;
         }
     }
+
     /**
      * use this method to query the Place Collection for Places instances
      * it orders the result set by the default criteria, which in case of use of the 'near' filter, is the distance
@@ -169,5 +174,14 @@ public class PlaceManagerMongoDB implements PlaceManager{
     public List<Place> getPopularPlaces(String activityName, int maxQuantity){
         Bson activityFilter = ActivityFilter(activityName);
         return this.queryPlaceCollection(Filters.and(activityFilter, popularityFilter(1)), orderBy(PlaceService.ORDER_CRITERIA_POPULARITY), maxQuantity);
+    }
+
+    @Override
+    public boolean updateFavouriteCounter(String placeId, int k) {
+        if(placeId == "" || k>1 || k<-1 || k==0)
+            return false;
+        Bson idFilter = Filters.eq(Place.KEY_ID, new ObjectId(placeId));
+        UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.NEO_KEY_FAVS, k));
+        return res.wasAcknowledged();
     }
 }
