@@ -50,8 +50,8 @@ public class PlaceController {
     // most popular places for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/places/most-popular", produces = "application/json")
-    public List<Place> popularPlaces(@RequestParam( defaultValue = "any") String activityFilter) {
-    return PlaceService.getPopularPlaces(activityFilter);
+    public List<Place> popularPlaces(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "0", name = "limit") int maxQuantity) {
+    return PlaceService.getPopularPlaces(activityFilter, maxQuantity);
     }
 
     // suggested places for the current user
