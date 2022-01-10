@@ -95,7 +95,7 @@ public class PlaceController {
 
     // add to favourite a place (wants the id of the place)
     // remove from favourite a place (wants the id of the place)
-    @ApiOperation(value = "adds the specified place to the favourite places of the currently logged in user")
+    @ApiOperation(value = "adds/removes the specified place to the favourite places of the currently logged in user")
     @PostMapping(value = "/place/{id}/favourites/{action}", produces = "application/json")
     public ResponseEntity handleFavourites(@PathVariable(name="id") String placeId, @PathVariable(name = "action") String action) {
         //should retrieve the place object (and check if it exists)
