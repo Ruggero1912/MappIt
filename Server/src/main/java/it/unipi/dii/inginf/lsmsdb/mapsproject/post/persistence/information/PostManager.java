@@ -9,8 +9,8 @@ public interface PostManager {
 
 
     /**
-     * return the newly created Yt Post or Null if something goes wrong
-     * @param newPost the YouTube Post object containing all the info
+     * return the newly created Post or Null if something goes wrong
+     * @param newPost the Post object containing all the info
      */
     Post storePost(Post newPost);
 

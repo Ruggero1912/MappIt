@@ -32,6 +32,7 @@ public class Post {
         private String authorUsername;
         private String authorId;
         private String placeId;
+        private String placeName;
         private String title;
         private Date date;
         private Date postDate;
