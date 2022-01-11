@@ -114,6 +114,10 @@ public class Post {
         this._id = id;
     }
 
+    public String getAuthorId(){ return this.authorId; }
+
+    public void setAuthorId(String id){ this.authorId=id; }
+
     public String getAuthorUsername() {
         return authorUsername;
     }

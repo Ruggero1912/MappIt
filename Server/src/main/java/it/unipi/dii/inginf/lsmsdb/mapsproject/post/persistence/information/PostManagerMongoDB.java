@@ -2,13 +2,22 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;
 import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PostManagerMongoDB implements PostManager {
+
+    private static final Logger LOGGER = Logger.getLogger(PostManagerMongoDB.class.getName());
 
     private MongoCollection postCollection;
 
@@ -31,6 +40,26 @@ public class PostManagerMongoDB implements PostManager {
         } catch(MongoException me){
             return null;
         }
+    }
+
+    @Override
+    public boolean deletePost(Post postToDelete) {
+        if(postToDelete==null)
+            return false;
+
+        ObjectId objId;
+        String postId = postToDelete.getId();
+
+        try{
+            objId = new ObjectId(postId);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+
+        Bson idFilter = Filters.eq(Post.KEY_ID, objId);
+        DeleteResult ret = postCollection.deleteOne(idFilter);
+        return ret.wasAcknowledged();
     }
 
 

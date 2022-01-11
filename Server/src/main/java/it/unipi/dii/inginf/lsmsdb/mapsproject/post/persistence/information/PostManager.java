@@ -15,6 +15,12 @@ public interface PostManager {
     Post storePost(Post newPost);
 
     /**
+     * return true if the deletion was successful or false if something goes wrong
+     * @param postToDelete the Post to be deleted
+     */
+    boolean deletePost(Post postToDelete);
+
+    /**
      * return all the posts associated to the given username if exists, else return Null
      * @param username A string containing the given username from the user
      * @return List of posts or null if not found

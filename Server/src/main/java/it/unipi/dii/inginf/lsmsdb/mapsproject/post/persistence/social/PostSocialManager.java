@@ -5,8 +5,8 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 public interface PostSocialManager {
 
     /**
-     * return the newly created Post or Null if something goes wrong
+     * return true if the insert of the newly created Post was successful or false if something goes wrong
      * @param newPost the Post object containing all the info
      */
-    Post storePost(Post newPost);
+    boolean storePost(Post newPost);
 }
