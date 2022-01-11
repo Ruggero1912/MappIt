@@ -127,8 +127,8 @@ public class UserSocialManagerNeo4jTest {
     @DisplayName("Test UserSocialManager.storeNewFollower")
     @Test
     void GIVEN_store_new_follower_WHEN_correct_parameters_are_passed_THEN_return_true() {
-        User u1 = UserService.getUserFromId("61d3428101336eeafcb438e5");
-        User u2 = UserService.getUserFromId("61d342a701336eeafcb43922");
+        User u1 = UserService.getUserFromId("61dd6acd40871512a8c33b55");
+        User u2 = UserService.getUserFromId("61dd6b9b40871512a8c33b56");
         LocalDateTime now = LocalDateTime.now();
 
         boolean res = UserService.followUser(u1,u2,now);
@@ -138,8 +138,8 @@ public class UserSocialManagerNeo4jTest {
     @DisplayName("Test UserSocialManager.deleteFollower")
     @Test
     void GIVEN_delete_follower_WHEN_correct_parameters_are_passed_THEN_return_true() {
-        User u1 = UserService.getUserFromId("61d3428101336eeafcb438e5");
-        User u2 = UserService.getUserFromId("61d342a701336eeafcb43922");
+        User u1 = UserService.getUserFromId("61dd6acd40871512a8c33b55");
+        User u2 = UserService.getUserFromId("61dd6b9b40871512a8c33b56");
 
         boolean res = UserService.unfollowUser(u1,u2);
         Assertions.assertTrue(res);

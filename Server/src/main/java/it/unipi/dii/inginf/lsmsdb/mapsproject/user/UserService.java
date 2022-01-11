@@ -337,7 +337,7 @@ public class UserService {
         if(!updatedInMongo){
             //we have to delete the relationship in Neo4j
             LOGGER.log(Level.SEVERE, "Error during following: MongoDB update failed!");
-            LocalDateTime timestampFollowRel = usm.deleteFollower(user, userToFollow);
+            usm.deleteFollower(user, userToFollow);
             return false;
         }
         return true;
@@ -353,21 +353,23 @@ public class UserService {
         if(userToUnfollow == null || user == null){
             return false;
         }
-        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
 
-        LocalDateTime timestampFollowRel = usm.deleteFollower(user, userToUnfollow);
-        if(timestampFollowRel == null){
-            LOGGER.log(Level.SEVERE, "Error during unfollowing: Neo4j relationship deletion failed!");
+        UserManager um = UserManagerFactory.getUserManager();
+        boolean updatedFollowCounterInMongo = um.updateFollowersCounter(userToUnfollow, -1);
+        if(!updatedFollowCounterInMongo){
+            LOGGER.log(Level.SEVERE, "Error during unfollowing: MongoDB update failed!");
             return false;
         }
 
-        UserManager um = UserManagerFactory.getUserManager();
-        boolean updatedInMongo = um.updateFollowersCounter(userToUnfollow, -1);
-        if(!updatedInMongo){
-            //we have to restore the relationship in Neo4j
-            LOGGER.log(Level.SEVERE, "Error during unfollowing: MongoDB update failed!");
-            return usm.storeNewFollower(user, userToUnfollow, timestampFollowRel);
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        boolean deletedFollowRelationshipNeo = usm.deleteFollower(user, userToUnfollow);
+        if(!deletedFollowRelationshipNeo){
+            //restore the follower counter value
+            LOGGER.log(Level.SEVERE, "Error during unfollowing: Neo4j relationship deletion failed!");
+            um.updateFollowersCounter(userToUnfollow, 1);
+            return false;
         }
+
         return true;
     }
 }

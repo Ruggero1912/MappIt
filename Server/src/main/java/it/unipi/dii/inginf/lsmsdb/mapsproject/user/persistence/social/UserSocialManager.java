@@ -79,6 +79,6 @@ public interface UserSocialManager {
      * @param userToUnfollow user to unfollow
      * @return LocalDateTime containing the timestamp of the deleted relationship if the user correctly unfollows the userToUnfollow, else null
      */
-    LocalDateTime deleteFollower(User user, User userToUnfollow);
+    boolean deleteFollower(User user, User userToUnfollow);
 
 }
