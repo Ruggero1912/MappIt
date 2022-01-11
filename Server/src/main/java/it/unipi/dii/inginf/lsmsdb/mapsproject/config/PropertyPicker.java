@@ -30,6 +30,12 @@ public class PropertyPicker {
     public final static String placeCollection = "persistence.db.mongo.collection.place";
     public final static String postCollection = "persistence.db.mongo.collection.post";
 
+    public final static String userEntity = "persistence.db.neo4j.entity.user";
+    public final static String placeEntity = "persistence.db.neo4j.entity.place";
+    public final static String postEntity = "persistence.db.neo4j.entity.post";
+
+    public final static String authorRelationship = "author";
+
     public final static String neoUserNode = "persistence.db.neo.node.user";
     public final static String neoPlaceNode = "persistence.db.neo.node.place";
 
@@ -65,6 +71,10 @@ public class PropertyPicker {
 
     public static String getNodePropertyKey(String nodeKind, String attribute){
         return getProperty(nodeKind + "." + attribute);
+    }
+
+    public static String getNodeLabel(String nodeKind){
+        return getProperty(nodeKind + ".label");
     }
 
     public static String getGraphRelationKey(String relationName){
