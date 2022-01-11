@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -124,7 +125,9 @@ public class PlaceManagerMongoDB implements PlaceManager{
         if(activityName == null || activityName == PlaceService.noActivityFilterKey){
             return null;
         }
-        return Filters.in(Place.KEY_FITS, activityName);
+        BasicDBObject filter=new BasicDBObject();
+        filter.put(Place.KEY_FITS, activityName);
+        return filter;
     }
 
     private Bson popularityFilter(int minimumNumberOfPosts){
