@@ -1,6 +1,6 @@
 from YTposts.YTPostFactory import YTPostFactory
 from FlickrPosts.FlickrPostFactory import FlickrPostFactory
-from dataPopulation.users.userFactory import UserFactory
+from users.userFactory import UserFactory
 from utilities.utils import *
 
 import logging
@@ -15,7 +15,7 @@ default_logger = initilize_default_logger()
 def main():
     places = Utils.load_places_list_from_mongo()
 
-    limit = 5
+    limit = 10
 
     counter = 0
 

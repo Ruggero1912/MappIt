@@ -29,38 +29,38 @@ public class Post {
 
 
     private String _id;
-        private String authorUsername;
-        private String authorId;
-        private String placeId;
-        private String placeName;
-        private String title;
-        private Date date;
-        private Date postDate;
-        private String description;
-        private String activity;
-        private List<String> tags;
-        private String ytChannelId;
-        private String videoId;
-        private String thumbnail;
-        private List<String> pics;
-        private int likeCounter;
+    private String authorUsername;
+    private String authorId;
+    private String placeId;
+    private String placeName;
+    private String title;
+    private Date date;
+    private Date postDate;
+    private String description;
+    private String activity;
+    private List<String> tags;
+    private String ytChannelId;
+    private String videoId;
+    private String thumbnail;
+    private List<String> pics;
+    private int likeCounter;
 
-        public Post(String id, String author, String authorID, String place_id, String t, Date d, String des, String activities, List<String> tags, String ytChId, String vidId, String thumb, List<String> pics) {
-            this._id = id;
-            this.authorUsername = author;
-            this.authorId = authorID;
-            this.placeId = place_id;
-            this.title= t;
-            this.date = d;
-            this.postDate = new Date();
-            this.description = des;
-            this.activity = activities;
-            this.tags = tags;
-            this.ytChannelId = ytChId;
-            this.videoId = vidId;
-            this.thumbnail = thumb;
-            this.pics = pics;
-        }
+    public Post(String id, String author, String authorID, String place_id, String t, Date d, String des, String activities, List<String> tags, String ytChId, String vidId, String thumb, List<String> pics) {
+        this._id = id;
+        this.authorUsername = author;
+        this.authorId = authorID;
+        this.placeId = place_id;
+        this.title= t;
+        this.date = d;
+        this.postDate = new Date();
+        this.description = des;
+        this.activity = activities;
+        this.tags = tags;
+        this.ytChannelId = ytChId;
+        this.videoId = vidId;
+        this.thumbnail = thumb;
+        this.pics = pics;
+    }
 
     public Post(Document doc){
         this._id = doc.get(KEY_ID).toString();
@@ -80,22 +80,24 @@ public class Post {
     }
 
     public Document createDocument(){
-        Document postDoc = new Document("title", this.title)
-                .append("author", this.authorUsername)
-                .append("authorID", this.authorId)
-                .append("desc", this.description)
-                .append("tags", this.tags)
-                .append("activity", this.activity)
-                .append("postDate", this.postDate)
-                .append("date", this.date)
-                .append("thumb", this.thumbnail);
+        Document postDoc = new Document(KEY_TITLE, this.title)
+                .append(KEY_AUTHOR_USERNAME, this.authorUsername)
+                .append(KEY_DESCRIPTION, this.description)
+                .append(KEY_TAGS, this.tags)
+                .append(KEY_ACTIVITY, this.activity)
+                .append(KEY_POST_DATE, this.postDate)
+                .append(KEY_DATE, this.date)
+                .append(KEY_THUMBNAIL, this.thumbnail);
 
-                if(this.ytChannelId != null && this.videoId != null) {
-                    postDoc.append("YT_videoId", this.ytChannelId);
-                    postDoc.append("YT_videoId", this.videoId);
-                }
-                if(this.pics != null)
-                 postDoc.append("pics", this.pics);
+        if (this.authorId != null){
+            postDoc.append(KEY_AUTHOR_ID, this.authorId);
+        }
+        if(this.ytChannelId != null && this.videoId != null) {
+            postDoc.append(KEY_YT_CHANNEL_ID, this.ytChannelId);
+            postDoc.append(KEY_YT_VIDEO_ID, this.videoId);
+        }
+        if(this.pics != null)
+         postDoc.append(KEY_PICS, this.pics);
 
         return postDoc;
     }
@@ -117,6 +119,10 @@ public class Post {
     public String getAuthorId(){ return this.authorId; }
 
     public void setAuthorId(String id){ this.authorId=id; }
+
+    public String getPlaceId(){ return this.placeId; }
+
+    public void setPlaceId(String id){ this.placeId=id; }
 
     public String getAuthorUsername() {
         return authorUsername;

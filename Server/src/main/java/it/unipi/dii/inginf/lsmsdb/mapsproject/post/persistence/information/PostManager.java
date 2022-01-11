@@ -1,6 +1,7 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
 import java.util.List;
 
@@ -26,4 +27,11 @@ public interface PostManager {
      * @return List of posts or null if not found
      */
     List<Post> retrieveAllPostsFromUsername(String username);
+
+    /**
+     * return null if it does not exist a post with that id, otherwise returns the associated post
+     * @param id the id of the requested post
+     * @return associated Post object or null if not found
+     */
+    Post getPostFromId(String id);
 }

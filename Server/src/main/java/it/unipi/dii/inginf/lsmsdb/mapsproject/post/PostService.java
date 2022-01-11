@@ -8,6 +8,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostM
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerNeo4j;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
 
@@ -26,6 +29,16 @@ public class PostService {
     public static List<Post> retrieveAllPostsFromUsername(String username){
         PostManager pm = PostManagerFactory.getPostManager();
         return pm.retrieveAllPostsFromUsername(username);
+    }
+
+    /**
+     * return null if it does not exist a post with that id, otherwise returns the associated post
+     * @param id the id of the requested post
+     * @return associated Post object or null if not found
+     */
+    public static Post getPostFromId(String id){
+        PostManager um = PostManagerFactory.getPostManager();
+        return um.getPostFromId(id);
     }
 
     /**
@@ -62,5 +75,7 @@ public class PostService {
 
         return newPost;
     }
+
+
 
 }
