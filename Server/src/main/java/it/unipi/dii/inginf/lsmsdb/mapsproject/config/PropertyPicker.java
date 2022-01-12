@@ -11,8 +11,10 @@ public class PropertyPicker {
 
     private static final Logger LOGGER = Logger.getLogger( PropertyPicker.class.getName() );
     Properties properties = new Properties();
+
     final String fileName = "application.properties";
     public static final String defaultPicKey = "defaults.user.profilepic";
+
     public static final String documentDBkey = "persistence.db.kind.information";
     public static final String documentDbMongoKey = "mongodb";
 
@@ -36,12 +38,12 @@ public class PropertyPicker {
 
     public final static String authorRelationship = "author";
     public final static String locationRelationship = "location";
+    public final static String visitedRelationship = "visited";
+    public final static String favouritesRelationship = "favourites";
+    public final static String followsRelationship = "follows";
+    public final static String likesRelationship = "likes";
 
-
-    public final static String neoUserNode = "persistence.db.neo.node.user";
-    public final static String neoPlaceNode = "persistence.db.neo.node.place";
-
-    private final static String neoRelation = "persistence.db.neo.relation";
+    private final static String neoRelation = "persistence.db.neo4j.relation";
 
     private PropertyPicker() {
         ClassLoader classLoader = getClass().getClassLoader();

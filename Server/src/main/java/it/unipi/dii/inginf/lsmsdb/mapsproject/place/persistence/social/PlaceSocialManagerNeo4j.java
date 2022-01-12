@@ -19,8 +19,8 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
 
     private static final Logger LOGGER = Logger.getLogger(PlaceSocialManagerNeo4j.class.getName());
 
-    private static final String NEO_LABEL_PLACE = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "label");
-    private static final String NEO_LABEL_USER = PropertyPicker.getNodePropertyKey(PropertyPicker.neoUserNode, "label");
+    private static final String NEO_LABEL_PLACE = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "label");
+    private static final String NEO_LABEL_USER = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, "label");
     private static final String NEO_RELATION_VISITED = PropertyPicker.getGraphRelationKey("visited");
     private static final String NEO_RELATION_FOLLOWS = PropertyPicker.getGraphRelationKey("follows");
     private static final String NEO_RELATION_FAVOURITES = PropertyPicker.getGraphRelationKey("favourites");

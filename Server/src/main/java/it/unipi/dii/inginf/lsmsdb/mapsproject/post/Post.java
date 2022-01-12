@@ -12,10 +12,12 @@ import java.util.List;
 
 public class Post {
 
+    public static final String KEY_POST_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "collectionName");
     public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "id");
     public static final String KEY_AUTHOR_USERNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "authorUsername");
     public static final String KEY_AUTHOR_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "authorId");
     public static final String KEY_PLACE_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "placeId");
+    public static final String KEY_PLACE_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "placeName");
     public static final String KEY_TITLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "title");
     public static final String KEY_DATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "date");
     public static final String KEY_POST_DATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "postDate");
@@ -26,7 +28,13 @@ public class Post {
     public static final String KEY_YT_CHANNEL_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "channelId");
     public static final String KEY_YT_VIDEO_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "videoId");
     public static final String KEY_PICS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "pics");
+    public static final String KEY_LIKES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "likes");
 
+    public static final String NEO_POST_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.postEntity);
+    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "id");
+    public static final String NEO_KEY_TITLE = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "title");
+    public static final String NEO_KEY_DESC = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "desc");
+    public static final String NEO_KEY_THUMBNAIL = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "thumb");
 
     private String _id;
     private String authorUsername;

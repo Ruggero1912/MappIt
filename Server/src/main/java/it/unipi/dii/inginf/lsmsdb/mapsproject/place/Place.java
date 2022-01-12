@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Place {
 
+    public static final String KEY_PLACE_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "collectionName");
     public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "id");
     public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "name");
     public static final String KEY_FITS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "fits");
@@ -20,10 +21,11 @@ public class Place {
     public static final String KEY_POSTS_ARRAY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "postsArray");
     public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "favouritesCounter");
     public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "coordinates");
+    public static final String KEY_TYPE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "type");
 
-    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "id");
-    public static final String NEO_KEY_FAVS = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "favs");
-    public static final String NEO_KEY_NAME = PropertyPicker.getNodePropertyKey(PropertyPicker.neoPlaceNode, "name");
+    public static final String NEO_PLACE_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.placeEntity);
+    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "id");
+    public static final String NEO_KEY_NAME = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "name");
 
 
     private String _id;
