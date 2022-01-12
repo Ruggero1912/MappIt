@@ -34,4 +34,12 @@ public interface PostManager {
      * @return associated Post object or null if not found
      */
     Post getPostFromId(String id);
+
+    /**
+     * return true if likes counter was correctly increased, else return false
+     * @param post we want to increase the likes number
+     * @param k value of the increment or decrement
+     * @return true if likes counter was correctly increased, false otherwise
+     */
+    boolean updateLikesCounter(Post post, int k);
 }

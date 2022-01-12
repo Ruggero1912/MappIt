@@ -82,8 +82,69 @@ public class PostService {
      * @return True if posts are successfully deleted, else False
      */
     public static boolean deletePostsOfGivenUser(User user){
-        return false;
+        PostSocialManager um = PostSocialManagerFactory.getPostManager();
+        return um.deleteAllPostsOfGivenUser(user);
     }
 
+    /**
+     * Adds like from a user u to a post p
+     * @param user user that likes the post
+     * @param post post that received the appreciation
+     * @return true if the like was delivered successfully, else false
+     */
+    //TODO: add endpoint method
+    public static boolean likePost(User user, Post post){
+        if(user == null || post == null){
+            return false;
+        }
 
+        PostManager pm = PostManagerFactory.getPostManager();
+        boolean updatedLikesCounterInMongo = pm.updateLikesCounter(post, 1);
+        if(!updatedLikesCounterInMongo){
+            LOGGER.log(Level.SEVERE, "Error during like insert: MongoDB update failed!");
+            return false;
+        }
+
+        PostSocialManager psm = PostSocialManagerFactory.getPostManager();
+        boolean addedLikesRelationshipNeo = psm.likePost(user, post);
+        if(!addedLikesRelationshipNeo){
+            //restore the likes counter value
+            LOGGER.log(Level.SEVERE, "Error during like insert: Neo4j relationship insertion failed!");
+            pm.updateLikesCounter(post, -1);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Removes like from a user u to a post p
+     * @param user user that unlikes the post
+     * @param post post for which we delete the appreciation
+     * @return true if the like was deleted successfully, else false
+     */
+    //TODO: add endpoint method
+    public static boolean unlikePost(User user, Post post){
+        if(user == null || post == null){
+            return false;
+        }
+
+        PostManager pm = PostManagerFactory.getPostManager();
+        boolean updatedLikesCounterInMongo = pm.updateLikesCounter(post, -1);
+        if(!updatedLikesCounterInMongo){
+            LOGGER.log(Level.SEVERE, "Error during like deletion: MongoDB update failed!");
+            return false;
+        }
+
+        PostSocialManager psm = PostSocialManagerFactory.getPostManager();
+        boolean removedLikesRelationshipNeo = psm.unlikePost(user, post);
+        if(!removedLikesRelationshipNeo){
+            //restore the likes counter value
+            LOGGER.log(Level.SEVERE, "Error during unlike: Neo4j relationship deletion failed!");
+            pm.updateLikesCounter(post, 1);
+            return false;
+        }
+
+        return true;
+    }
 }

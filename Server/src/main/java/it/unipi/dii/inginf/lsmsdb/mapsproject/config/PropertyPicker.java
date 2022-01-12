@@ -36,6 +36,7 @@ public class PropertyPicker {
 
     public final static String authorRelationship = "author";
     public final static String locationRelationship = "location";
+    public final static String likeRelationship = "like";
 
 
     public final static String neoUserNode = "persistence.db.neo.node.user";
