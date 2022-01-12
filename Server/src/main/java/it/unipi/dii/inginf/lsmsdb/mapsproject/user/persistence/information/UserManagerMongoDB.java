@@ -48,6 +48,7 @@ public class UserManagerMongoDB implements UserManager{
         if(cursor.hasNext()){
             Document userDoc = cursor.next();
             User ret = new User(userDoc);
+            cursor.close();
             return ret;
         }
         else
@@ -66,6 +67,7 @@ public class UserManagerMongoDB implements UserManager{
     public boolean checkDuplicateUsername(String username) {
         Bson usernameFilter = Filters.eq(USERNAMEKEY, username);
         MongoCursor<Document> cursor = userCollection.find(usernameFilter).cursor();
+        cursor.close();
         return cursor.hasNext();
     }
 
@@ -73,6 +75,7 @@ public class UserManagerMongoDB implements UserManager{
     public boolean checkDuplicateEmail(String email) {
         Bson emailFilter = Filters.eq(EMAILKEY, email);
         MongoCursor<Document> cursor = userCollection.find(emailFilter).cursor();
+        cursor.close();
         return cursor.hasNext();
     }
 
@@ -110,11 +113,13 @@ public class UserManagerMongoDB implements UserManager{
         Bson idFilter = Filters.eq(IDKEY, objId);
         MongoCursor<Document> cursor = userCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
+            cursor.close();
             return null;
         }
         else{
             Document userDoc = cursor.next();
             User ret = new User(userDoc);
+            cursor.close();
             return ret;
         }
     }

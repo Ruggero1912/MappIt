@@ -86,11 +86,13 @@ public class PostManagerMongoDB implements PostManager {
         Bson idFilter = Filters.eq(Post.KEY_ID, objId);
         MongoCursor<Document> cursor = postCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
+            cursor.close();
             return null;
         }
         else{
             Document postDoc = cursor.next();
             Post ret = new Post(postDoc);
+            cursor.close();
             return ret;
         }
     }

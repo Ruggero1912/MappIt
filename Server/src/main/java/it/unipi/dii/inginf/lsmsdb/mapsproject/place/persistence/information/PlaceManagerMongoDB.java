@@ -52,10 +52,12 @@ public class PlaceManagerMongoDB implements PlaceManager{
         Bson idFilter = Filters.eq(Place.KEY_ID, objId);
         MongoCursor<Document> cursor = placeCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
+            cursor.close();
             return null;
         }else{
             Document placeDoc = cursor.next();
             Place ret = new Place(placeDoc);
+            cursor.close();
             return ret;
         }
     }
