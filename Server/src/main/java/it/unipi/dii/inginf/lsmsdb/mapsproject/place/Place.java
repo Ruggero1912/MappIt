@@ -4,6 +4,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import org.bson.Document;
+import org.neo4j.driver.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,15 @@ public class Place {
         this.favouritesCounter = doc.getInteger(KEY_FAVOURITES, 0);
         this.image = new Image();
         this.image.setPath(doc.getString(KEY_IMAGE));
+    }
+
+    /**
+     * We exploit this constructor to parse a Place object from a Neo4j Node
+     * @param value
+     */
+    public Place(Value value){
+        this._id = value.get(Place.NEO_KEY_ID).asString();
+        this.name = value.get(Place.NEO_KEY_NAME).asString();
     }
 
     public String getId() {

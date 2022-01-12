@@ -56,7 +56,7 @@ class UserFactory:
         """
         return the User obj of an user associated to the given channel_id
         if a user associated with that channel_id does not exists, 
-        create a user starting from the given channel_name and returns its user _id
+        create a user starting from the given channel_name and returns the User object
         """
         associated_user = UserFactory.find_user_by_YT_channel_id(channel_id)
         if associated_user is None:
@@ -73,7 +73,7 @@ class UserFactory:
         """
         return the User obj of an user associated to the given flickr_account_id
         if a user associated with that flickr_account_id does not exists, 
-        create a user starting from the given flickr_username and returns its user _id
+        create a user starting from the given flickr_username and returns the User object
         """
         associated_user = UserFactory.find_user_by_Flickr_account_id(flickr_account_id)
         if associated_user is None:
@@ -111,7 +111,7 @@ class UserFactory:
         create an user with the given username
         returns the user obj of the created user
         """
-        user = User(username, name, surname)
+        user = User(username=username, name=name, surname=surname)
         #here it should store it in the database
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
         user_id = db_ret.inserted_id
@@ -170,17 +170,25 @@ class UserFactory:
             #never happens
             return False
 
-    def find_user_by_YT_channel_id(channel_id) -> dict:
+    def find_user_by_YT_channel_id(channel_id) -> User:
         """
-        return the user doc associated with the given channel if any in Mongo (else return None)
+        return the user object associated with the given channel if any in Mongo (else return None)
         """
         user = UserFactory.USERS_COLLECTION.find_one({UserFactory.USER_YT_CHANNEL_ID_KEY : channel_id})
+        if(user is not None):
+            return User.parse_from_dict(user)
+        else:
+            return None
 
-        return user
-
-    def find_user_by_Flickr_account_id(flickr_account_id):
+    def find_user_by_Flickr_account_id(flickr_account_id) -> User:
+        """
+        return the user object associated with the given channel if any in Mongo (else return None)
+        """
         user = UserFactory.USERS_COLLECTION.find_one({UserFactory.USER_FLICKR_ACCOUNT_ID_KEY : flickr_account_id})
-        return user
+        if(user is not None):
+            return User.parse_from_dict(user)
+        else:
+            return None
 
     def bind_user_to_Flickr_account(user_id, flickr_account_id):
         """

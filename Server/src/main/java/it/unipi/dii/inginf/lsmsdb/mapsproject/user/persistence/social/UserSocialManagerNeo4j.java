@@ -230,7 +230,8 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 params.put( "datetime", timestampFollow);
                 String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')" +
                                 "MATCH (uToFollow:"+USERLABEL+" WHERE uToFollow."+USER_ID_KEY+" = '"+userToFollowId+"')" +
-                                "MERGE (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+" {datetime: $datetime}]->(uToFollow)";
+                                "MERGE (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+"]->(uToFollow) "+
+                                "SET r.datetime = datetime()";
                 tx.run(query, params);
                 return true;
             });
@@ -240,32 +241,21 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public LocalDateTime deleteFollower(User user, User userToUnfollow) {
+    public boolean deleteFollower(User user, User userToUnfollow) {
         String userId = user.getId();
         String userToUnfollowId = userToUnfollow.getId();
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            //if relationship doesn't exist the DELETE method leaves the node(s) unaffected.
             return session.writeTransaction(tx -> {
                 String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
                                 "MATCH (uToUnfollow:"+USERLABEL+" WHERE uToUnfollow."+USER_ID_KEY+" = '"+userToUnfollowId+"') " +
-                                "MATCH (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+"]->(uToUnfollow) "+
-                                "WITH r.datetime as timestamp "+
-                                "DELETE r "+
-                                "RETURN timestamp";
-                Result result = tx.run(query);
-                LocalDateTime timestamp = null;
-                if(result.hasNext())
-                {
-                    Record r = result.next();
-                    Value value = r.get("timestamp");
-                    timestamp = value.asLocalDateTime();
-                }
-                return timestamp;
+                                "MATCH (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+"]->(uToUnfollow) DELETE r";
+                tx.run(query);
+                return true;
             });
         }catch (Exception e){
-            return null;
+            return false;
         }
     }
 }

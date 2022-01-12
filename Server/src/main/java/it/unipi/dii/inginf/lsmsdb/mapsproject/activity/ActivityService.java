@@ -9,7 +9,7 @@ public class ActivityService {
 
     private static List<String> getActivitiesNames(){
         // TODO: load activities from file or statically
-        return Arrays.asList("foo", "var");
+        return Arrays.asList("drone", "generic", "running", "trekking");
     }
 
     public static boolean checkIfActivityExists(String activityName){

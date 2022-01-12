@@ -48,8 +48,26 @@ class User:
         setattr(self, User.KEY_ROLE        , User.DEFAULT_USER_ROLE                                                     )
         setattr(self, User.KEY_PROFILE_PIC , profile_pic if profile_pic is not None else User.DEFAULT_PROFILE_PIC       )
         setattr(self, User.KEY_POST_ARRAY  , post_array                                                                 )
-
         setattr(self, User.KEY_FOLLOWER_COUNTER, 0)
+
+    def parse_from_dict(user_dict : dict):
+        """
+        Constructor that parses a user object from a dict that should have all the users' keys
+        - use this to parse a user object from a mongoDB result
+        """
+        self = User()
+        setattr(self, User.KEY_ID          , str(user_dict[User.KEY_ID])                  )
+        setattr(self, User.KEY_USERNAME    , user_dict[User.KEY_USERNAME]                 )
+        setattr(self, User.KEY_NAME        , user_dict[User.KEY_NAME]                     )
+        setattr(self, User.KEY_SURNAME     , user_dict[User.KEY_SURNAME]                  )
+        setattr(self, User.KEY_MAIL        , user_dict[User.KEY_MAIL]                     )
+        setattr(self, User.KEY_BIRTH_DATE  , user_dict[User.KEY_BIRTH_DATE]               )
+        setattr(self, User.KEY_PASSWORD    , user_dict[User.KEY_PASSWORD]                 )
+        setattr(self, User.KEY_ROLE        , user_dict[User.KEY_ROLE]                     )
+        setattr(self, User.KEY_PROFILE_PIC , user_dict[User.KEY_PROFILE_PIC]              )  
+        setattr(self, User.KEY_POST_ARRAY  , user_dict[User.KEY_POST_ARRAY]               )
+        setattr(self, User.KEY_FOLLOWER_COUNTER, user_dict[User.KEY_FOLLOWER_COUNTER]     )
+        return self
 
     def get_dict(self) -> dict:
         ret_dict = self.__dict__

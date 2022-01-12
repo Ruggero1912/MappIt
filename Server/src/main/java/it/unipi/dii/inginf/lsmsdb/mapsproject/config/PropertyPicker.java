@@ -35,6 +35,8 @@ public class PropertyPicker {
     public final static String postEntity = "persistence.db.neo4j.entity.post";
 
     public final static String authorRelationship = "author";
+    public final static String locationRelationship = "location";
+
 
     public final static String neoUserNode = "persistence.db.neo.node.user";
     public final static String neoPlaceNode = "persistence.db.neo.node.place";

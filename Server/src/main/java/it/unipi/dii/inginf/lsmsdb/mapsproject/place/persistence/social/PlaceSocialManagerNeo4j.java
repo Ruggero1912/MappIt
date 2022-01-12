@@ -39,14 +39,14 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
                 params.put("HOW_MANY", maxHowMany);
                 String newLine = System.getProperty("line.separator");
                 String query = String.join(newLine,
-                        "MATCH u:" + NEO_LABEL_USER + " WHERE u." + User.NEO_KEY_ID + "=$USER_ID",
+                        "MATCH (u:" + NEO_LABEL_USER + ") WHERE u." + User.NEO_KEY_ID + "=$USER_ID",
                         "MATCH (u)-[rFollows:" + NEO_RELATION_FOLLOWS + "]->(uFollowed:" + NEO_LABEL_USER + ")",
                         "MATCH (uFollowed)-[rVisited:" + NEO_RELATION_VISITED + "]->(pl:" + NEO_LABEL_PLACE + ")",
                         "MATCH (u)-[:" + NEO_RELATION_VISITED + "]->(excludedPl:Place)",
                         "MATCH (u)-[:" + NEO_RELATION_FAVOURITES + "]->(exclPl2:Place)",
                         "WITH",
-                        "   pl",
-                        "   collect(excludedPl) AS excludedPlaces",
+                        "   pl,",
+                        "   collect(excludedPl) AS excludedPlaces,",
                         "   collect(exclPl2) AS excludedPlaces2",
                         "WHERE",
                         "   NOT pl IN excludedPlaces",
@@ -58,8 +58,8 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
                 List<Place> places = new ArrayList<>();
                 while(res.hasNext()){
                     Record r = res.next();
-                    Value place = r.get("pl");
-                    Place p = new Place(place.get(Place.NEO_KEY_ID).asString(), place.get(Place.NEO_KEY_NAME).asString());
+                    Value v = r.get("pl");
+                    Place p = new Place(v);
                     places.add(p);
                 }
                 return places;
