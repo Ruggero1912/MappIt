@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.neo4j.driver.Session;
 
 import java.util.HashMap;
@@ -56,6 +57,26 @@ public class PostSocialManagerNeo4j implements PostSocialManager{
                             "MERGE (p)-[r2:"+KEY_RELATIONSHIP_LOCATION+"]->(pl)";
 
                 tx.run(query, params);
+                return true;
+            });
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteAllPostsOfGivenUser(User u){
+        if(u==null)
+            return false;
+
+        String userId = u.getId();
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            return session.writeTransaction(tx -> {
+                String query = "MATCH (p:"+POST_LABEL_NEO+")-[r:AUTHOR]->(u:"+USER_LABEL_NEO+" WHERE u."+KEY_ID_NEO+"="+userId+") " +
+                                "DETACH DELETE p";
+                tx.run(query);
                 return true;
             });
         }catch (Exception e){
