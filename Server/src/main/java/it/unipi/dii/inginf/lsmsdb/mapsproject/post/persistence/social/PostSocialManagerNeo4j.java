@@ -24,6 +24,8 @@ public class PostSocialManagerNeo4j implements PostSocialManager{
 
     public static final String KEY_RELATIONSHIP_AUTHOR = PropertyPicker.getGraphRelationKey(PropertyPicker.authorRelationship);
     public static final String KEY_RELATIONSHIP_LOCATION = PropertyPicker.getGraphRelationKey(PropertyPicker.locationRelationship);
+    public static final String KEY_RELATIONSHIP_LIKES = PropertyPicker.getGraphRelationKey(PropertyPicker.likeRelationship);
+
 
     @Override
     public boolean storePost(Post newPost) {
@@ -76,6 +78,47 @@ public class PostSocialManagerNeo4j implements PostSocialManager{
             return session.writeTransaction(tx -> {
                 String query = "MATCH (p:"+POST_LABEL_NEO+")-[r:AUTHOR]->(u:"+USER_LABEL_NEO+" WHERE u."+KEY_ID_NEO+"="+userId+") " +
                                 "DETACH DELETE p";
+                tx.run(query);
+                return true;
+            });
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean likePost(User u, Post p) {
+        String userId = u.getId();
+        String postId = p.getId();
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            return session.writeTransaction(tx -> {
+                String query = "MATCH (u:"+USER_LABEL_NEO+" WHERE u."+KEY_ID_NEO+" = '"+userId+"') " +
+                        "MATCH (p:"+POST_LABEL_NEO+" WHERE p.id = '"+postId+"') " +
+                        "MERGE (u)-[r:"+KEY_RELATIONSHIP_LIKES+"]->(p) " +
+                        " SET r.datetime = datetime()";
+
+                tx.run(query);
+                return true;
+            });
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean unlikePost(User u, Post p) {
+        String userId = u.getId();
+        String postId = p.getId();
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            //if relationship doesn't exist the DELETE method leaves the node(s) unaffected.
+            return session.writeTransaction(tx -> {
+                String query = "MATCH (u:"+USER_LABEL_NEO+" WHERE u."+KEY_ID_NEO+" = '"+userId+"') " +
+                                "MATCH (p:"+POST_LABEL_NEO+" WHERE p.id = '"+postId+"') " +
+                                "MATCH (u)-[r:"+KEY_RELATIONSHIP_LIKES+"]->(p) DELETE r";
                 tx.run(query);
                 return true;
             });
