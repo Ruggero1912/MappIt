@@ -76,6 +76,14 @@ public class PostService {
         return newPost;
     }
 
+    /**
+     * return True if posts are successfully deleted, False otherwise
+     * @param user is the author of the posts to delete
+     * @return True if posts are successfully deleted, else False
+     */
+    public static boolean deletePostsOfGivenUser(User user){
+        return false;
+    }
 
 
 }

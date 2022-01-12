@@ -164,6 +164,8 @@ public class UserService {
         String userId = userToDelete.getId();
         boolean UserDeletedFromMongo = um.deleteUserFromId(userId);
 
+        //TODO: handle the deletion of all the posts published by the user to delete
+
         if(!UserDeletedFromMongo){
             LOGGER.log(Level.SEVERE, "Error during delete: Mongo user deletion failed!");
             throw new DatabaseErrorException("Mongo user deletion failed");
