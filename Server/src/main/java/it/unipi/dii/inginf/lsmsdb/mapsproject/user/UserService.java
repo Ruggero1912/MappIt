@@ -205,7 +205,8 @@ public class UserService {
      * @return true if password change has been successful, false otherwise
      */
     public static boolean updatePassword(String userID, String newPassword){
-        if(newPassword == "" || userID == "" || newPassword.length() <= 4){
+        if(newPassword == "" || userID == "" || newPassword.length() < 4){
+            LOGGER.log(Level.SEVERE, "Password must be at least 4 characters long");
             return false;
         }
 
@@ -393,8 +394,8 @@ public class UserService {
      * return all the posts of an user in the db, given user obj
      * @return Posts List or null if there are no posts
      */
-    public static List<Post> retrieveAllPostsFromUser(User user){
+    public static List<PostPreview> retrieveAllPostPreviewsFromUser(User user){
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        return usm.retrieveAllPosts(user);
+        return usm.retrieveAllPostPreviews(user);
     }
 }

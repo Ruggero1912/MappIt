@@ -27,7 +27,6 @@ public class Post {
     public static final String KEY_ACTIVITY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "activity");
     public static final String KEY_TAGS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "tags");
     public static final String KEY_THUMBNAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "thumbnail");
-    public static final String KEY_YT_CHANNEL_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "channelId");
     public static final String KEY_YT_VIDEO_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "videoId");
     public static final String KEY_PICS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "pics");
     public static final String KEY_LIKES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "likes");
@@ -52,13 +51,12 @@ public class Post {
     private String description;
     private String activity;
     private List<String> tags;
-    private String ytChannelId;
     private String videoId;
     private String thumbnail;
     private List<String> pics;
     private int likeCounter;
 
-    public Post(String id, String author, String authorID, String place_id, String t, Date d, String des, String activities, List<String> tags, String ytChId, String vidId, String thumb, List<String> pics) {
+    public Post(String id, String author, String authorID, String place_id, String t, Date d, String des, String activities, List<String> tags, String vidId, String thumb, List<String> pics) {
         this._id = id;
         this.authorUsername = author;
         this.authorId = authorID;
@@ -69,21 +67,9 @@ public class Post {
         this.description = des;
         this.activity = activities;
         this.tags = tags;
-        this.ytChannelId = ytChId;
         this.videoId = vidId;
         this.thumbnail = thumb;
         this.pics = pics;
-    }
-
-    /**
-     * We exploit this constructor to parse a Post object from a Neo4j Node
-     * @param value
-     */
-    public Post(Value value) {
-        this._id = value.get(Post.NEO_KEY_ID).asString();
-        this.title = value.get(Post.NEO_KEY_TITLE).asString();
-        this.description = value.get(Post.NEO_KEY_DESC).asString();
-        this.thumbnail = value.get(Post.KEY_THUMBNAIL).asString();
     }
 
     public Post(Document doc){
@@ -97,7 +83,6 @@ public class Post {
         this.description = doc.get(KEY_DESCRIPTION).toString();
         this.activity = doc.get(KEY_ACTIVITY).toString();
         this.tags = (List<String>) doc.get(KEY_TAGS, List.class);
-        this.ytChannelId = doc.get(KEY_YT_CHANNEL_ID).toString();
         this.videoId = doc.get(KEY_YT_VIDEO_ID).toString();
         this.thumbnail = doc.get(KEY_THUMBNAIL).toString();
         this.pics = (List<String>) doc.get(KEY_PICS, List.class);
@@ -116,8 +101,7 @@ public class Post {
         if (this.authorId != null){
             postDoc.append(KEY_AUTHOR_ID, this.authorId);
         }
-        if(this.ytChannelId != null && this.videoId != null) {
-            postDoc.append(KEY_YT_CHANNEL_ID, this.ytChannelId);
+        if(this.videoId != null) {
             postDoc.append(KEY_YT_VIDEO_ID, this.videoId);
         }
         if(this.pics != null)
@@ -194,14 +178,6 @@ public class Post {
 
     public void addTags(String t) {
         this.tags.add(t);
-    }
-
-    public String getYtChannelId() {
-        return this.ytChannelId;
-    }
-
-    public void setYtChannelId(String id) {
-        this.ytChannelId = id;
     }
 
     public String getVideoId() {

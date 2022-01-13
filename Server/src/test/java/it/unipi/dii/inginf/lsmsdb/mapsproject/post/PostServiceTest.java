@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 
 public class PostServiceTest {
 
-    @DisplayName("Test PostService.createNewPost standard behaviour")
+    /*@DisplayName("Test PostService.createNewPost standard behaviour")
     @Test
     void GIVEN_create_new_post_WHEN_standard_parameters_are_passed_THEN_return_created_post(){
 
@@ -28,5 +28,5 @@ public class PostServiceTest {
         } catch(DatabaseErrorException e){
             e.printStackTrace();
         }
-    }
+    }*/
 }
