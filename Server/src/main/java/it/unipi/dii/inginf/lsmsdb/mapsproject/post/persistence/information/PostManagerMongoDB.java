@@ -4,7 +4,9 @@ import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
@@ -86,12 +88,27 @@ public class PostManagerMongoDB implements PostManager {
         Bson idFilter = Filters.eq(Post.KEY_ID, objId);
         MongoCursor<Document> cursor = postCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
+            cursor.close();
             return null;
         }
         else{
             Document postDoc = cursor.next();
             Post ret = new Post(postDoc);
+            cursor.close();
             return ret;
         }
+    }
+
+
+    @Override
+    public boolean updateLikesCounter(Post post, int k) {
+        if(post == null || k < -1 || k > 1  || k == 0){
+            return false;
+        }
+        String postId = post.getId();
+
+        Bson idFilter = Filters.eq(Post.KEY_ID, new ObjectId(postId));
+        UpdateResult res = postCollection.updateOne(idFilter, Updates.inc("likes", k));
+        return res.wasAcknowledged();
     }
 }

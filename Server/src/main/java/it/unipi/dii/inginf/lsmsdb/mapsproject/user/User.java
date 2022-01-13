@@ -13,6 +13,7 @@ import java.util.Date;
 
 public class User implements Serializable {
 
+	public static final String KEY_USER_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "collectionName");
 	public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "id");
 	public static final String KEY_USERNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "username");
 	public static final String KEY_EMAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "email");
@@ -23,9 +24,16 @@ public class User implements Serializable {
 	public static final String KEY_ROLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "role");
 	public static final String KEY_PROFILE_PIC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "profilepic");
 	public static final String KEY_PUBLISHED_POSTS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
+	public static final String KEY_FOLLOWERS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "followers");
 
-	public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.neoUserNode, "id");
+	public static final String NEO_USER_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.userEntity);
+	public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, "id");
+	public static final String NEO_KEY_USERNAME = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, "username");
 
+	public static final String NEO_RELATION_VISITED = PropertyPicker.getGraphRelationKey("visited");
+	public static final String NEO_RELATION_FOLLOWS = PropertyPicker.getGraphRelationKey("follows");
+	public static final String NEO_RELATION_FAVOURITES = PropertyPicker.getGraphRelationKey("favourites");
+	public static final String NEO_RELATION_LIKES = PropertyPicker.getGraphRelationKey("likes");
 
 	public enum Role {USER,MODERATOR,ADMIN}
 

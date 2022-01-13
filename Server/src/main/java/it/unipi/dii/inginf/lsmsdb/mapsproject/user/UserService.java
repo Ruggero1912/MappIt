@@ -5,6 +5,11 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
@@ -164,8 +169,6 @@ public class UserService {
         String userId = userToDelete.getId();
         boolean UserDeletedFromMongo = um.deleteUserFromId(userId);
 
-        //TODO: handle the deletion of all the posts published by the user to delete
-
         if(!UserDeletedFromMongo){
             LOGGER.log(Level.SEVERE, "Error during delete: Mongo user deletion failed!");
             throw new DatabaseErrorException("Mongo user deletion failed");
@@ -173,8 +176,10 @@ public class UserService {
 
         //Try to delete also in Neo4j for maintaining the db consistency
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        PostSocialManager psm = PostSocialManagerFactory.getPostManager();
         boolean UserDeletedFromNeo4j;
         try{
+            psm.deleteAllPostsOfGivenUser(userToDelete);
             UserDeletedFromNeo4j = usm.deleteUserFromId(userId);
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
@@ -373,5 +378,14 @@ public class UserService {
         }
 
         return true;
+    }
+
+    /**
+     * return all the posts of an user in the db, given user obj
+     * @return Posts List or null if there are no posts
+     */
+    public static List<Post> retrieveAllPostsFromUser(User user){
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        return usm.retrieveAllPosts(user);
     }
 }

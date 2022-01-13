@@ -51,10 +51,10 @@ public class UserController {
 		try {
 			userID = JwtTokenUtil.getIdFromToken(token);
 		} catch (IllegalArgumentException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
+			LOGGER.log(Level.INFO, "{Error : Unable to get JWT Token}");
 			return null;
 		} catch (ExpiredJwtException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
+			LOGGER.log(Level.INFO, "{Error : JWT Token has expired}");
 			return null;
 		}
 		User currentUser = UserService.getUserFromId(userID);

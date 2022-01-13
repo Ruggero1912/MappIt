@@ -52,10 +52,12 @@ public class PlaceManagerMongoDB implements PlaceManager{
         Bson idFilter = Filters.eq(Place.KEY_ID, objId);
         MongoCursor<Document> cursor = placeCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
+            cursor.close();
             return null;
         }else{
             Document placeDoc = cursor.next();
             Place ret = new Place(placeDoc);
+            cursor.close();
             return ret;
         }
     }
@@ -184,7 +186,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
         if(placeId == "" || k>1 || k<-1 || k==0)
             return false;
         Bson idFilter = Filters.eq(Place.KEY_ID, new ObjectId(placeId));
-        UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.NEO_KEY_FAVS, k));
+        UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.KEY_FAVOURITES, k));
         return res.wasAcknowledged();
     }
 }
