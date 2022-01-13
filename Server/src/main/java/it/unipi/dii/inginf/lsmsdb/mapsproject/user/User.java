@@ -30,6 +30,11 @@ public class User implements Serializable {
 	public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, "id");
 	public static final String NEO_KEY_USERNAME = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, "username");
 
+	public static final String NEO_RELATION_VISITED = PropertyPicker.getGraphRelationKey("visited");
+	public static final String NEO_RELATION_FOLLOWS = PropertyPicker.getGraphRelationKey("follows");
+	public static final String NEO_RELATION_FAVOURITES = PropertyPicker.getGraphRelationKey("favourites");
+	public static final String NEO_RELATION_LIKES = PropertyPicker.getGraphRelationKey("likes");
+
 	public enum Role {USER,MODERATOR,ADMIN}
 
 	private String _id;

@@ -26,25 +26,6 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
     private static final Logger LOGGER = Logger.getLogger(UserSocialManagerNeo4j.class.getName());
 
-    private static final String USER_ID_KEY = "id";
-    private static final String USER_USERNAME_KEY = "username";
-
-    private static final String USERLABEL = "User";
-    private static final String PLACELABEL = "Place";
-    private static final String POSTLABEL = "Post";
-    private static final String NEO4J_RELATION_USER_FOLLOWS_USER = "FOLLOWS";
-    private static final String NEO4J_RELATION_USER_FAVOURITES_PLACE = "FAVOURITES";
-    private static final String NEO4J_RELATION_USER_VISITED_PLACE = "VISITED";
-    private static final String NEO4J_RELATION_USER_AUTHOR_POST = "AUTHOR";
-    private static final String PLACE_NAME_KEY = "name";
-    private static final String PLACE_ID_KEY = "id";
-    private static final String POST_ID_KEY = "id";
-    private static final String POST_ID_TITLE = "title";
-    private static final String POST_ID_DESC = "description";
-    private static final String POST_ID_THUMB = "thumbnail";
-
-
-
     private static final ArrayList<String> allowedRelationshipKinds = new ArrayList<>(Arrays.asList("favourite", "visited"));
 
     public UserSocialManagerNeo4j(){
@@ -68,7 +49,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 params.put( "id", id );
                 params.put( "username", username );
 
-                String query = "CREATE (u:"+ USERLABEL +" { "+ USER_ID_KEY +": $id, "+ USER_USERNAME_KEY +": $username})";
+                String query = "CREATE (u:"+ User.NEO_USER_LABEL +" { "+ User.NEO_KEY_ID +": $id, "+ User.NEO_KEY_USERNAME +": $username})";
 
                 tx.run( query, params);
                 return newUser;
@@ -92,7 +73,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         {
             //Detach deletes the node and all its relationships
             return session.writeTransaction(tx -> {
-                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
+                String query = "MATCH (u:"+User.NEO_USER_LABEL+" WHERE u."+User.NEO_KEY_ID+" = '"+userId+"') " +
                         "DETACH DELETE u";
                 tx.run(query);
                 return true;
@@ -112,14 +93,14 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             favouritePlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_FAVOURITES_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +"= $id RETURN pl as FavouritePlace";
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_FAVOURITES +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as FavouritePlace";
                 Result result = tx.run(query,params);
                 ArrayList<Place> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value place=r.get("FavouritePlace");
-                    Place p = new Place(place.get(PLACE_ID_KEY).asString(), place.get(PLACE_NAME_KEY).asString());
+                    Place p = new Place(place);
                     places.add(p);
                 }
                 return places;
@@ -142,7 +123,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             visitedPlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_VISITED_PLACE +"]->(pl:"+ PLACELABEL +") WHERE u." + USER_ID_KEY +"= $id RETURN pl as VisitedPlace";
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace";
                 Result result = tx.run(query,params);
                 ArrayList<Place> places = new ArrayList<>();
                 while(result.hasNext())
@@ -171,9 +152,9 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         {
             //Merge method will handle the duplicate relationship case
             return session.writeTransaction(tx -> {
-                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
-                                "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"') " +
-                                "MERGE (u)-[r:"+NEO4J_RELATION_USER_FAVOURITES_PLACE+"]->(p) " +
+                String query = "MATCH (u:"+User.NEO_USER_LABEL+" WHERE u."+User.NEO_KEY_ID+" = '"+userId+"') " +
+                                "MATCH (p:"+Place.NEO_PLACE_LABEL+" WHERE p.id = '"+placeId+"') " +
+                                "MERGE (u)-[r:"+User.NEO_RELATION_FAVOURITES+"]->(p) " +
                                 " SET r.datetime = datetime()";
 
                 tx.run(query);
@@ -193,9 +174,9 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         {
             //if relationship doesn't exist the DELETE method leaves the node(s) unaffected.
             return session.writeTransaction(tx -> {
-                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
-                                "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"') " +
-                                "MATCH (u)-[r:"+NEO4J_RELATION_USER_FAVOURITES_PLACE+"]->(p) DELETE r";
+                String query = "MATCH (u:"+User.NEO_USER_LABEL+" WHERE u."+User.NEO_KEY_ID+" = '"+userId+"') " +
+                                "MATCH (p:"+Place.NEO_PLACE_LABEL+" WHERE p.id = '"+placeId+"') " +
+                                "MATCH (u)-[r:"+User.NEO_RELATION_FAVOURITES+"]->(p) DELETE r";
                 tx.run(query);
                 return true;
             });
@@ -215,9 +196,9 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             return session.writeTransaction(tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "datetime", timestampVisit );
-                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')" +
-                                "MATCH (p:"+PLACELABEL+" WHERE p.id = '"+placeId+"')" +
-                                "MERGE (u)-[r:"+NEO4J_RELATION_USER_VISITED_PLACE+" {datetime: $datetime}]->(p)";
+                String query = "MATCH (u:"+User.NEO_USER_LABEL+" WHERE u."+User.NEO_KEY_ID+" = '"+userId+"')" +
+                                "MATCH (p:"+Place.NEO_PLACE_LABEL+" WHERE p.id = '"+placeId+"')" +
+                                "MERGE (u)-[r:"+User.NEO_RELATION_VISITED+" {datetime: $datetime}]->(p)";
                 tx.run(query, params);
                 return true;
             });
@@ -237,9 +218,9 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             return session.writeTransaction(tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "datetime", timestampFollow);
-                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"')" +
-                                "MATCH (uToFollow:"+USERLABEL+" WHERE uToFollow."+USER_ID_KEY+" = '"+userToFollowId+"')" +
-                                "MERGE (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+"]->(uToFollow) "+
+                String query = "MATCH (u:"+User.NEO_USER_LABEL+" WHERE u."+User.NEO_KEY_ID+" = '"+userId+"')" +
+                                "MATCH (uToFollow:"+User.NEO_USER_LABEL+" WHERE uToFollow."+User.NEO_KEY_ID+" = '"+userToFollowId+"')" +
+                                "MERGE (u)-[r:"+User.NEO_RELATION_FOLLOWS+"]->(uToFollow) "+
                                 "SET r.datetime = datetime()";
                 tx.run(query, params);
                 return true;
@@ -257,9 +238,9 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
             return session.writeTransaction(tx -> {
-                String query = "MATCH (u:"+USERLABEL+" WHERE u."+USER_ID_KEY+" = '"+userId+"') " +
-                                "MATCH (uToUnfollow:"+USERLABEL+" WHERE uToUnfollow."+USER_ID_KEY+" = '"+userToUnfollowId+"') " +
-                                "MATCH (u)-[r:"+NEO4J_RELATION_USER_FOLLOWS_USER+"]->(uToUnfollow) DELETE r";
+                String query = "MATCH (u:"+User.NEO_USER_LABEL+" WHERE u."+User.NEO_KEY_ID+" = '"+userId+"') " +
+                                "MATCH (uToUnfollow:"+User.NEO_USER_LABEL+" WHERE uToUnfollow."+User.NEO_KEY_ID+" = '"+userToUnfollowId+"') " +
+                                "MATCH (u)-[r:"+User.NEO_RELATION_FOLLOWS+"]->(uToUnfollow) DELETE r";
                 tx.run(query);
                 return true;
             });
@@ -278,7 +259,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             userPosts = session.readTransaction((TransactionWork<List<Post>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_AUTHOR_POST +"]->(p:"+ POSTLABEL +") WHERE u." + USER_ID_KEY +"= $id RETURN p as Post";
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ Post.NEO_RELATION_AUTHOR +"]->(p:"+ Post.NEO_POST_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN p as Post";
                 Result result = tx.run(query,params);
                 ArrayList<Post> posts = new ArrayList<>();
                 while(result.hasNext())

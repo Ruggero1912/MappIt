@@ -38,6 +38,9 @@ public class Post {
     public static final String NEO_KEY_DESC = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "desc");
     public static final String NEO_KEY_THUMBNAIL = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "thumb");
 
+    public static final String NEO_RELATION_AUTHOR = PropertyPicker.getGraphRelationKey("author");
+    public static final String NEO_RELATION_LOCATION = PropertyPicker.getGraphRelationKey("location");
+
     private String _id;
     private String authorUsername;
     private String authorId;

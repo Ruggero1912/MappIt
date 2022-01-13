@@ -24,8 +24,6 @@ public class PostManagerMongoDB implements PostManager {
 
     private static final Logger LOGGER = Logger.getLogger(PostManagerMongoDB.class.getName());
 
-    private static final String IDKEY = "_id";
-
     private MongoCollection postCollection;
 
     public PostManagerMongoDB(){
@@ -109,7 +107,7 @@ public class PostManagerMongoDB implements PostManager {
         }
         String postId = post.getId();
 
-        Bson idFilter = Filters.eq(IDKEY, new ObjectId(postId));
+        Bson idFilter = Filters.eq(Post.KEY_ID, new ObjectId(postId));
         UpdateResult res = postCollection.updateOne(idFilter, Updates.inc("likes", k));
         return res.wasAcknowledged();
     }

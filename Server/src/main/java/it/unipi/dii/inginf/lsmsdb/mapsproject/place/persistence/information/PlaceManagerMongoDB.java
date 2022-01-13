@@ -186,7 +186,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
         if(placeId == "" || k>1 || k<-1 || k==0)
             return false;
         Bson idFilter = Filters.eq(Place.KEY_ID, new ObjectId(placeId));
-        UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.NEO_KEY_FAVS, k));
+        UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.KEY_FAVOURITES, k));
         return res.wasAcknowledged();
     }
 }

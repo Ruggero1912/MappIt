@@ -19,11 +19,7 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
 
     private static final Logger LOGGER = Logger.getLogger(PlaceSocialManagerNeo4j.class.getName());
 
-    private static final String NEO_LABEL_PLACE = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "label");
-    private static final String NEO_LABEL_USER = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, "label");
-    private static final String NEO_RELATION_VISITED = PropertyPicker.getGraphRelationKey("visited");
-    private static final String NEO_RELATION_FOLLOWS = PropertyPicker.getGraphRelationKey("follows");
-    private static final String NEO_RELATION_FAVOURITES = PropertyPicker.getGraphRelationKey("favourites");
+
 
 
     @Override
@@ -39,11 +35,11 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
                 params.put("HOW_MANY", maxHowMany);
                 String newLine = System.getProperty("line.separator");
                 String query = String.join(newLine,
-                        "MATCH (u:" + NEO_LABEL_USER + ") WHERE u." + User.NEO_KEY_ID + "=$USER_ID",
-                        "MATCH (u)-[rFollows:" + NEO_RELATION_FOLLOWS + "]->(uFollowed:" + NEO_LABEL_USER + ")",
-                        "MATCH (uFollowed)-[rVisited:" + NEO_RELATION_VISITED + "]->(pl:" + NEO_LABEL_PLACE + ")",
-                        "MATCH (u)-[:" + NEO_RELATION_VISITED + "]->(excludedPl:Place)",
-                        "MATCH (u)-[:" + NEO_RELATION_FAVOURITES + "]->(exclPl2:Place)",
+                        "MATCH (u:" + User.NEO_USER_LABEL + ") WHERE u." + User.NEO_KEY_ID + "=$USER_ID",
+                        "MATCH (u)-[rFollows:" + User.NEO_RELATION_FOLLOWS + "]->(uFollowed:" + User.NEO_USER_LABEL + ")",
+                        "MATCH (uFollowed)-[rVisited:" + User.NEO_RELATION_VISITED + "]->(pl:" + Place.NEO_PLACE_LABEL + ")",
+                        "MATCH (u)-[:" + User.NEO_RELATION_VISITED + "]->(excludedPl:Place)",
+                        "MATCH (u)-[:" + User.NEO_RELATION_FAVOURITES + "]->(exclPl2:Place)",
                         "WITH",
                         "   pl,",
                         "   collect(excludedPl) AS excludedPlaces,",

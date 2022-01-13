@@ -26,13 +26,6 @@ public class UserManagerMongoDB implements UserManager{
 
     private static final Logger LOGGER = Logger.getLogger(UserManagerMongoDB.class.getName());
 
-    private static final UserManagerMongoDB obj = new UserManagerMongoDB(); //TODO
-
-    private static final String IDKEY = "_id";
-    private static final String USERNAMEKEY = "username";
-    private static final String PASSWORDKEY = "password";
-    private static final String EMAILKEY = "email";
-
     private MongoCollection userCollection;
 
     public UserManagerMongoDB(){
@@ -41,7 +34,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public User getUserFromUsername(String username){
-        Bson usernameFilter = Filters.eq(USERNAMEKEY, username);
+        Bson usernameFilter = Filters.eq(User.KEY_USERNAME, username);
         MongoCursor<Document> cursor = userCollection.find(usernameFilter).cursor();
 
         if(cursor.hasNext()){
@@ -64,7 +57,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean checkDuplicateUsername(String username) {
-        Bson usernameFilter = Filters.eq(USERNAMEKEY, username);
+        Bson usernameFilter = Filters.eq(User.KEY_USERNAME, username);
         MongoCursor<Document> cursor = userCollection.find(usernameFilter).cursor();
         cursor.close();
         return cursor.hasNext();
@@ -72,7 +65,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean checkDuplicateEmail(String email) {
-        Bson emailFilter = Filters.eq(EMAILKEY, email);
+        Bson emailFilter = Filters.eq(User.KEY_EMAIL, email);
         MongoCursor<Document> cursor = userCollection.find(emailFilter).cursor();
         cursor.close();
         return cursor.hasNext();
@@ -87,8 +80,8 @@ public class UserManagerMongoDB implements UserManager{
         try{
             userCollection.insertOne(userDoc);
             //add inserted object id to the document
-            String id = userDoc.getObjectId(IDKEY).toString();
-            userDoc.append(IDKEY, id);
+            String id = userDoc.getObjectId(User.KEY_ID).toString();
+            userDoc.append(User.KEY_ID, id);
             return new User(userDoc);
         } catch(Exception e){
             return null;
@@ -109,7 +102,7 @@ public class UserManagerMongoDB implements UserManager{
             return null;
         }
 
-        Bson idFilter = Filters.eq(IDKEY, objId);
+        Bson idFilter = Filters.eq(User.KEY_ID, objId);
         MongoCursor<Document> cursor = userCollection.find(idFilter).cursor();
         if(!cursor.hasNext()){
             cursor.close();
@@ -137,7 +130,7 @@ public class UserManagerMongoDB implements UserManager{
             return false;
         }
 
-        Bson idFilter = Filters.eq(IDKEY, objId);
+        Bson idFilter = Filters.eq(User.KEY_ID, objId);
         DeleteResult ret = userCollection.deleteOne(idFilter);
         return ret.wasAcknowledged();
     }
@@ -147,7 +140,7 @@ public class UserManagerMongoDB implements UserManager{
         if(id == "" || newPassword == "")
             return false;
         String newEncryptedPassword = UserService.passwordEncryption(newPassword);
-        Bson idFilter = Filters.eq(IDKEY, new ObjectId(id));
+        Bson idFilter = Filters.eq(User.KEY_ID, new ObjectId(id));
         UpdateResult res = userCollection.updateOne(idFilter, set("password", newEncryptedPassword));
         return res.wasAcknowledged();
     }
@@ -159,7 +152,7 @@ public class UserManagerMongoDB implements UserManager{
         }
         String userId = user.getId();
 
-        Bson idFilter = Filters.eq(IDKEY, new ObjectId(userId));
+        Bson idFilter = Filters.eq(User.KEY_ID, new ObjectId(userId));
         UpdateResult res = userCollection.updateOne(idFilter, Updates.inc("followers", k));
         return res.wasAcknowledged();
     }
