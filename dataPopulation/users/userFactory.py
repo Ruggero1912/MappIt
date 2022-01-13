@@ -335,31 +335,46 @@ class UserFactory:
     def generate_follows(user_id : str, how_many : int = 10):
         if how_many == 0: return
         users_to_follow_ids = UserFactory.get_random_ids(how_many=how_many)
+        c = 0
         for user_to_follow in users_to_follow_ids:
+            c += 1
+            Utils.temporary_log(f"Adding followed \t\t user n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_follows_user(follower_id=user_id, followed_id=user_to_follow)
         return
 
     def generate_followers(user_id : str, how_many : int = 10):
         follower_users_ids = UserFactory.get_random_ids(how_many=how_many)
+        c = 0
         for future_follower_id in follower_users_ids:
+            c += 1
+            Utils.temporary_log(f"Adding follower \t\tuser n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_follows_user(follower_id=future_follower_id, followed_id=user_id)
         return
 
     def like_to_some_posts(user_id : str, how_many : int = 10):
         posts_ids = PostFactory.get_random_ids(how_many=how_many)
+        c = 0
         for post_id in posts_ids:
+            c += 1
+            Utils.temporary_log(f"Add like to \t\tplace n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_likes_post(user_id, post_id)
         return
 
     def add_to_favourites_some_places(user_id : str, how_many : int = 10):
         places_ids = PlaceFactory.get_random_ids(how_many=how_many)
+        c = 0
         for place_id in places_ids:
+            c += 1
+            Utils.temporary_log(f"Add to favs \t\tplace n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_adds_place_to_favourites(user_id=user_id,place_id=place_id)
         return
 
     def visit_some_places(user_id : str, how_many : int = 10):
         places_ids = PlaceFactory.get_random_ids(how_many=how_many)
+        c = 0
         for place_id in places_ids:
+            c += 1
+            Utils.temporary_log(f"Add to visited \t\tplace n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_visited_place(user_id=user_id, place_id=place_id)
         return
 

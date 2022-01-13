@@ -52,16 +52,23 @@ class FlickrPostFactory:
 
         FlickrPostFactory.LOGGER.info("Found {num} pictures for {place}".format(num=len(flickr_photos), place=place_name))
 
+        flickr_pic_index = 0
+
         for flickr_photo in flickr_photos:
+
+                flickr_pic_index += 1
 
                 flickr_photo_id     = flickr_photo["id"]
 
+                Utils.temporary_log(f"Flickr Pic {flickr_pic_index} out of {len(flickr_photos)} | Loading details...")
                 #here we should check if it already exists a post in the database for the current pic
                 already_existing_post = FlickrPostFactory.load_post_from_flickr_post_id(flickr_photo_id)
 
                 if already_existing_post is not None:
                     #in this case we skip the video
                     #in general we could try to parse more details about this video, like another category
+                    #we first have to clean the output before using the logger
+                    Utils.temporary_log()
                     FlickrPostFactory.LOGGER.debug("the current Flickr post (id {flickr_photo_id}) is already present. skipping...".format(flickr_photo_id=flickr_photo_id))
                     continue
 
@@ -155,7 +162,7 @@ class FlickrPostFactory:
         We have to create the relationship between the Post node and the Place node (relation "LOCATION")
         We have to create the relationship between the Post node and the User node (relation "AUTHOR")
         """
-        desc = desc[:75]    #first 75 chars of the description
+        desc = desc[:75] + "..." if len(desc) > 75 else ""    #first 75 chars of the description
         session = FlickrPostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
         
         query = """ MATCH (u:"""+FlickrPostFactory.NEO4J_USER_LABEL+""" WHERE u.id = '"""+ str(author_id) +"""')
