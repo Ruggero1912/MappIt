@@ -24,7 +24,7 @@ public class PostSocialManagerNeo4j implements PostSocialManager{
 
     public static final String KEY_RELATIONSHIP_AUTHOR = PropertyPicker.getGraphRelationKey(PropertyPicker.authorRelationship);
     public static final String KEY_RELATIONSHIP_LOCATION = PropertyPicker.getGraphRelationKey(PropertyPicker.locationRelationship);
-    public static final String KEY_RELATIONSHIP_LIKES = PropertyPicker.getGraphRelationKey(PropertyPicker.likeRelationship);
+    public static final String KEY_RELATIONSHIP_LIKES = PropertyPicker.getGraphRelationKey(PropertyPicker.likesRelationship);
 
 
     @Override

@@ -23,15 +23,6 @@ public class PostService {
     private static final Logger LOGGER = Logger.getLogger(PostService.class.getName());
 
     /**
-     * return all the posts of an user in the db, given its username
-     * @return Posts List or null if there are no posts
-     */
-    public static List<Post> retrieveAllPostsFromUsername(String username){
-        PostManager pm = PostManagerFactory.getPostManager();
-        return pm.retrieveAllPostsFromUsername(username);
-    }
-
-    /**
      * return null if it does not exist a post with that id, otherwise returns the associated post
      * @param id the id of the requested post
      * @return associated Post object or null if not found

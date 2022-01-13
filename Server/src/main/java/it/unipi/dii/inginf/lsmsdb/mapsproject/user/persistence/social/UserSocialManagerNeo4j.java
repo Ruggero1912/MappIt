@@ -6,6 +6,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViola
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -30,11 +31,19 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
     private static final String USERLABEL = "User";
     private static final String PLACELABEL = "Place";
+    private static final String POSTLABEL = "Post";
     private static final String NEO4J_RELATION_USER_FOLLOWS_USER = "FOLLOWS";
     private static final String NEO4J_RELATION_USER_FAVOURITES_PLACE = "FAVOURITES";
     private static final String NEO4J_RELATION_USER_VISITED_PLACE = "VISITED";
+    private static final String NEO4J_RELATION_USER_AUTHOR_POST = "AUTHOR";
     private static final String PLACE_NAME_KEY = "name";
     private static final String PLACE_ID_KEY = "id";
+    private static final String POST_ID_KEY = "id";
+    private static final String POST_ID_TITLE = "title";
+    private static final String POST_ID_DESC = "description";
+    private static final String POST_ID_THUMB = "thumbnail";
+
+
 
     private static final ArrayList<String> allowedRelationshipKinds = new ArrayList<>(Arrays.asList("favourite", "visited"));
 
@@ -140,7 +149,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 {
                     Record r = result.next();
                     Value place=r.get("VisitedPlace");
-                    Place p = new Place(place.get(PLACE_ID_KEY).asString(), place.get(PLACE_NAME_KEY).asString());
+                    Place p = new Place(place);
                     places.add(p);
                 }
                 return places;
@@ -256,6 +265,36 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             });
         }catch (Exception e){
             return false;
+        }
+    }
+
+    @Override
+    public List<Post> retrieveAllPosts(User user) {
+        String id = user.getId();
+        List<Post> userPosts;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            userPosts = session.readTransaction((TransactionWork<List<Post>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", id );
+                String query = "MATCH (u:"+ USERLABEL +")-[r:"+ NEO4J_RELATION_USER_AUTHOR_POST +"]->(p:"+ POSTLABEL +") WHERE u." + USER_ID_KEY +"= $id RETURN p as Post";
+                Result result = tx.run(query,params);
+                ArrayList<Post> posts = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    Value post=r.get("Post");
+                    Post p = new Post(post);
+                    posts.add(p);
+                }
+                return posts;
+            });
+
+            return userPosts;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
         }
     }
 }

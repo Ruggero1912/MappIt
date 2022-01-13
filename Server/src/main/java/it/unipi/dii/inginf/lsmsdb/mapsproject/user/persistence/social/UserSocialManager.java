@@ -3,6 +3,9 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
 import java.time.LocalDateTime;
@@ -29,7 +32,6 @@ public interface UserSocialManager {
      * @param user object for whom we want to know the favourite places
      * @return the List f the favourite places if any, else return null
      */
-    //TODO: decide whether it would make sense to make this method return List<PlacePreview> instead of List<Place> as Neo4j only have place's id & name available
     List<Place> retrieveFavouritePlaces(User user);
 
     /**
@@ -37,7 +39,6 @@ public interface UserSocialManager {
      * @param user the user owner of the favourites list
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    //TODO: decide whether it would make sense to make this method return List<PlacePreview> instead of List<Place> as Neo4j only have place's id & name available
     List<Place> retrieveVisitedPlaces(User user);
 
     /**
@@ -81,4 +82,9 @@ public interface UserSocialManager {
      */
     boolean deleteFollower(User user, User userToUnfollow);
 
+    /**
+     * return all the posts of an user in the db, given the user obj
+     * @return Posts List or null if there are no posts
+     */
+    List<Post> retrieveAllPosts(User user);
 }

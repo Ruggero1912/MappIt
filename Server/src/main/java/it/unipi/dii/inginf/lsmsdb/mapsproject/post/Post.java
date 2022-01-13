@@ -2,8 +2,10 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import org.bson.Document;
+import org.neo4j.driver.Value;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -68,6 +70,17 @@ public class Post {
         this.videoId = vidId;
         this.thumbnail = thumb;
         this.pics = pics;
+    }
+
+    /**
+     * We exploit this constructor to parse a Post object from a Neo4j Node
+     * @param value
+     */
+    public Post(Value value) {
+        this._id = value.get(Post.NEO_KEY_ID).asString();
+        this.title = value.get(Post.NEO_KEY_TITLE).asString();
+        this.description = value.get(Post.NEO_KEY_DESC).asString();
+        this.thumbnail = value.get(Post.KEY_THUMBNAIL).asString();
     }
 
     public Post(Document doc){

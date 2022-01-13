@@ -5,6 +5,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
@@ -375,5 +378,14 @@ public class UserService {
         }
 
         return true;
+    }
+
+    /**
+     * return all the posts of an user in the db, given user obj
+     * @return Posts List or null if there are no posts
+     */
+    public static List<Post> retrieveAllPostsFromUser(User user){
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        return usm.retrieveAllPosts(user);
     }
 }
