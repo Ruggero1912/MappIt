@@ -111,6 +111,12 @@ class UserFactory:
         create an user with the given username
         returns the user obj of the created user
         """
+        #if the YT username has a ' ' inside, we try to parse name and surname from it
+        if ' ' in username:
+            splitted = username.split(' ', maxsplit=1)
+            name = splitted[0]
+            surname = splitted[1]
+
         user = User(username=username, name=name, surname=surname)
         #here it should store it in the database
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
@@ -126,8 +132,21 @@ class UserFactory:
         #it should return the associated User obj
         return user
 
+    def how_many_users():
+        """
+        returns the quantity of users currently present in the database
+        """
+        return UserFactory.USERS_COLLECTION.estimated_document_count()
+
     def generate_social_relations_for_the_user(user_id : str):
-        how_many_seed = random.randint(UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED, UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED * 3)
+        """
+        generates a random number of relation for the given user
+        - the number of relations cannot be higher than the number of users currently in the database
+        """
+        users_counter = UserFactory.how_many_users()
+        SEED = UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED if users_counter > UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED * 10 else users_counter // 10
+        LIMIT_SEED = SEED * 3
+        how_many_seed = random.randint(SEED, LIMIT_SEED)
         how_many_follows = random.randint(how_many_seed//2, how_many_seed*2)
         how_many_followers  = random.randint( (how_many_follows//2), how_many_follows * 2)
         how_many_likes = random.randint( (how_many_follows//2), how_many_follows * 10)
@@ -242,7 +261,7 @@ class UserFactory:
         stores the follow action done by a given user to another
         - follower_id -[:FOLLOWS{datetime: datetime_follow}]-> followed_id
         """
-        if follower_id == followed_id:
+        if str(follower_id) == str(followed_id):
             UserFactory.LOGGER.warning("[x] a user cannot follow himself! received follower_id: {follower_id}".format(follower_id=follower_id))
             return
         if isinstance(datetime_follow, date):
@@ -314,6 +333,7 @@ class UserFactory:
         return result_summary
 
     def generate_follows(user_id : str, how_many : int = 10):
+        if how_many == 0: return
         users_to_follow_ids = UserFactory.get_random_ids(how_many=how_many)
         for user_to_follow in users_to_follow_ids:
             UserFactory.user_follows_user(follower_id=user_id, followed_id=user_to_follow)
@@ -360,6 +380,8 @@ class UserFactory:
         returns a list of random user_ids
         - returns list<str>
         """
+        if how_many == 0:
+            return []
         list_of_ids = []
 
         session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
