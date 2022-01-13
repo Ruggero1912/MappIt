@@ -62,6 +62,20 @@ class Utils:
         logger.addHandler(ch)
         return logger
 
+    def temporary_log(text : str = "", new_line : bool = False):
+        """
+        - if no text is given, clean the current line
+        - if new_line is True, returns to new line so that the current content of the temporary_log gets "stored"
+        - the separator between a temporary_log textis \r, so that the previous log is overwritten
+        """
+        if new_line:
+            print()
+            return
+        if text == "" or text == None:
+            print("\r", end="")
+        else:
+            print(f"\r{text}", end="")
+
     def convert_date_to_datetime(date : date) -> datetime:
         """
         converts a date object to a datetime object and returns it
