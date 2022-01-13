@@ -4,6 +4,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViola
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
@@ -84,7 +85,7 @@ public interface UserSocialManager {
 
     /**
      * return all the posts of an user in the db, given the user obj
-     * @return Posts List or null if there are no posts
+     * @return Post Previews List or null if there are no posts
      */
-    List<Post> retrieveAllPosts(User user);
+    List<PostPreview> retrieveAllPostPreviews(User user);
 }

@@ -7,6 +7,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -250,29 +251,30 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<Post> retrieveAllPosts(User user) {
+    public List<PostPreview> retrieveAllPostPreviews(User user) {
         String id = user.getId();
-        List<Post> userPosts;
+        List<PostPreview> userPostPreviews;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            userPosts = session.readTransaction((TransactionWork<List<Post>>) tx -> {
+            userPostPreviews = session.readTransaction((TransactionWork<List<PostPreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ Post.NEO_RELATION_AUTHOR +"]->(p:"+ Post.NEO_POST_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN p as Post";
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ Post.NEO_RELATION_AUTHOR +"]->(p:"+ Post.NEO_POST_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN p AS Post, u AS Author";
                 Result result = tx.run(query,params);
-                ArrayList<Post> posts = new ArrayList<>();
+                ArrayList<PostPreview> postsPreview = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value post=r.get("Post");
-                    Post p = new Post(post);
-                    posts.add(p);
+                    Value author=r.get("Author");
+                    PostPreview p = new PostPreview(post, author);
+                    postsPreview.add(p);
                 }
-                return posts;
+                return postsPreview;
             });
 
-            return userPosts;
+            return userPostPreviews;
         }catch (Exception e){
             System.out.println(e.getMessage());
             return null;
