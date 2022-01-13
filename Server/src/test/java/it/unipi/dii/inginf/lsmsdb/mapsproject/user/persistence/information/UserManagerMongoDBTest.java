@@ -29,7 +29,7 @@ public class UserManagerMongoDBTest {
             assertNull(user.getUserFromUsername(EMPTY_FIELD), "Empty username case is not well handled");
         }
 
-        @DisplayName("Test UserManagerMongoDB.checkDuplicateUsername with empy username")
+        @DisplayName("Test UserManagerMongoDB.checkDuplicateUsername with empty username")
         @Test
         void GIVEN_check_duplicate_username_WHEN_empty_username_is_passed_THEN_return_false(){
             assertFalse(user.checkDuplicateUsername(EMPTY_FIELD), "Empty username case in checkDuplicateUsername() is not well handled");
@@ -39,7 +39,7 @@ public class UserManagerMongoDBTest {
         @Test
         void GIVEN_check_duplicate_username_WHEN_duplicate_username_is_passed_THEN_return_true(){
             //we use a Username already taken
-            String takenUsername = "Micky Techology";
+            String takenUsername = "prova";
             RegistrationUser regUsr = mock(RegistrationUser.class);
             when(regUsr.getUsername()).thenReturn(takenUsername);
             assertTrue(user.checkDuplicateUsername(regUsr.getUsername()));
@@ -55,7 +55,7 @@ public class UserManagerMongoDBTest {
         @Test
         void GIVEN_check_duplicate_email_WHEN_duplicate_email_is_passed_THEN_return_true(){
             //we use an Email already taken
-            String takenEmail = "apacelli@example.com";
+            String takenEmail = "prova@prova.com";
             RegistrationUser regUsr = mock(RegistrationUser.class);
             when(regUsr.getEmail()).thenReturn(takenEmail);
             assertTrue(user.checkDuplicateEmail(regUsr.getEmail()));

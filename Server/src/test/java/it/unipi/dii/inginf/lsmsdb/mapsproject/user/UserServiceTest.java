@@ -68,7 +68,7 @@ public class UserServiceTest {
     @DisplayName("Test UserService.delete with existing userToDelete")
     @Test
     void GIVEN_delete_WHEN_extisting_user_is_passed_THEN_return_true(){
-        User userToDelete = UserService.getUserFromId("61d3424c01336eeafcb43854");
+        User userToDelete = UserService.getUserFromId("");
         try {
             Assertions.assertTrue(UserService.delete(userToDelete));
         } catch (DatabaseErrorException e) {

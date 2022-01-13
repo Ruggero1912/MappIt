@@ -59,16 +59,18 @@ public class UserManagerMongoDB implements UserManager{
     public boolean checkDuplicateUsername(String username) {
         Bson usernameFilter = Filters.eq(User.KEY_USERNAME, username);
         MongoCursor<Document> cursor = userCollection.find(usernameFilter).cursor();
+        boolean ret = cursor.hasNext();
         cursor.close();
-        return cursor.hasNext();
+        return ret;
     }
 
     @Override
     public boolean checkDuplicateEmail(String email) {
         Bson emailFilter = Filters.eq(User.KEY_EMAIL, email);
         MongoCursor<Document> cursor = userCollection.find(emailFilter).cursor();
+        boolean ret = cursor.hasNext();
         cursor.close();
-        return cursor.hasNext();
+        return ret;
     }
 
     @Override

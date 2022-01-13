@@ -63,7 +63,7 @@ public class PostSocialManagerNeo4j implements PostSocialManager{
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
             return session.writeTransaction(tx -> {
-                String query = "MATCH (p:"+Post.NEO_POST_LABEL+")-[r:AUTHOR]->(u:"+User.NEO_USER_LABEL+" WHERE u."+Post.NEO_KEY_ID+"="+userId+") " +
+                String query = "MATCH (p:"+Post.NEO_POST_LABEL+")<-[r:AUTHOR]-(u:"+User.NEO_USER_LABEL+" WHERE u."+Post.NEO_KEY_ID+"='"+userId+"') " +
                                 "DETACH DELETE p";
                 tx.run(query);
                 return true;

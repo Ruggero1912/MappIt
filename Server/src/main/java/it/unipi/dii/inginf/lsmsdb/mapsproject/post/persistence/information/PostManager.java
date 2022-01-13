@@ -22,6 +22,12 @@ public interface PostManager {
     boolean deletePost(Post postToDelete);
 
     /**
+     * return true if the deletion was successful or false if something goes wrong
+     * @param user author of the posts to delete
+     */
+    boolean deletePostsOfGivenUser(User user);
+
+    /**
      * return all the posts associated to the given username if exists, else return Null
      * @param username A string containing the given username from the user
      * @return List of posts or null if not found

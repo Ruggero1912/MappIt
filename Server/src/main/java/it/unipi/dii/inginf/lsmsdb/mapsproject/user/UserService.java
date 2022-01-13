@@ -8,6 +8,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.Plac
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerMongoDB;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
@@ -165,11 +166,15 @@ public class UserService {
         if(userToDelete == null || userToDelete.getId() == null)
             return false;
 
-        UserManager um = UserManagerFactory.getUserManager();
         String userId = userToDelete.getId();
+
+        PostManager pm = PostManagerFactory.getPostManager();
+        boolean PostsDeletedFromMongo = pm.deletePostsOfGivenUser(userToDelete);
+
+        UserManager um = UserManagerFactory.getUserManager();
         boolean UserDeletedFromMongo = um.deleteUserFromId(userId);
 
-        if(!UserDeletedFromMongo){
+        if(!UserDeletedFromMongo || !PostsDeletedFromMongo){
             LOGGER.log(Level.SEVERE, "Error during delete: Mongo user deletion failed!");
             throw new DatabaseErrorException("Mongo user deletion failed");
         }
@@ -178,9 +183,12 @@ public class UserService {
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
         PostSocialManager psm = PostSocialManagerFactory.getPostManager();
         boolean UserDeletedFromNeo4j;
+        boolean PostsDeletedFromNeo4j;
         try{
-            psm.deleteAllPostsOfGivenUser(userToDelete);
+            PostsDeletedFromNeo4j = psm.deleteAllPostsOfGivenUser(userToDelete);
             UserDeletedFromNeo4j = usm.deleteUserFromId(userId);
+            //TODO: mongo rollback if neo4j failed
+            //if(!PostsDeletedFromNeo4j || !UserDeletedFromNeo4j) {storeUser(userToDelete) + reinsert deleted posts(?) }
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
             return false;

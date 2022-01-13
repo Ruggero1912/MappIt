@@ -64,6 +64,26 @@ public class PostManagerMongoDB implements PostManager {
         return ret.wasAcknowledged();
     }
 
+    @Override
+    public boolean deletePostsOfGivenUser(User user) {
+        if(user==null)
+            return false;
+
+        ObjectId objId;
+        String authorId = user.getId();
+
+        try{
+            objId = new ObjectId(authorId);
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+
+        Bson idFilter = Filters.eq(Post.KEY_AUTHOR_ID, objId);
+        DeleteResult ret = postCollection.deleteMany(idFilter);
+        return ret.wasAcknowledged();
+    }
+
 
     @Override
     public List<Post> retrieveAllPostsFromUsername(String username) {
