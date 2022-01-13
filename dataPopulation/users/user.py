@@ -81,7 +81,7 @@ class User:
 
     def set_id(self, id : str):
         if self.get_id() == None:
-            setattr(self, User.KEY_ID, id)
+            setattr(self, User.KEY_ID, str(id))
         return self.get_id()
 
     def get_id(self):
