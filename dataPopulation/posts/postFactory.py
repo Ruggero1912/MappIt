@@ -46,6 +46,8 @@ class PostFactory:
         returns a list of random post_ids
         - returns list<str>
         """
+        if how_many == 0:
+            return []
         list_of_ids = []
 
         session = PostFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)

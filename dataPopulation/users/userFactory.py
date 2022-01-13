@@ -111,6 +111,12 @@ class UserFactory:
         create an user with the given username
         returns the user obj of the created user
         """
+        #if the YT username has a ' ' inside, we try to parse name and surname from it
+        if ' ' in username:
+            splitted = username.split(' ', maxsplit=1)
+            name = splitted[0]
+            surname = splitted[1]
+
         user = User(username=username, name=name, surname=surname)
         #here it should store it in the database
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
@@ -126,8 +132,21 @@ class UserFactory:
         #it should return the associated User obj
         return user
 
+    def how_many_users():
+        """
+        returns the quantity of users currently present in the database
+        """
+        return UserFactory.USERS_COLLECTION.estimated_document_count()
+
     def generate_social_relations_for_the_user(user_id : str):
-        how_many_seed = random.randint(UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED, UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED * 3)
+        """
+        generates a random number of relation for the given user
+        - the number of relations cannot be higher than the number of users currently in the database
+        """
+        users_counter = UserFactory.how_many_users()
+        SEED = UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED if users_counter > UserFactory.SOCIAL_RELATIONS_HOW_MANY_SEED * 10 else users_counter // 10
+        LIMIT_SEED = SEED * 3
+        how_many_seed = random.randint(SEED, LIMIT_SEED)
         how_many_follows = random.randint(how_many_seed//2, how_many_seed*2)
         how_many_followers  = random.randint( (how_many_follows//2), how_many_follows * 2)
         how_many_likes = random.randint( (how_many_follows//2), how_many_follows * 10)
@@ -242,7 +261,7 @@ class UserFactory:
         stores the follow action done by a given user to another
         - follower_id -[:FOLLOWS{datetime: datetime_follow}]-> followed_id
         """
-        if follower_id == followed_id:
+        if str(follower_id) == str(followed_id):
             UserFactory.LOGGER.warning("[x] a user cannot follow himself! received follower_id: {follower_id}".format(follower_id=follower_id))
             return
         if isinstance(datetime_follow, date):
@@ -314,32 +333,48 @@ class UserFactory:
         return result_summary
 
     def generate_follows(user_id : str, how_many : int = 10):
+        if how_many == 0: return
         users_to_follow_ids = UserFactory.get_random_ids(how_many=how_many)
+        c = 0
         for user_to_follow in users_to_follow_ids:
+            c += 1
+            Utils.temporary_log(f"Adding followed \t\t user n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_follows_user(follower_id=user_id, followed_id=user_to_follow)
         return
 
     def generate_followers(user_id : str, how_many : int = 10):
         follower_users_ids = UserFactory.get_random_ids(how_many=how_many)
+        c = 0
         for future_follower_id in follower_users_ids:
+            c += 1
+            Utils.temporary_log(f"Adding follower \t\tuser n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_follows_user(follower_id=future_follower_id, followed_id=user_id)
         return
 
     def like_to_some_posts(user_id : str, how_many : int = 10):
         posts_ids = PostFactory.get_random_ids(how_many=how_many)
+        c = 0
         for post_id in posts_ids:
+            c += 1
+            Utils.temporary_log(f"Add like to \t\tplace n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_likes_post(user_id, post_id)
         return
 
     def add_to_favourites_some_places(user_id : str, how_many : int = 10):
         places_ids = PlaceFactory.get_random_ids(how_many=how_many)
+        c = 0
         for place_id in places_ids:
+            c += 1
+            Utils.temporary_log(f"Add to favs \t\tplace n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_adds_place_to_favourites(user_id=user_id,place_id=place_id)
         return
 
     def visit_some_places(user_id : str, how_many : int = 10):
         places_ids = PlaceFactory.get_random_ids(how_many=how_many)
+        c = 0
         for place_id in places_ids:
+            c += 1
+            Utils.temporary_log(f"Add to visited \t\tplace n{c} out of {how_many} for the user {user_id}...")
             UserFactory.user_visited_place(user_id=user_id, place_id=place_id)
         return
 
@@ -360,6 +395,8 @@ class UserFactory:
         returns a list of random user_ids
         - returns list<str>
         """
+        if how_many == 0:
+            return []
         list_of_ids = []
 
         session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)

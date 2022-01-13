@@ -2,6 +2,7 @@ from YTposts.YTPostFactory import YTPostFactory
 from FlickrPosts.FlickrPostFactory import FlickrPostFactory
 from users.userFactory import UserFactory
 from utilities.utils import *
+from utilities.persistentEntitiesManager import PersistentEntitiesManager
 
 import logging
 
@@ -12,10 +13,18 @@ def initilize_default_logger():
 
 default_logger = initilize_default_logger()
 
-def main():
-    places = Utils.load_places_list_from_mongo()
+def reset_posts_and_users():
+    """ 
+    deletes all the users and posts in both dbs, then generates new posts
+    """
+    PersistentEntitiesManager.delete_entity_kind(PersistentEntitiesManager.ENTITY_POSTS)
+    PersistentEntitiesManager.delete_entity_kind(PersistentEntitiesManager.ENTITY_USERS)
+    main()
 
-    limit = 10
+
+
+def main(limit : int = 10):
+    places = Utils.load_places_list_from_mongo()
 
     counter = 0
 

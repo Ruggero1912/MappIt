@@ -63,9 +63,15 @@ class YTPostFactory:
 
         posts = []
 
+        video_results_index = 0
+
         for yt_video in yt_videos:
+
+            video_results_index += 1
             
             yt_video_id     = yt_video['id']['videoId']
+
+            Utils.temporary_log(f"Video {video_results_index} out of {len(yt_video)} | Loading details...")
 
             #we have to check if it already exists a post for this YT video
             already_existing_post = YTPostFactory.load_post_from_video_id(yt_video_id)
@@ -73,6 +79,8 @@ class YTPostFactory:
             if already_existing_post is not None:
                 #in this case we skip the video
                 #in general we could try to parse more details about this video, like another category
+                #we first have to clean the output before using the logger
+                Utils.temporary_log()
                 YTPostFactory.LOGGER.debug("the current video (id {videoid}) is already present. skipping...".format(videoid=yt_video_id))
                 continue
 
