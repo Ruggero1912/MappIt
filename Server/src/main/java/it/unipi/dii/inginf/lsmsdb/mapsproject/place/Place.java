@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Place {
 
-    public static final String KEY_PLACE_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "collectionName");
+    public static final String KEY_PLACE_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "collectionName");
     public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "id");
     public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "name");
     public static final String KEY_FITS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "fits");

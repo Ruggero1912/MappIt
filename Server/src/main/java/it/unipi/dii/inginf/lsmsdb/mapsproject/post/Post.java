@@ -33,10 +33,10 @@ public class Post {
     public static final String KEY_LIKES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "likes");
 
     public static final String NEO_POST_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.postEntity);
-    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "id");
-    public static final String NEO_KEY_TITLE = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "title");
-    public static final String NEO_KEY_DESC = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "desc");
-    public static final String NEO_KEY_THUMBNAIL = PropertyPicker.getNodePropertyKey(PropertyPicker.placeEntity, "thumb");
+    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, "id");
+    public static final String NEO_KEY_TITLE = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, "title");
+    public static final String NEO_KEY_DESC = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, "desc");
+    public static final String NEO_KEY_THUMBNAIL = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, "thumb");
 
     public static final String NEO_RELATION_AUTHOR = PropertyPicker.getGraphRelationKey("author");
     public static final String NEO_RELATION_LOCATION = PropertyPicker.getGraphRelationKey("location");
