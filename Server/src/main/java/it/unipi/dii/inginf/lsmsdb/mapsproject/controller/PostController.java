@@ -27,26 +27,53 @@ public class PostController {
 
     @ApiOperation(value = "Get information of a specific post", notes = "This method retrieve information of a specific post, given its _id")
     @GetMapping(value = "/post/{id}", produces = "application/json")
-    public Post getPostById(@PathVariable(value = "id") String postId) {
-        return PostService.getPostFromId(postId);
+    public ResponseEntity<?> getPostById(@PathVariable(value = "id") String postId) {
+        ResponseEntity<?> result;
+        try{
+            Post post = PostService.getPostFromId(postId);
+            result = ResponseEntity.ok(post);
+            if(post==null) {
+                LOGGER.log(Level.WARNING, "Error: could not find post (id=" + postId + ")");
+                result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find post\"}");
+            }
+        }catch (Exception e){
+            LOGGER.log(Level.WARNING, "Error: could not parse post, an exception has occurred: " + e);
+            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not parse post, and exception has occurred\"}");
+        }
+        return result;
     }
 
     @ApiOperation(value = "returns the list of posts of the specified user or for the current if no userId is specified")
-    @GetMapping(value = "/posts", produces = "application/json")
-    public ResponseEntity<?> allPostsFromUser(@RequestParam( defaultValue = "current") String userId) {
+    @GetMapping(value = "/post/list", produces = "application/json")
+    public ResponseEntity<?> allPostsPreviewFromUser(@RequestParam( defaultValue = "current") String userId) {
+        ResponseEntity<?> result;
         User u;
+
         if(userId == "current"){
             //should retrieve the current user
             u = new User(); // TODO: call the method that returns the instance of the currently logged in user
         }else{
             u = UserService.getUserFromId(userId);
         }
-        List<Post> posts = UserService.retrieveAllPostsFromUser(u);
-        return ResponseEntity.status(HttpStatus.OK).body(posts);
+        try{
+            List<PostPreview> postPreviews = UserService.retrieveAllPostPreviewsFromUser(u);
+            if(postPreviews==null)
+                LOGGER.log(Level.WARNING, "Empty list");
+            result = ResponseEntity.status(HttpStatus.OK).body(postPreviews);
+        }catch (NullPointerException e){
+            LOGGER.log(Level.WARNING, "Error: the given ID does not correspond to a userId");
+            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"the given ID does not correspond to a userId\"}");
+        }catch (Exception e){
+            LOGGER.log(Level.WARNING, "Error: could not parse post list, an exception has occurred: " + e);
+            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not parse post list\" " +
+                                                                        "\"Reason\" : \""+e.getMessage()+"\"}");
+        }
+
+        return result;
     }
 
     @ApiOperation(value = "store a new post in the databases")
-    @PostMapping(value = "/api/post")
+    @PostMapping(value = "/post")
     public ResponseEntity<?> newPost(@RequestBody Post newPost) {
 
         Post insertedPost;
