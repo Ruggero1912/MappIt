@@ -76,7 +76,6 @@ public class User implements Serializable {
 		}
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
-		System.out.println("profile pic value "+(doc.getString(KEY_PROFILE_PIC)) + " | KEY_PROFILE_PIC: " + KEY_PROFILE_PIC + " | Image obj: " + this.profilePic.toString());
 		this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
 	}
 

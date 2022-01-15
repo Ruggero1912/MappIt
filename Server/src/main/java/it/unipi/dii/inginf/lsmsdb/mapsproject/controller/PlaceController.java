@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Coordinate;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
@@ -10,11 +11,13 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 @RequestMapping("/api")
 @RestController
@@ -59,9 +62,9 @@ public class PlaceController {
     @ApiOperation(value = "returns a list of suggested places for the current user")
     @GetMapping(value = "/places/suggested", produces = "application/json")
     public List<Place> suggestedPlaces() {
-        //should retrieve the current user
-        User u = new User(); // TODO: call the method that returns the instance of the currently logged in user
-        return PlaceService.getSuggestedPlaces(u);
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userSpring.getApplicationUser();
+        return PlaceService.getSuggestedPlaces(currentUser);
     }
     // your favourite places
     // places that are favourites of a given user (it should receive the id of the user)
@@ -70,8 +73,9 @@ public class PlaceController {
     public ResponseEntity<?> favouritePlaces(@RequestParam( defaultValue = "current") String userId) {
         User u;
         if(userId == "current"){
-            //should retrieve the current user
-            u = new User(); // TODO: call the method that returns the instance of the currently logged in user
+            //retrieve the current user
+            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            u = userSpring.getApplicationUser();
         }else{
             u = UserService.getUserFromId(userId);
         }
@@ -85,8 +89,10 @@ public class PlaceController {
     public ResponseEntity<?> visitedPlaces(@RequestParam( defaultValue = "current") String userId) {
         User u;
         if(userId == "current"){
-            //should retrieve the current user
-            u = new User(); // TODO: call the method that returns the instance of the currently logged in user
+            //retrieve the current user
+            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            u = userSpring.getApplicationUser();
+
         }else{
             u = UserService.getUserFromId(userId);
         }
@@ -104,8 +110,10 @@ public class PlaceController {
         if(place == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"the specified place does not exist\"}");
         }
-        //should retrieve the current user
-        User u = new User(); // TODO: call the method that returns the instance of the currently logged in user
+        //retrieve the current user
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User u = userSpring.getApplicationUser();
+
         List<String> actions = new ArrayList<String>();
         actions.add("add");
         actions.add("remove");
@@ -137,8 +145,9 @@ public class PlaceController {
         if(place == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"the specified place does not exist\"}");
         }
-        //should retrieve the current user
-        User u = new User(); // TODO: call the method that returns the instance of the currently logged in user
+        //retrieve the current user
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User u = userSpring.getApplicationUser();
 
         // TODO: handle the outcome of the method call and answer to the client consequently
         UserService.addPlaceToVisited(u, place, localDateTime);

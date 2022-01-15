@@ -113,39 +113,28 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/user/password")
-	public ResponseEntity<?> changePassword(@RequestHeader("Authorization") String authToken, String newPassword) {
+	public ResponseEntity<?> changePassword(@RequestParam(name="newPassword") String newPassword) {
 
 		if(newPassword.equals("") || newPassword.length() < 4){ //password constrains need to be established
 			LOGGER.log(Level.INFO, "{\"Error\" : \"Password must be at least 4 characters long\"}");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Password must be at least 4 characters long\"}");
 		}
 
-		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
-		String userID;
-		try {
-			userID = JwtTokenUtil.getIdFromToken(token);
-		} catch (IllegalArgumentException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
-		} catch (ExpiredJwtException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
-		}
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		User currentUser = UserService.getUserFromId(userID);
+		User currentUser = userSpring.getApplicationUser();
 		if(currentUser == null){
-			LOGGER.log(Level.WARNING, "Could not find user with ID: " + userID);
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find user with ID: " + userID);
+			LOGGER.log(Level.WARNING, "Could not find current logged in user");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find current logged in user");
 		}
 
 		ResponseEntity<?> result;
-		if(UserService.updatePassword(userID, newPassword)) {
+		if(UserService.updatePassword(currentUser.getId(), newPassword)) {
 			result = ResponseEntity.ok("Password successfully updated");
 		}
 		else{
 			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not update password");
 		}
-
 		return result;
 	}
 
@@ -154,21 +143,10 @@ public class UserController {
 	 * notes = "This method makes and user follow another user")
 	 */
 	@PostMapping(value = "/user/follow/{id}", produces = "application/json")
-	public ResponseEntity<?> followUser(@RequestHeader("Authorization") String authToken, @PathVariable (value = "id") String userToFollowId, @RequestBody(required = false) LocalDateTime localDateTime) {
+	public ResponseEntity<?> followUser(@PathVariable (value = "id") String userToFollowId, @RequestBody(required = false) LocalDateTime localDateTime) {
 		ResponseEntity<?> result;
 
-		//we retrieve the id of the current logged-in user from auth token
-		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
-		String currentUserID="";
-		try {
-			currentUserID = JwtTokenUtil.getIdFromToken(token);
-		} catch (IllegalArgumentException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
-		} catch (ExpiredJwtException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
-		}
+
 
 		// the time of the visit will be considered now if the localDateTime parameter is null
 		if(localDateTime == null){
@@ -176,10 +154,11 @@ public class UserController {
 		}
 
 		//we retrieve user objects of current logged-in user and user to follow
-		User currentUser = UserService.getUserFromId(currentUserID);
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
 		if(currentUser == null){
-			LOGGER.log(Level.WARNING, "user not found for userID: " + currentUserID);
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"could not find user with id="+currentUserID+"\"}");
+			LOGGER.log(Level.WARNING, "Could not find current logged in user");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find current logged in user");
 		}
 
 		User userToFollow = UserService.getUserFromId(userToFollowId);
@@ -206,27 +185,15 @@ public class UserController {
 	 * notes = "This method makes and user unfollow another user")
 	 */
 	@DeleteMapping(value = "/user/follow/{id}", produces = "application/json")
-	public ResponseEntity<?> unfollowUser(@RequestHeader("Authorization") String authToken, @PathVariable (value = "id") String userToUnfollowId) {
+	public ResponseEntity<?> unfollowUser(@PathVariable (value = "id") String userToUnfollowId) {
 		ResponseEntity<?> result;
 
-		//we retrieve the id of the current logged-in user from auth token
-		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
-		String currentUserID="";
-		try {
-			currentUserID = JwtTokenUtil.getIdFromToken(token);
-		} catch (IllegalArgumentException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"Unable to get JWT Token\"}");
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
-		} catch (ExpiredJwtException e) {
-			LOGGER.log(Level.INFO, "{\"Error\" : \"JWT Token has expired\"}");
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
-		}
-
-		//we retrieve user objects of current logged-in user and user to follow
-		User currentUser = UserService.getUserFromId(currentUserID);
+		//we retrieve the id of the current logged-in user
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
 		if(currentUser == null){
-			LOGGER.log(Level.WARNING, "user not found for userID: " + currentUserID);
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"could not find user with id="+currentUserID+"\"}");
+			LOGGER.log(Level.WARNING, "Could not find current logged in user");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find current logged in user");
 		}
 
 		User userToUnfollow = UserService.getUserFromId(userToUnfollowId);

@@ -2,6 +2,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
@@ -11,6 +12,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,8 +52,9 @@ public class PostController {
         User u;
 
         if(userId == "current"){
-            //should retrieve the current user
-            u = new User(); // TODO: call the method that returns the instance of the currently logged in user
+            //retrieve the current user
+            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            u = userSpring.getApplicationUser();
         }else{
             u = UserService.getUserFromId(userId);
         }
@@ -76,6 +79,7 @@ public class PostController {
     @PostMapping(value = "/post")
     public ResponseEntity<?> newPost(@RequestBody Post newPost) {
 
+        //TODO: handle the files upload and specify as author the current user
         Post insertedPost;
         try{
             insertedPost = PostService.createNewPost(newPost);
