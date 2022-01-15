@@ -45,7 +45,7 @@ public class User implements Serializable {
 	protected String name;
 	protected String surname;
 	protected Date birthDate;
-	protected List<String> role;
+	protected List<String> roles;
 	protected Image profilePic;
 	protected List<String> publishedPostsId;
 	protected List<String> followedUsersId;
@@ -65,13 +65,18 @@ public class User implements Serializable {
 		this.email = doc.get(KEY_EMAIL).toString();
 		this.name = doc.get(KEY_NAME).toString();
 		this.surname = doc.get(KEY_SURNAME).toString();
-		String role = doc.getString(KEY_ROLE);  //doc.getList(KEY_ROLE, String.class);
-		List<String> roles = new ArrayList<>();
-		roles.add(role);
-		this.role=roles;
+		try {
+			this.roles = doc.getList(KEY_ROLE, String.class);
+		}catch (ClassCastException c){
+			//this happens if it is parsing a document in which the role is a string instead of an array
+			String role = doc.getString(KEY_ROLE);
+			List<String> roles = new ArrayList<>();
+			roles.add(role);
+			this.roles = roles;
+		}
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
-		this.profilePic = new Image();
-		this.profilePic.setPath(doc.get(KEY_PROFILE_PIC).toString());
+		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
+		System.out.println("profile pic value "+(doc.getString(KEY_PROFILE_PIC)) + " | KEY_PROFILE_PIC: " + KEY_PROFILE_PIC + " | Image obj: " + this.profilePic.toString());
 		this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
 	}
 
@@ -81,14 +86,14 @@ public class User implements Serializable {
 		return u;
 	}
 
-	public User(String _id, String nm, String snm, String uname, String psw, String email, List<String> role) {
+	public User(String _id, String nm, String snm, String uname, String psw, String email, List<String> roles) {
 		this._id = _id;
 		this.name = nm;
 		this.surname = snm;
 		this.username = uname;
 		this.password = psw;
 		this.email = email;
-		this.role = role;
+		this.roles = roles;
 	}
 
 
@@ -145,21 +150,19 @@ public class User implements Serializable {
 	}
 
 	public List<String> getUserRole() {
-		List<String> role = new ArrayList<>();
-		role.add(this.role.toString());
-		return role;
+		return this.roles;
 	}
 
-	public void setRole(List<String> role) {
-		this.role = role;
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 
-	public Image getProfilePic() {
-		return profilePic;
-	}
-
-	public String getProfilePicLink() {
+	public String getProfilePic() {
 		return profilePic.toString();
+	}
+
+	public Image profilePicImageObj() {
+		return profilePic;
 	}
 
 	public void setProfilePic(Image pic) {
@@ -179,7 +182,7 @@ public class User implements Serializable {
 				", username='" + username + '\'' +
 				", password='" + password + '\'' +
 				", email='" + email + '\'' +
-				", role='" + role + '\'' +
+				", role='" + roles + '\'' +
 				'}';
 	}
 }
