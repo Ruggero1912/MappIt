@@ -37,39 +37,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String requestTokenHeader = request.getHeader("Authorization");
 
-        String username = null;
-        String userID = null;
         String jwtToken = null;
         // JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
-            try {
-                userID = jwtTokenUtil.getIdFromToken(jwtToken);
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-            } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
-            } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
-            }
-        } else {
-            LOGGER.info("JWT Token has not been initialized yet or does not begin with Bearer String");
-        }
-
-        if ((userID != null && username != null)) { //&& SecurityContextHolder.getContext().getAuthentication() == null
 
             // if token is valid configure Spring Security to manually set authentication
             if (jwtTokenUtil.validateToken(jwtToken)) {
 
-                LOGGER.info("[+]: restoring session for the user " + username + " | the token is valid");
-
                 /* NOTE: generate the session starting from the given token so that the server has access to the currentUser instance
                  * UsernamePasswordAuthenticationToken is a class that implements Authentication and that lets you
-                 * store the principal object (in this case, the current logged in UserSpring instance) and the credentials used to login
+                 * store the principal object (in this case, the current logged in UserSpring instance which implements UserDetails
+                 * and that also has user's info) and the credentials used to login.
                  * NOTE: it is unuseful to store the password in the authentication token, so we use "" as second parameter
                  */
 
-                //instead of a User object, pass as first parameter a class that implements UserDetails and that also has the user's information
-                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(jwtTokenUtil.getUsernameFromToken(jwtToken));
                 Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
                 //the call to setAuthentication stores in the session the authentication information for the current user
                 SecurityContextHolder.getContext().setAuthentication(auth);
@@ -80,7 +63,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "[x]: Invalid Token");
                 return;
             }
+        } else {
+            LOGGER.info("JWT Token has not been initialized yet or does not begin with Bearer String");
         }
+
         chain.doFilter(request, response);
     }
 
