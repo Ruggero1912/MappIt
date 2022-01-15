@@ -3,7 +3,7 @@ from neo4j import (
     WRITE_ACCESS,
 )
 import pymongo
-
+from bson.objectid import ObjectId
 from utilities.utils import Utils
 from posts.Post import Post
 
@@ -38,7 +38,7 @@ class PostFactory:
         """
         #the '$inc' operator creates the field if it does not exists,
         # it increase the counter of the given 'num' quantity (can be positive or negative) 
-        ret = PostFactory.POSTS_COLLECTION.update_one(filter={Post.KEY_ID : str(post_id)}, update={"$inc":{Post.KEY_LIKES_COUNTER : num}})
+        ret = PostFactory.POSTS_COLLECTION.update_one(filter={Post.KEY_ID : ObjectId(str(post_id))}, update={"$inc":{Post.KEY_LIKES_COUNTER : num}})
         return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :

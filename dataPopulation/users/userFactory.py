@@ -387,7 +387,7 @@ class UserFactory:
         """
         #the '$inc' operator creates the field if it does not exists,
         # it increase the counter of the given 'num' quantity (can be positive or negative) 
-        ret = PostFactory.POSTS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : str(user_id)}, update={"$inc":{User.KEY_FOLLOWER_COUNTER : num}})
+        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : ObjectId(str(user_id))}, update={"$inc":{User.KEY_FOLLOWER_COUNTER : num}})
         return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :

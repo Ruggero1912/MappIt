@@ -65,7 +65,7 @@ class PlaceFactory:
         """
         #the '$inc' operator creates the field if it does not exists,
         # it increase the counter of the given 'num' quantity (can be positive or negative) 
-        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : str(place_id)}, update={"$inc":{PlaceFactory.PLACE_FAVOURITES_COUNTER_KEY : num}})
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : ObjectId(str(place_id))}, update={"$inc":{PlaceFactory.PLACE_FAVOURITES_COUNTER_KEY : num}})
         return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :
