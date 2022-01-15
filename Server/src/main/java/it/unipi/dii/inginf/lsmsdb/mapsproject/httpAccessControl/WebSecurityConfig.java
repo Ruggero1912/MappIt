@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,7 +22,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private JwtAuthenticationExceptionHandler jwtAuthenticationExceptionHandler;
 
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
@@ -65,14 +64,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         anyRequest().authenticated(). //TODO: uncomment this line to re-enable authentication mechanism
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
-                        and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationExceptionHandler)
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // Add a filter to validate the tokens with every request
-        //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        //httpSecurity.addFilterAt(new JwtRequestFilter(), BasicAuthenticationFilter.class);
-        //httpSecurity.addFilter(new JwtRequestFilter());
 
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

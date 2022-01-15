@@ -28,9 +28,6 @@ public class JwtTokenUtil implements Serializable {
 
     public static final String secret = PropertyPicker.getProperty("jwt.secret");
 
-    //@Value("${jwt.secret}")
-    //private String secret;
-
     public static String parseTokenFromAuthorizationHeader(String authorizationToken){
         if (authorizationToken != null && authorizationToken.startsWith("Bearer ")) {
             return authorizationToken.substring(7);

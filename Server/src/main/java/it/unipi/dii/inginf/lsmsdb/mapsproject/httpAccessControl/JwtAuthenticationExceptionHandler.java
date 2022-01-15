@@ -13,9 +13,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
+public class JwtAuthenticationExceptionHandler implements AuthenticationEntryPoint, Serializable {
 
-    private static final Logger LOGGER = Logger.getLogger( JwtAuthenticationEntryPoint.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( JwtAuthenticationExceptionHandler.class.getName() );
     private static final long serialVersionUID = -7858869558953243875L;
 
     @Override
@@ -29,8 +29,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
                          AuthenticationException authException) throws IOException {
 
         LOGGER.log(Level.INFO, "sending 401 unauthorized. authException: " + authException.toString());
-
-        //authException.printStackTrace();
 
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }

@@ -15,6 +15,12 @@ public class UserSpring implements UserDetails {
         this.applicationUser = user;
     }
 
+    /**
+     * use this method to access to the User instance of the currently logged-in user
+     * @return the User instance of the logged user
+     */
+    public User getApplicationUser(){ return this.applicationUser; }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
@@ -38,8 +44,6 @@ public class UserSpring implements UserDetails {
     public String getUsername() {
         return this.applicationUser.getUsername();
     }
-
-    public User getApplicationUser(){ return this.applicationUser; }
 
     @Override
     public boolean isAccountNonExpired() {
