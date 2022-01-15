@@ -8,6 +8,7 @@ import org.bson.Document;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
@@ -140,7 +141,9 @@ public class User implements Serializable {
 		this.birthDate = birthDate;
 	}
 
-	public Role getRole() {
+	public List<String> getUserRole() {
+		List<String> role = new ArrayList<>();
+		role.add(this.role.toString());
 		return role;
 	}
 

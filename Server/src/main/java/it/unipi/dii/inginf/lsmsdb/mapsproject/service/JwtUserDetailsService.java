@@ -1,8 +1,15 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.springframework.security.core.userdetails.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,11 +20,30 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if ("username".equals(username)) {
-            return new User("username", "$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6", new ArrayList<>());
-        } else {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+
+        User user = UserService.getUserFromUsername(username);
+        List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
+        return buildUserForAuthentication(user, authorities);
+    }
+
+    // Converts user to spring.springframework.security.core.userdetails.User
+    private org.springframework.security.core.userdetails.User buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+                true, true, true, true, authorities);
+    }
+
+    private List<GrantedAuthority> buildUserAuthority(List<String> userRoles) {
+
+        Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+
+        // add user's authorities
+        for (String userRole : userRoles) {
+            setAuths.add(new SimpleGrantedAuthority(userRole));
         }
+
+        List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);
+
+        return Result;
     }
 
 }

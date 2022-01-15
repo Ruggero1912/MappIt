@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
-    /*
+
     @Autowired
     private UserDetailsService jwtUserDetailsService;
 
@@ -38,11 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // configure AuthenticationManager so that it knows from where to load
         // user for matching credentials
         // Use BCryptPasswordEncoder
-        //auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
         //TODO: set a proper UserDetailsService class in order to make it work the UsernamePasswordAuthenticationToken.getUserByUsername method
 
     }
-    /*
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-     */
+
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // don't authenticate this particular request
                 .authorizeRequests().antMatchers("/api/login", "/api/register", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll().
                 // all other requests need to be authenticated
-                //        anyRequest().authenticated(). //TODO: uncomment this line to re-enable authentication mechanism
+                        anyRequest().authenticated(). //TODO: uncomment this line to re-enable authentication mechanism
                 // make sure we use stateless session; session won't be used to
                 // store user's state.
                         and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
@@ -73,5 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         //httpSecurity.addFilterAt(new JwtRequestFilter(), BasicAuthenticationFilter.class);
         //httpSecurity.addFilter(new JwtRequestFilter());
+
+        httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

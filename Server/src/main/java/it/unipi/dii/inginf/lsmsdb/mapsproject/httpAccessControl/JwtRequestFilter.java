@@ -13,7 +13,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.controller.JwtAuthenticationContro
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -60,14 +62,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         // if the context is empty we have to generate the session context again
-        if ((userID != null && username != null) && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if ((userID != null && username != null)) { //&& SecurityContextHolder.getContext().getAuthentication() == null
 
             // if token is valid configure Spring Security to manually set authentication
             if (jwtTokenUtil.validateToken(jwtToken)) {
 
                 LOGGER.info("[+]: restoring session for the user " + username + " | the token is valid");
                 //NOTE: generate the session starting from the given token so that the server has access to the currentUser instance
-                User currentUser = UserService.getUserFromId(userID);
+                //User currentUser = UserService.getUserFromId(userID);
 
                 //assert currentUser.getId() == userID;
 
@@ -80,8 +82,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 //the call to setAuthentication stores in the session the authentication information for the current user
                 //SecurityContextHolder.getContext().setAuthentication(upat);
                 //TODO: instead of an User object, pass as first parameter a class that implements UserDetails and that also has the user informations
-                UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(currentUser, "STATIC");
-                SecurityContextHolder.getContext().setAuthentication(upat);
+                UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+                Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+                //UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(currentUser, "STATIC");
+                SecurityContextHolder.getContext().setAuthentication(auth);
 
                 /*
                 TODO: what does it do?
@@ -89,6 +93,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 */
             }else{
                 LOGGER.warning("[x]: the given token is not valid!");
+                SecurityContextHolder.clearContext();
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "[x]: Invalid Token");
+                return;
             }
         }
         chain.doFilter(request, response);

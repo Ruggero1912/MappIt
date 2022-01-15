@@ -133,6 +133,16 @@ public class UserService {
     }
 
     /**
+     * return null if it does not exist a user with that username, otherwise returns the associated user
+     * @param username of the requested user
+     * @return associated User object or null if not found
+     */
+    public static User getUserFromUsername(String username){
+        UserManager um = UserManagerFactory.getUserManager();
+        return um.getUserFromUsername(username);
+    }
+
+    /**
      * return hashed password
      * @param password from the user
      * @return hashed password to store

@@ -48,6 +48,7 @@ public class UserController {
 	@GetMapping(value = "/user", produces = "application/json")
 	public ResponseEntity<?> getCurrentUserInfo(@RequestHeader("Authorization") String authToken) {
 		ResponseEntity<?> result;
+		SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		//we return the information about the current logged in user
 		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
