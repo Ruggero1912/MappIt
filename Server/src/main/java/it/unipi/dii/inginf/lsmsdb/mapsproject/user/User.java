@@ -38,20 +38,20 @@ public class User implements Serializable {
 
 	public enum Role {USER,MODERATOR,ADMIN}
 
-	private String _id;
-	private String username;
-	private String email;
-	private String password;
-	private String name;
-	private String surname;
-	private Date birthDate;
-	private Role role;
-	private Image profilePic;
-	private List<String> publishedPostsId;
-	private List<String> followedUsersId;
-	private List<String> favouritePlacesId;
-	private List<String> likedPostsId;
-	private int totalPost;
+	protected String _id;
+	protected String username;
+	protected String email;
+	protected String password;
+	protected String name;
+	protected String surname;
+	protected Date birthDate;
+	protected List<String> role;
+	protected Image profilePic;
+	protected List<String> publishedPostsId;
+	protected List<String> followedUsersId;
+	protected List<String> favouritePlacesId;
+	protected List<String> likedPostsId;
+	protected int totalPost;
 
 	//need default constructor for JSON Parsing
 	public User(){
@@ -65,11 +65,14 @@ public class User implements Serializable {
 		this.email = doc.get(KEY_EMAIL).toString();
 		this.name = doc.get(KEY_NAME).toString();
 		this.surname = doc.get(KEY_SURNAME).toString();
-		this.role = User.Role.valueOf(doc.get(KEY_ROLE).toString());
+		String role = doc.getString(KEY_ROLE);  //doc.getList(KEY_ROLE, String.class);
+		List<String> roles = new ArrayList<>();
+		roles.add(role);
+		this.role=roles;
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image();
 		this.profilePic.setPath(doc.get(KEY_PROFILE_PIC).toString());
-		this.publishedPostsId = (List<String>) doc.get(KEY_PUBLISHED_POSTS, List.class);
+		this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
 	}
 
 	public static User buildUser(@NotNull Document doc){
@@ -78,7 +81,7 @@ public class User implements Serializable {
 		return u;
 	}
 
-	public User(String _id, String nm, String snm, String uname, String psw, String email, Role role) {
+	public User(String _id, String nm, String snm, String uname, String psw, String email, List<String> role) {
 		this._id = _id;
 		this.name = nm;
 		this.surname = snm;
@@ -147,9 +150,23 @@ public class User implements Serializable {
 		return role;
 	}
 
-	public void setRole(Role role) {
+	public void setRole(List<String> role) {
 		this.role = role;
 	}
+
+	public Image getProfilePic() {
+		return profilePic;
+	}
+
+	public String getProfilePicLink() {
+		return profilePic.toString();
+	}
+
+	public void setProfilePic(Image pic) {
+		this.profilePic = pic;
+	}
+
+	public List<String> getPublishedPostsId(){ return this.publishedPostsId; }
 
 	// write methods to retrive: pathProfilePic, followedUsers, favouritePosts, likedPosts, totalPosts
 

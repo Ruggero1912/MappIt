@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.JwtTokenUtil;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
@@ -46,29 +47,17 @@ public class UserController {
 	 * notes = "This method retrieve information of the current user")
 	 */
 	@GetMapping(value = "/user", produces = "application/json")
-	public ResponseEntity<?> getCurrentUserInfo(@RequestHeader("Authorization") String authToken) {
+	public ResponseEntity<?> getCurrentUserInfo() {
 		ResponseEntity<?> result;
-		SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		//we return the information about the current logged in user
-		String token = JwtTokenUtil.parseTokenFromAuthorizationHeader(authToken);
-		String userID="";
-		try {
-			userID = JwtTokenUtil.getIdFromToken(token);
-		} catch (IllegalArgumentException e) {
-			LOGGER.log(Level.INFO, "{Error : Unable to get JWT Token}");
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Unable to get JWT Token\"}");
-		} catch (ExpiredJwtException e) {
-			LOGGER.log(Level.INFO, "{Error : JWT Token has expired}");
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"JWT Token has expired\"}");
-		}
-		User currentUser = UserService.getUserFromId(userID);
+		User currentUser = userSpring.getApplicationUser();
 		if(currentUser == null){
-			LOGGER.log(Level.WARNING, "user not found for userID: " + userID);
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find user with id="+userID+"\"}");
+			LOGGER.log(Level.WARNING, "Current logged in user not found");
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find current logged in user\"}");
 		}
-		//UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-		//User currentUser = (User) upat.getPrincipal();
+
 		LOGGER.log(Level.INFO, "answering to the request... Response body: " + currentUser.toString());
 		result = ResponseEntity.status(HttpStatus.OK).body(currentUser);
 

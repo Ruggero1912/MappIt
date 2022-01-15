@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,13 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = UserService.getUserFromUsername(username);
-        List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
-        return buildUserForAuthentication(user, authorities);
+        return parseUserSpringFromUser(user);
+        //List<GrantedAuthority> authorities = buildUserAuthority(user.getUserRole());
+        //return buildUserForAuthentication(user, authorities);
+    }
+
+    private UserSpring parseUserSpringFromUser(User user){
+        return new UserSpring(user);
     }
 
     // Converts user to spring.springframework.security.core.userdetails.User
