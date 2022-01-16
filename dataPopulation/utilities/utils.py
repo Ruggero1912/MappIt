@@ -64,17 +64,18 @@ class Utils:
 
     def temporary_log(text : str = "", new_line : bool = False):
         """
-        - if no text is given, clean the current line
+        - if no text is given, clear the current line
         - if new_line is True, returns to new line so that the current content of the temporary_log gets "stored"
-        - the separator between a temporary_log textis \r, so that the previous log is overwritten
+        - the separator between a temporary_log text is \r, so that the previous log is overwritten
         """
+        CLEAR_LINE = "\033[K"
         if new_line:
             print()
             return
         if text == "" or text == None:
-            print("\r", end="")
+            print(f"{CLEAR_LINE}\r", end="")
         else:
-            print(f"\r{text}", end="")
+            print(f"{CLEAR_LINE}\r{text}", end="")
 
     def convert_date_to_datetime(date : date) -> datetime:
         """
@@ -82,9 +83,10 @@ class Utils:
         """
         return datetime(date.year, date.month, date.day)
 
+    @DeprecationWarning
     def load_places_list_from_mongo() -> list:
         """
-        returns the _id if a document that is the same as the one given already exists in the given collection, else returns None
+        WARNING: THIS METHOD IS DEPRECATED!
         """
         myclient = pymongo.MongoClient(Utils.CONNECTION_STRING)
         mydb = myclient[Utils.DATABASE_NAME]

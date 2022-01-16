@@ -86,6 +86,7 @@ class FlickrPostFactory:
 
                 posts.append(flickr_post)
        
+        PlaceFactory.update_last_flickr_search(place_id)
         #return the list of creatd posts
         return posts
 

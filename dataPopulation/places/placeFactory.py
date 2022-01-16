@@ -1,7 +1,6 @@
-from logging import Logger
 import pymongo
 from bson.objectid import ObjectId
-
+from datetime import datetime
 from neo4j import (
     GraphDatabase,
     WRITE_ACCESS,
@@ -20,9 +19,12 @@ class PlaceFactory:
     PLACES_COLLECTION               = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][PLACE_COLLECTION_NAME]
 
     PLACE_ID_KEY                    = Utils.load_config("PLACE_ID_KEY")
+    PLACE_NAME_KEY                  = Utils.load_config("PLACE_NAME_KEY")
     PLACE_FITS_KEY                  = Utils.load_config("PLACE_FITS_KEY")
     PLACE_POST_ARRAY_KEY            = Utils.load_config("PLACE_POST_ARRAY_KEY")
     PLACE_FAVOURITES_COUNTER_KEY    = Utils.load_config("PLACE_FAVOURITES_COUNTER_KEY")
+    PLACE_LAST_YT_SEARCH_KEY        = Utils.load_config("PLACE_LAST_YT_SEARCH_KEY")
+    PLACE_LAST_FLICKR_SEARCH_KEY    = Utils.load_config("PLACE_LAST_FLICKR_SEARCH_KEY")
 
     NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
     NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
@@ -96,3 +98,50 @@ class PlaceFactory:
         for element in result_set:
             list_of_ids.append(element['p']['id'])
         return list_of_ids
+
+    def load_places(how_many : int = 10, random = False):
+        """
+        returns a list of dicts from the Place Mongo collection
+        - :param how_many returns the specified number of places [[ if set to 0, returns all the places, if random is False ]]
+        - :param random if set to True, gives random result
+        """
+        if random == True:
+            #db.mycoll.aggregate([{ $sample: { size: how_many } }])
+            if how_many <= 0:
+                how_many = 10
+            cur = PlaceFactory.PLACES_COLLECTION.aggregate([{"$sample" : {"size" : how_many}}])
+        else:
+            cur = PlaceFactory.PLACES_COLLECTION.find()
+        return list(cur)
+
+    def load_places_for_yt_search(how_many : int = 10):
+        """
+        returns a list of dicts from the place mongo collection ordered by the value of the timestamp field 'lastYTsearch'
+        - returns as firsts the ones without the field or with an empty value, then ordered by increasing timestamp
+        - :param how_many returns the specified number of places, returns all if set to 0
+        """
+        cur = PlaceFactory.PLACES_COLLECTION.find().sort( PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, pymongo.ASCENDING ).limit(how_many)
+        return list(cur)
+
+    def load_places_for_flickr_search(how_many : int = 10):
+        """
+        returns a list of dicts from the place mongo collection ordered by the value of the timestamp field 'lastFlickrSearch'
+        - :returns as firsts the ones without the field or with an empty value, then ordered by increasing timestamp
+        - :param how_many returns the specified number of places, returns all if set to 0
+        """
+        cur = PlaceFactory.PLACES_COLLECTION.find().sort( PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, pymongo.ASCENDING ).limit(how_many)
+        return list(cur)
+
+    def update_last_yt_search(place_id : str):
+        """
+        updates the field 'lastYTsearch' of the place document whose id is place_id to now(), if the document with the given id exists
+        """
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={"_id" : ObjectId(str(place_id))}, update={"$set" : {PlaceFactory.PLACE_LAST_YT_SEARCH_KEY : datetime.now()}})
+        return ret.modified_count
+
+    def update_last_flickr_search(place_id : str):
+        """
+        updates the field 'lastFlickrSearch' of the place document whose id is place_id to now(), if the document with the given id exists
+        """
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={"_id" : ObjectId(str(place_id))}, update={"$set" : {PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY : datetime.now()} })
+        return ret.modified_count

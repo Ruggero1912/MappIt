@@ -96,6 +96,7 @@ class YTPostFactory:
             
             posts.append(yt_post)
         
+        PlaceFactory.update_last_yt_search(place_id=place_id)
         return posts
 
     def parse_post_from_details(yt_video_full_details : dict, place_id : str, place_name : str) -> YTPost:
