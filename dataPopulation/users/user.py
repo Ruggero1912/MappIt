@@ -63,7 +63,7 @@ class User:
         setattr(self, User.KEY_MAIL        , user_dict[User.KEY_MAIL]                     )
         setattr(self, User.KEY_BIRTH_DATE  , user_dict[User.KEY_BIRTH_DATE]               )
         setattr(self, User.KEY_PASSWORD    , user_dict[User.KEY_PASSWORD]                 )
-        setattr(self, User.KEY_ROLE        , user_dict[User.KEY_ROLE]                     )
+        setattr(self, User.KEY_ROLES        , user_dict.get(User.KEY_ROLES, User.DEFAULT_USER_ROLE ))
         setattr(self, User.KEY_PROFILE_PIC , user_dict[User.KEY_PROFILE_PIC]              )  
         setattr(self, User.KEY_POST_ARRAY  , user_dict[User.KEY_POST_ARRAY]               )
         setattr(self, User.KEY_FOLLOWER_COUNTER, user_dict[User.KEY_FOLLOWER_COUNTER]     )
