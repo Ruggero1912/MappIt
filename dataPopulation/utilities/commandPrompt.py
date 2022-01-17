@@ -148,7 +148,9 @@ class CommandPrompt:
         - if a param "relations" is given, lists instead the available social relations
         - if a param "post-sources" is given, returns the list of available post sources
         """
-        print_entity_list = True if len(param) == 0 else False
+        if param is None or param == [] or param == "":
+            print_entity_list = True
+            param = []
 
         for option in param:
             assert isinstance(option, str)

@@ -6,6 +6,8 @@ from neo4j import (
 import pymongo
 
 from utilities.utils import Utils
+from places.placeFactory import PlaceFactory
+from users.user import User
 
 class PersistentEntitiesManager:
     LOGGER                      = Utils.start_logger("PersistentEntitiesManager")
@@ -139,6 +141,19 @@ class PersistentEntitiesManager:
             PersistentEntitiesManager.LOGGER.warning(f"the given collection_name {collection_name} is not recognised. skipping...")
             return
         if PersistentEntitiesManager.VERBOSE: PersistentEntitiesManager.LOGGER.info(f"Going to drop the {collection_name} collection")
+
+        # NOTE: if the collection that is going to be dropped is the Posts collection, we have to delete also the document linking and document embedding between:
+        #       - places and posts
+        #       - users and posts
+        # NOTE: We have also to delete the attributes lastYTsearch and lastFlickrSearch from Place document
+        if collection_name == PersistentEntitiesManager.POSTS_COLLECTION_NAME:
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_POST_ARRAY_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_POST_ARRAY_IDS_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_LAST_YT_SEARCH_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.USERS_COLLECTION_NAME, attribute=User.KEY_POST_ARRAY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.USERS_COLLECTION_NAME, attribute=User.KEY_POST_IDS_ARRAY)
+
         how_many_docs = PersistentEntitiesManager.MONGO_DATABASE.get_collection(collection_name).estimated_document_count()
         PersistentEntitiesManager.MONGO_DATABASE.drop_collection(collection_name)
         if PersistentEntitiesManager.VERBOSE: PersistentEntitiesManager.LOGGER.info(f"dropped the {collection_name} collection | deleted {how_many_docs}")
@@ -153,3 +168,10 @@ class PersistentEntitiesManager:
             return True
         else:
             return False
+
+    def __drop_attribute_from_collection(collection_name : str, attribute : str):
+        """
+        drops the given :param attribute from the specified collection :param collection_name
+        """
+        ret = PersistentEntitiesManager.MONGO_DATABASE[collection_name].update_many(filter={}, update={"$unset" : {attribute : 1}})
+        return ret.modified_count
