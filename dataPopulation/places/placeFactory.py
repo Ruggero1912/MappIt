@@ -25,6 +25,7 @@ class PlaceFactory:
     PLACE_FAVOURITES_COUNTER_KEY    = Utils.load_config("PLACE_FAVOURITES_COUNTER_KEY")
     PLACE_LAST_YT_SEARCH_KEY        = Utils.load_config("PLACE_LAST_YT_SEARCH_KEY")
     PLACE_LAST_FLICKR_SEARCH_KEY    = Utils.load_config("PLACE_LAST_FLICKR_SEARCH_KEY")
+    PLACE_TOTAL_LIKES_COUNTER_KEY   = Utils.load_config("PLACE_TOTAL_LIKES_COUNTER_KEY")
 
     NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
     NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
@@ -69,6 +70,15 @@ class PlaceFactory:
         # it increase the counter of the given 'num' quantity (can be positive or negative) 
         ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : ObjectId(str(place_id))}, update={"$inc":{PlaceFactory.PLACE_FAVOURITES_COUNTER_KEY : num}})
         return ret.modified_count
+
+    def increment_aggregated_likes_counter(place_id : str):
+        """
+        updates the redundant aggregated field 'totalLikes' which indicates the total of likes received by all the posts done in the specified place
+        """
+        num = 1
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : ObjectId(str(place_id))}, update={"$inc":{PlaceFactory.PLACE_TOTAL_LIKES_COUNTER_KEY : num}})
+        return ret.modified_count
+
 
     def get_random_ids(how_many : int = 10) -> list :
         """
