@@ -353,7 +353,8 @@ class CommandPrompt:
             print("\t[x] Error: no valid post source specified! Skipping... [x]")
             return
         else:
-            print(f"Going to generate posts for {how_many_places} places with option skip set to {skip}...")
+            tmp = how_many_places if all_the_places is False else "all the"
+            print(f"Going to generate posts for {tmp} places with option skip set to {skip}...")
             if generate_yt:
                 print(" [+] Using YouTube as source [+] ")
             if generate_flickr:
@@ -410,7 +411,10 @@ class CommandPrompt:
         elif how_many_posts_from_yt > 0:
             str_outcome = f"Generated {how_many_posts_from_yt} posts using YouTube as source"
         else:
-            str_outcome = "Hey, no posts were generated... Why?"
+            str_outcome = "Hey, no posts were generated..."
         
         Utils.say_something(text=str_outcome)
+        print()
+        print(str_outcome)
+        print()
 
