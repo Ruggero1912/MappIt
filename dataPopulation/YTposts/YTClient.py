@@ -46,6 +46,9 @@ class YTClient:
 
     def __update_api_key(new_api_key : str):
         YTClient.LOGGER.info(f"Changing API key from {YTClient.YT_API_KEY} with {YTClient.get_api_key_usages()} usages to {new_api_key} with {YTClient.get_api_key_usages(new_api_key)} usages")
+        #we want to pop out from the available keys the current one, as it is supposed to be overquota
+        assert isinstance(YTClient.YT_API_KEYS_ARRAY, list)
+        YTClient.YT_API_KEYS_ARRAY.remove(YTClient.YT_API_KEY)
         YTClient.YT_API_KEY = new_api_key
         YTClient.youtube = googleapiclient.discovery.build(YTClient.API_SERVICE_NAME, YTClient.API_VERSION, developerKey=YTClient.YT_API_KEY)
         return
@@ -82,7 +85,11 @@ class YTClient:
             locationRadius="1mi",
             type="video"
         )
-        response = request.execute()
+        try:
+            response = request.execute()
+        except:
+            YTClient.change_api_key()
+            return YTClient.youtube_search_query(place_name, lon, lat, activity_tag)
         YTClient.update_api_key_usages()
         if YTClient.is_api_key_overquota():
             YTClient.change_api_key()
@@ -96,7 +103,11 @@ class YTClient:
             part="snippet,contentDetails,statistics",
             id=video_id
         )
-        response = request.execute()
+        try:
+            response = request.execute()
+        except:
+            YTClient.change_api_key()
+            return YTClient.youtube_video_details(video_id)
         YTClient.update_api_key_usages()
         if YTClient.is_api_key_overquota():
             YTClient.change_api_key()
