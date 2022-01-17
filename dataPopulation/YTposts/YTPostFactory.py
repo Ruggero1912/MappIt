@@ -142,11 +142,13 @@ class YTPostFactory:
 
         #we add the post_id to posts fields of User and Place Documents
 
-        user_modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        #user_modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        user_modified_rows = UserFactory.add_post_preview_to_post_array( yt_post.get_author(), yt_post)
         if user_modified_rows != 1:
             YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the User posts field, modified_rows = " + str(user_modified_rows))
 
-        place_modified_rows = PlaceFactory.add_post_id_to_post_array( yt_post.get_place(), yt_post_doc_id)
+        #place_modified_rows = PlaceFactory.add_post_id_to_post_array( yt_post.get_place(), yt_post_doc_id)
+        place_modified_rows = PlaceFactory.add_post_preview_to_post_array( yt_post.get_place(), yt_post)
         if place_modified_rows != 1:
             YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
 

@@ -141,11 +141,13 @@ class FlickrPostFactory:
 
          #we add the post_id to posts fields of User and Place Documents
 
-        user_modified_rows = UserFactory.add_post_id_to_post_array( flickr_post.get_author(), flickr_post_doc_id)
+        #user_modified_rows = UserFactory.add_post_id_to_post_array( flickr_post.get_author(), flickr_post_doc_id)
+        user_modified_rows = UserFactory.add_post_preview_to_post_array(flickr_post.get_author(), flickr_post)
         if user_modified_rows != 1:
             FlickrPostFactory.LOGGER.warning("The Flickr post_id has not been added to the User posts field, modified_rows = " + str(user_modified_rows))
 
-        place_modified_rows = PlaceFactory.add_post_id_to_post_array( flickr_post.get_place(), flickr_post_doc_id)
+        #place_modified_rows = PlaceFactory.add_post_id_to_post_array( flickr_post.get_place(), flickr_post_doc_id)
+        place_modified_rows = PlaceFactory.add_post_preview_to_post_array(flickr_post.get_place(),  flickr_post)
         if place_modified_rows != 1:
             FlickrPostFactory.LOGGER.warning("The Flickr post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
 
