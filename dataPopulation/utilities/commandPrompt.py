@@ -88,7 +88,6 @@ class CommandPrompt:
             self.run = False
             del self.thread
             print("CommandPrompt terminated. press ENTER to quit")
-            raise KeyboardInterrupt
 
     def __del__(self):
         self.stop()
@@ -159,7 +158,7 @@ class CommandPrompt:
                 print("Available relation kinds:")
                 for relation_kind in PersistentEntitiesManager.NEO4J_RELATIONS_KINDS:
                     print(relation_kind)
-            if option.lower() in ["post-sources", "posts-sources", "postsources", "postssources", "post-source", "posts", "post"]:
+            if option.lower() in ["post-sources", "posts-sources", "postsources", "postssources", "post-source", "posts", "post", "sources", "source"]:
                 print("Available post generation sources:")
                 for post_source in CommandPrompt.POST_SOURCES:
                     print(post_source)

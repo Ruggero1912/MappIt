@@ -168,7 +168,7 @@ class UserFactory:
         how_many_seed = random.randint(SEED, LIMIT_SEED)
         how_many_follows = random.randint(how_many_seed//2, how_many_seed*2)
         how_many_followers  = random.randint( (how_many_follows//2), how_many_follows * 2)
-        how_many_likes = random.randint( (how_many_follows//2), how_many_follows * 10)
+        how_many_likes = random.randint( (how_many_follows//2), how_many_follows * 3)
         how_many_favs = random.randint(how_many_seed // 3, how_many_seed)
         how_many_visits = random.randint( how_many_seed // 2, how_many_seed * 2)
         UserFactory.generate_follows(user_id, how_many_follows)
@@ -281,7 +281,7 @@ class UserFactory:
         - follower_id -[:FOLLOWS{datetime: datetime_follow}]-> followed_id
         """
         if str(follower_id) == str(followed_id):
-            UserFactory.LOGGER.warning("[x] a user cannot follow himself! received follower_id: {follower_id}".format(follower_id=follower_id))
+            #UserFactory.LOGGER.warning("[x] a user cannot follow himself! received follower_id: {follower_id}".format(follower_id=follower_id))
             return
         if isinstance(datetime_follow, date):
             datetime_follow = Utils.convert_date_to_datetime(datetime_follow)
@@ -357,7 +357,7 @@ class UserFactory:
         c = 0
         for user_to_follow in users_to_follow_ids:
             c += 1
-            Utils.temporary_log(f"Adding followed \tuser n{c} out of {how_many} for the user {user_id}...")
+            Utils.temporary_log(f"Adding followed user n {c} out of {how_many} for the user {user_id}...")
             UserFactory.user_follows_user(follower_id=user_id, followed_id=user_to_follow)
         return
 
@@ -366,7 +366,7 @@ class UserFactory:
         c = 0
         for future_follower_id in follower_users_ids:
             c += 1
-            Utils.temporary_log(f"Adding follower \tuser n{c} out of {how_many} for the user {user_id}...")
+            Utils.temporary_log(f"Adding follower user n {c} out of {how_many} for the user {user_id}...")
             UserFactory.user_follows_user(follower_id=future_follower_id, followed_id=user_id)
         return
 
@@ -375,7 +375,7 @@ class UserFactory:
         c = 0
         for post_id in posts_ids:
             c += 1
-            Utils.temporary_log(f"Add like to \tplace n{c} out of {how_many} for the user {user_id}...")
+            Utils.temporary_log(f"Add like to place n {c} out of {how_many} for the user {user_id}...")
             UserFactory.user_likes_post(user_id, post_id)
         return
 
@@ -384,7 +384,7 @@ class UserFactory:
         c = 0
         for place_id in places_ids:
             c += 1
-            Utils.temporary_log(f"Add to favs \tplace n{c} out of {how_many} for the user {user_id}...")
+            Utils.temporary_log(f"Add to favs place n {c} out of {how_many} for the user {user_id}...")
             UserFactory.user_adds_place_to_favourites(user_id=user_id,place_id=place_id)
         return
 
@@ -393,7 +393,7 @@ class UserFactory:
         c = 0
         for place_id in places_ids:
             c += 1
-            Utils.temporary_log(f"Add to visited \t\tplace n{c} out of {how_many} for the user {user_id}...")
+            Utils.temporary_log(f"Add to visited place n {c} out of {how_many} for the user {user_id}...")
             UserFactory.user_visited_place(user_id=user_id, place_id=place_id)
         return
 

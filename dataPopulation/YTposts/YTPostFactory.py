@@ -71,7 +71,7 @@ class YTPostFactory:
             
             yt_video_id     = yt_video['id']['videoId']
 
-            Utils.temporary_log(f"Video {video_results_index} out of {len(yt_video)} | Loading details...")
+            Utils.temporary_log(f"Video {video_results_index} out of {len(yt_videos)} | Loading details...")
 
             #we have to check if it already exists a post for this YT video
             already_existing_post = YTPostFactory.load_post_from_video_id(yt_video_id)

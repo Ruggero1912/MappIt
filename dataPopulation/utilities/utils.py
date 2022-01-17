@@ -52,6 +52,12 @@ class Utils:
         value = Utils.load_config(config_key=config_key)
         return int(value)
 
+    def load_config_json(config_key : str):
+        """
+        trys to parse a json object from the given config key
+        """
+        return json.loads(Utils.load_config(config_key))
+
     def start_logger(logger_name : str):
         logger = logging.getLogger(logger_name)
         logger.setLevel(level=logging.DEBUG)
