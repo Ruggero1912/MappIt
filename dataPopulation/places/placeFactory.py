@@ -5,7 +5,6 @@ from neo4j import (
     GraphDatabase,
     WRITE_ACCESS,
 )
-from dataPopulation.users.userFactory import UserFactory
 
 from utilities.utils import Utils
 from posts.Post import Post

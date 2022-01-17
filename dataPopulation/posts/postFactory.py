@@ -4,7 +4,7 @@ from neo4j import (
 )
 import pymongo
 from bson.objectid import ObjectId
-from dataPopulation.places.placeFactory import PlaceFactory
+from places.placeFactory import PlaceFactory
 from utilities.utils import Utils
 from posts.Post import Post
 
@@ -31,7 +31,7 @@ class PostFactory:
     neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     def get_post_dict_by_id(post_id : str) -> dict:
-        post_doc = PostFactory.POSTS_COLLECTION.find({Post.KEY_ID : ObjectId((str(post_id)))})
+        post_doc = PostFactory.POSTS_COLLECTION.find_one({Post.KEY_ID : ObjectId((str(post_id)))})
         return post_doc
 
     def update_likes_counter(post_id : str, num : int):
