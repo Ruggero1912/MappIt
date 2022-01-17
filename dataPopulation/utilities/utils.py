@@ -136,5 +136,31 @@ class Utils:
         for activity in activities_list:
             activities_names.append(activity['activity'])
         return activities_names
+
+    __notifications_files_counter = 0
+
+    def say_something(text : str = "Task completed!", lang : str ="en"):
+        """
+        - use the parameter lang to specify a different language for the input text (default en) (for italian use it)
+        """
+        from gtts import gTTS
+        import playsound
+        tts_obj = gTTS(text=text, lang=lang)
+        file_name = f"notifications{Utils.__notifications_files_counter}.mp3"
+        Utils.__notifications_files_counter += 1
+        tts_obj.save(file_name)        
+
+        from threading import Thread
+        complete_path = f'{os.getcwd()}\\{file_name}'
+        def thread_run():
+            try:
+                playsound.playsound(complete_path)
+            except:
+                print("Sorry, I did not announce the notification...")
+            exit()
+        thread = Thread(target=thread_run)
+        thread.start()
+
+        return
         
 

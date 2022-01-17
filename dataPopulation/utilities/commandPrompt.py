@@ -356,6 +356,9 @@ class CommandPrompt:
             if generate_flickr:
                 print(" [+] Using Flickr as source  [+] ")
 
+        how_many_posts_from_yt = 0
+        how_many_posts_from_flickr = 0
+
         if all_the_places:
             how_many_places = 0
             places = PlaceFactory.load_places(0)
@@ -366,10 +369,12 @@ class CommandPrompt:
                 (lon, lat) = Utils.load_coordinates(place)
                 if generate_yt:
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, None):
-                        YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_yt += len(yt_posts)
                 if generate_flickr:
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, None):
-                        FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_flickr += len(flickr_posts)
         else:
             if generate_yt:
                 yt_places = PlaceFactory.load_places_for_yt_search(how_many_places)
@@ -379,7 +384,8 @@ class CommandPrompt:
                     place_name = place[PlaceFactory.PLACE_NAME_KEY]
                     (lon, lat) = Utils.load_coordinates(place)
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, None):
-                        YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_yt += len(yt_posts)
             
             if generate_flickr:
                 flickr_places = PlaceFactory.load_places_for_flickr_search(how_many_places)
@@ -389,5 +395,19 @@ class CommandPrompt:
                     place_name = place[PlaceFactory.PLACE_NAME_KEY]
                     (lon, lat) = Utils.load_coordinates(place)
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, None):
-                        FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_flickr += len(flickr_posts)
+
+        str_outcome = ""
+
+        if how_many_posts_from_flickr > 0 and how_many_posts_from_yt > 0:
+            str_outcome = f"Generated {how_many_posts_from_yt + how_many_posts_from_flickr} posts! {how_many_posts_from_yt} from YouTube and {how_many_posts_from_flickr} from Flickr"
+        elif how_many_posts_from_flickr > 0:
+            str_outcome = f"Generated {how_many_posts_from_flickr} posts using Flickr as source"
+        elif how_many_posts_from_yt > 0:
+            str_outcome = f"Generated {how_many_posts_from_yt} posts using YouTube as source"
+        else:
+            str_outcome = "Hey, no posts were generated... Why?"
+        
+        Utils.say_something(text=str_outcome)
 

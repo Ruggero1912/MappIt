@@ -5,3 +5,5 @@ pymongo[srv]
 python-dotenv
 neo4j
 python-dateutil
+gTTS
+playsound==1.2.2

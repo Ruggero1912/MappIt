@@ -151,6 +151,7 @@ class PersistentEntitiesManager:
             PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_POST_ARRAY_IDS_KEY)
             PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_LAST_YT_SEARCH_KEY)
             PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_TOTAL_LIKES_COUNTER_KEY)
             PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.USERS_COLLECTION_NAME, attribute=User.KEY_POST_ARRAY)
             PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.USERS_COLLECTION_NAME, attribute=User.KEY_POST_IDS_ARRAY)
 
