@@ -14,6 +14,7 @@ from neo4j import (
 from users.user import User
 from utilities.utils import Utils
 from posts.postFactory import PostFactory
+from posts.Post import Post
 from places.placeFactory import PlaceFactory
 
 class UserFactory:
@@ -46,7 +47,7 @@ class UserFactory:
 
     USER_YT_CHANNEL_ID_KEY      = Utils.load_config("USER_YT_CHANNEL_ID_KEY")
     USER_ID_KEY                 = Utils.load_config("USER_ID_KEY")
-    USER_POST_ARRAY_KEY         = Utils.load_config("USER_POST_ARRAY_KEY")
+    USER_POST_IDS_ARRAY_KEY     = Utils.load_config("USER_POST_IDS_ARRAY_KEY")
 
     USER_FLICKR_ACCOUNT_ID_KEY  = Utils.load_config("USER_FLICKR_ACCOUNT_ID_KEY")
 
@@ -250,7 +251,14 @@ class UserFactory:
         """
         adds post_id published by a specific user into post_array 
         """
-        ret = UserFactory.USERS_COLLECTION.update_one({UserFactory.USER_ID_KEY : ObjectId(user_id)}, update={'$addToSet' : {UserFactory.USER_POST_ARRAY_KEY : str(post_id)}})
+        ret = UserFactory.USERS_COLLECTION.update_one({UserFactory.USER_ID_KEY : ObjectId(user_id)}, update={'$addToSet' : {UserFactory.USER_POST_IDS_ARRAY_KEY : str(post_id)}})
+        return ret.modified_count
+
+    def add_post_preview_to_post_array(user_id : str, post_obj : Post):
+        """
+        adds a nested document "Post Preview" which contains a reduced sets of the attributes of the object Post to the document of the user which has the given user_id
+        """
+        ret = UserFactory.USERS_COLLECTION.update_one({User.KEY_ID : ObjectId(str(user_id))}, update={'$addToSet' : {User.KEY_POST_ARRAY : post_obj.get_post_preview_dict()}})
         return ret.modified_count
 
     def user_visited_place(user_id : str, place_id : str, datetime_visit : datetime = datetime.now()):

@@ -5,8 +5,10 @@ from neo4j import (
     GraphDatabase,
     WRITE_ACCESS,
 )
+from dataPopulation.users.userFactory import UserFactory
 
 from utilities.utils import Utils
+from posts.Post import Post
 
 class PlaceFactory:
 
@@ -21,6 +23,7 @@ class PlaceFactory:
     PLACE_ID_KEY                    = Utils.load_config("PLACE_ID_KEY")
     PLACE_NAME_KEY                  = Utils.load_config("PLACE_NAME_KEY")
     PLACE_FITS_KEY                  = Utils.load_config("PLACE_FITS_KEY")
+    PLACE_POST_ARRAY_IDS_KEY        = Utils.load_config("PLACE_POST_IDS_ARRAY_KEY")
     PLACE_POST_ARRAY_KEY            = Utils.load_config("PLACE_POST_ARRAY_KEY")
     PLACE_FAVOURITES_COUNTER_KEY    = Utils.load_config("PLACE_FAVOURITES_COUNTER_KEY")
     PLACE_LAST_YT_SEARCH_KEY        = Utils.load_config("PLACE_LAST_YT_SEARCH_KEY")
@@ -56,7 +59,14 @@ class PlaceFactory:
         """
         adds post_id related to a specific place into its post_array 
         """
-        ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(place_id)}, update={'$addToSet' : {PlaceFactory.PLACE_POST_ARRAY_KEY : str(post_id)}})
+        ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(place_id)}, update={'$addToSet' : {PlaceFactory.PLACE_POST_ARRAY_IDS_KEY : str(post_id)}})
+        return ret.modified_count
+
+    def add_post_preview_to_post_array(place_id : str, post_obj : Post):
+        """
+        adds a nested document "Post Preview" which contains a reduced sets of the attributes of the object Post to the document of the place which has the given place_id
+        """
+        ret = PlaceFactory.PLACES_COLLECTION.update_one({PlaceFactory.PLACE_ID_KEY : ObjectId(str(place_id))}, update={'$addToSet' : {PlaceFactory.PLACE_POST_ARRAY_KEY : post_obj.get_post_preview_dict()}})
         return ret.modified_count
 
     def update_favourites_counter(place_id : str, num : int):
