@@ -176,3 +176,30 @@ class PersistentEntitiesManager:
         """
         ret = PersistentEntitiesManager.MONGO_DATABASE[collection_name].update_many(filter={}, update={"$unset" : {attribute : 1}})
         return ret.modified_count
+
+    def drop_duplicate_places_from_neo(place_id : str, place_name : str):
+        """
+        drops all the places nodes in Neo4J that have the specified place_name but an id different from the specified id
+        - it also deletes the relations in which the node is involved
+        """
+        session = PersistentEntitiesManager.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        ret = session.run(f"MATCH (p:{PersistentEntitiesManager.NEO4J_PLACE_LABEL} WHERE p.name=$place_name AND p.id<>$place_id) DETACH DELETE p", {"place_name":place_name, "place_id":place_id})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary.counters.nodes_deleted
+
+    def delete_places_duplicate_nodes():
+        places = PlaceFactory.load_places(0)    # loads all the places
+        deleted = 0
+        for place_dict in places:
+            assert isinstance(place_dict, dict)
+            place_name = place_dict.get(PlaceFactory.PLACE_NAME_KEY, "")
+            place_id   = str( place_dict.get(PlaceFactory.PLACE_ID_KEY, "") )
+            if place_id == "" or place_name == '':
+                print("\t\t[!] skipping empty place obtained from mongo [!]")
+                continue
+            nodes_deleted = PersistentEntitiesManager.drop_duplicate_places_from_neo(place_id, place_name)
+            deleted += nodes_deleted
+            if nodes_deleted > 0:
+                print(f"[+] Deleted {nodes_deleted} duplicate nodes for the place {place_name} (id : {place_id})")
+        print(f"[+] places iteration concluded. Deleted {deleted} places in total")

@@ -186,6 +186,9 @@ class CommandPrompt:
             if(option.lower() == "all"):
                 PersistentEntitiesManager.delete_all_entity_kinds()
                 return
+            if(option.lower() in ["places-duplicate-nodes"]):
+                PersistentEntitiesManager.delete_places_duplicate_nodes()
+                return
             if(option not in PersistentEntitiesManager.ENTITY_KINDS):
                 print(f"The specified kind was not recognised: {option}")
                 separator()
