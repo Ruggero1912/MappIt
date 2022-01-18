@@ -50,7 +50,8 @@ public class MongoConnection {
     public enum Collections{
         USERS("user"),
         PLACES("place"),
-        POSTS("post");
+        POSTS("post"),
+        ACTIVITIES("activity");
 
         private String name;
 
