@@ -22,7 +22,7 @@ public class User implements Serializable {
 	public static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "name");
 	public static final String KEY_SURNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "surname");
 	public static final String KEY_BIRTHDATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "birthdate");
-	public static final String KEY_ROLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "role");
+	public static final String KEY_ROLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "roles");
 	public static final String KEY_PROFILE_PIC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "profilepic");
 	public static final String KEY_PUBLISHED_POSTS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
 	public static final String KEY_FOLLOWERS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "followers");
@@ -65,18 +65,18 @@ public class User implements Serializable {
 		this.email = doc.get(KEY_EMAIL).toString();
 		this.name = doc.get(KEY_NAME).toString();
 		this.surname = doc.get(KEY_SURNAME).toString();
-		try {
+		//try {
 			this.roles = doc.getList(KEY_ROLE, String.class);
-		}catch (ClassCastException c){
+		/*}catch (ClassCastException c){
 			//this happens if it is parsing a document in which the role is a string instead of an array
 			String role = doc.getString(KEY_ROLE);
 			List<String> roles = new ArrayList<>();
 			roles.add(role);
 			this.roles = roles;
-		}
+		}*/
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
-		this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
+		//this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
 	}
 
 	public static User buildUser(@NotNull Document doc){

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 @SecurityRequirement(name = "bearerAuth")
 public class PlaceController {
 
-    private static final Logger LOGGER = Logger.getLogger( PlaceService.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( PlaceController.class.getName() );
 
     @ApiOperation(value = "Get information of a specific place", notes = "This method retrieve information of a specific place, given its _id")
     @GetMapping(value = "/place/{id}", produces = "application/json")
