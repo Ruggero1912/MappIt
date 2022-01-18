@@ -31,6 +31,7 @@ public class PropertyPicker {
     public static final String userCollection = "persistence.db.mongo.collection.user";
     public final static String placeCollection = "persistence.db.mongo.collection.place";
     public final static String postCollection = "persistence.db.mongo.collection.post";
+    public final static String activityCollection = "persistence.db.mongo.collection.activity";
 
     public final static String userEntity = "persistence.db.neo4j.entity.user";
     public final static String placeEntity = "persistence.db.neo4j.entity.place";
