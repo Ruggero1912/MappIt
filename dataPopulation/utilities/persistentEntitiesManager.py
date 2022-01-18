@@ -6,6 +6,8 @@ from neo4j import (
 import pymongo
 
 from utilities.utils import Utils
+from places.placeFactory import PlaceFactory
+from users.user import User
 
 class PersistentEntitiesManager:
     LOGGER                      = Utils.start_logger("PersistentEntitiesManager")
@@ -139,6 +141,20 @@ class PersistentEntitiesManager:
             PersistentEntitiesManager.LOGGER.warning(f"the given collection_name {collection_name} is not recognised. skipping...")
             return
         if PersistentEntitiesManager.VERBOSE: PersistentEntitiesManager.LOGGER.info(f"Going to drop the {collection_name} collection")
+
+        # NOTE: if the collection that is going to be dropped is the Posts collection, we have to delete also the document linking and document embedding between:
+        #       - places and posts
+        #       - users and posts
+        # NOTE: We have also to delete the attributes lastYTsearch and lastFlickrSearch from Place document
+        if collection_name == PersistentEntitiesManager.POSTS_COLLECTION_NAME:
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_POST_ARRAY_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_POST_ARRAY_IDS_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_LAST_YT_SEARCH_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.PLACES_COLLECTION_NAME, attribute=PlaceFactory.PLACE_TOTAL_LIKES_COUNTER_KEY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.USERS_COLLECTION_NAME, attribute=User.KEY_POST_ARRAY)
+            PersistentEntitiesManager.__drop_attribute_from_collection(collection_name=PersistentEntitiesManager.USERS_COLLECTION_NAME, attribute=User.KEY_POST_IDS_ARRAY)
+
         how_many_docs = PersistentEntitiesManager.MONGO_DATABASE.get_collection(collection_name).estimated_document_count()
         PersistentEntitiesManager.MONGO_DATABASE.drop_collection(collection_name)
         if PersistentEntitiesManager.VERBOSE: PersistentEntitiesManager.LOGGER.info(f"dropped the {collection_name} collection | deleted {how_many_docs}")
@@ -153,3 +169,37 @@ class PersistentEntitiesManager:
             return True
         else:
             return False
+
+    def __drop_attribute_from_collection(collection_name : str, attribute : str):
+        """
+        drops the given :param attribute from the specified collection :param collection_name
+        """
+        ret = PersistentEntitiesManager.MONGO_DATABASE[collection_name].update_many(filter={}, update={"$unset" : {attribute : 1}})
+        return ret.modified_count
+
+    def drop_duplicate_places_from_neo(place_id : str, place_name : str):
+        """
+        drops all the places nodes in Neo4J that have the specified place_name but an id different from the specified id
+        - it also deletes the relations in which the node is involved
+        """
+        session = PersistentEntitiesManager.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        ret = session.run(f"MATCH (p:{PersistentEntitiesManager.NEO4J_PLACE_LABEL} WHERE p.name=$place_name AND p.id<>$place_id) DETACH DELETE p", {"place_name":place_name, "place_id":place_id})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary.counters.nodes_deleted
+
+    def delete_places_duplicate_nodes():
+        places = PlaceFactory.load_places(0)    # loads all the places
+        deleted = 0
+        for place_dict in places:
+            assert isinstance(place_dict, dict)
+            place_name = place_dict.get(PlaceFactory.PLACE_NAME_KEY, "")
+            place_id   = str( place_dict.get(PlaceFactory.PLACE_ID_KEY, "") )
+            if place_id == "" or place_name == '':
+                print("\t\t[!] skipping empty place obtained from mongo [!]")
+                continue
+            nodes_deleted = PersistentEntitiesManager.drop_duplicate_places_from_neo(place_id, place_name)
+            deleted += nodes_deleted
+            if nodes_deleted > 0:
+                print(f"[+] Deleted {nodes_deleted} duplicate nodes for the place {place_name} (id : {place_id})")
+        print(f"[+] places iteration concluded. Deleted {deleted} places in total")

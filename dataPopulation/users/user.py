@@ -25,6 +25,7 @@ class User:
     KEY_ROLES            = os.getenv("USER_ROLES_KEY")
     KEY_PROFILE_PIC     = os.getenv("USER_PROFILE_PIC_KEY")
     KEY_POST_ARRAY      = os.getenv("USER_POST_ARRAY_KEY")
+    KEY_POST_IDS_ARRAY  = Utils.load_config("USER_POST_IDS_ARRAY_KEY")  #legacy. DO NOT USE THIS ATTRIBUTE FOR NEW FEATURES
     KEY_FOLLOWER_COUNTER= os.getenv("USER_FOLLOWER_COUNTER")
 
     DEFAULT_PROFILE_PIC = os.getenv("USER_DEFAULT_PROFILE_PIC")

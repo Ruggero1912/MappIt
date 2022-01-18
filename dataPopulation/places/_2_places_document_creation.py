@@ -76,6 +76,7 @@ KEY_IMAGE= os.getenv("PLACE_IMAGE_KEY")
 KEY_OSMID=os.getenv("PLACE_OSMID_KEY")
 KEY_POSTS_ARRAY=os.getenv("PLACE_POST_ARRAY_KEY")
 KEY_FAVOURITES_COUNTER=os.getenv("PLACE_FAVOURITES_COUNTER_KEY")
+KEY_TOTAL_LIKES=os.getenv("PLACE_TOTAL_LIKES_COUNTER_KEY")
 
 def store_into_neo4j(place_name : str, place_id : str):
     driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
@@ -181,7 +182,8 @@ for geojson_infos in geojson_array:
         KEY_IMAGE : img_link,
         KEY_OSMID : geojson_infos["id"],
         KEY_POSTS_ARRAY : [],
-        KEY_FAVOURITES_COUNTER : 0
+        KEY_FAVOURITES_COUNTER : 0,
+        KEY_TOTAL_LIKES : 0
     }
     if(DEBUG): print(place_doc)
 

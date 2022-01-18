@@ -88,7 +88,6 @@ class CommandPrompt:
             self.run = False
             del self.thread
             print("CommandPrompt terminated. press ENTER to quit")
-            raise KeyboardInterrupt
 
     def __del__(self):
         self.stop()
@@ -149,7 +148,9 @@ class CommandPrompt:
         - if a param "relations" is given, lists instead the available social relations
         - if a param "post-sources" is given, returns the list of available post sources
         """
-        print_entity_list = True if len(param) == 0 else False
+        if param is None or param == [] or param == "":
+            print_entity_list = True
+            param = []
 
         for option in param:
             assert isinstance(option, str)
@@ -159,7 +160,7 @@ class CommandPrompt:
                 print("Available relation kinds:")
                 for relation_kind in PersistentEntitiesManager.NEO4J_RELATIONS_KINDS:
                     print(relation_kind)
-            if option.lower() in ["post-sources", "posts-sources", "postsources", "postssources", "post-source", "posts", "post"]:
+            if option.lower() in ["post-sources", "posts-sources", "postsources", "postssources", "post-source", "posts", "post", "sources", "source"]:
                 print("Available post generation sources:")
                 for post_source in CommandPrompt.POST_SOURCES:
                     print(post_source)
@@ -184,6 +185,9 @@ class CommandPrompt:
             assert isinstance(option, str)
             if(option.lower() == "all"):
                 PersistentEntitiesManager.delete_all_entity_kinds()
+                return
+            if(option.lower() in ["places-duplicate-nodes"]):
+                PersistentEntitiesManager.delete_places_duplicate_nodes()
                 return
             if(option not in PersistentEntitiesManager.ENTITY_KINDS):
                 print(f"The specified kind was not recognised: {option}")
@@ -349,11 +353,15 @@ class CommandPrompt:
             print("\t[x] Error: no valid post source specified! Skipping... [x]")
             return
         else:
-            print(f"Going to generate posts for {how_many_places} places with option skip set to {skip}...")
+            tmp = how_many_places if all_the_places is False else "all the"
+            print(f"Going to generate posts for {tmp} places with option skip set to {skip}...")
             if generate_yt:
                 print(" [+] Using YouTube as source [+] ")
             if generate_flickr:
                 print(" [+] Using Flickr as source  [+] ")
+
+        how_many_posts_from_yt = 0
+        how_many_posts_from_flickr = 0
 
         if all_the_places:
             how_many_places = 0
@@ -365,10 +373,12 @@ class CommandPrompt:
                 (lon, lat) = Utils.load_coordinates(place)
                 if generate_yt:
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, None):
-                        YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_yt += len(yt_posts)
                 if generate_flickr:
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, None):
-                        FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_flickr += len(flickr_posts)
         else:
             if generate_yt:
                 yt_places = PlaceFactory.load_places_for_yt_search(how_many_places)
@@ -378,7 +388,8 @@ class CommandPrompt:
                     place_name = place[PlaceFactory.PLACE_NAME_KEY]
                     (lon, lat) = Utils.load_coordinates(place)
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, None):
-                        YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_yt += len(yt_posts)
             
             if generate_flickr:
                 flickr_places = PlaceFactory.load_places_for_flickr_search(how_many_places)
@@ -388,5 +399,22 @@ class CommandPrompt:
                     place_name = place[PlaceFactory.PLACE_NAME_KEY]
                     (lon, lat) = Utils.load_coordinates(place)
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, None):
-                        FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        how_many_posts_from_flickr += len(flickr_posts)
+
+        str_outcome = ""
+
+        if how_many_posts_from_flickr > 0 and how_many_posts_from_yt > 0:
+            str_outcome = f"Generated {how_many_posts_from_yt + how_many_posts_from_flickr} posts! {how_many_posts_from_yt} from YouTube and {how_many_posts_from_flickr} from Flickr"
+        elif how_many_posts_from_flickr > 0:
+            str_outcome = f"Generated {how_many_posts_from_flickr} posts using Flickr as source"
+        elif how_many_posts_from_yt > 0:
+            str_outcome = f"Generated {how_many_posts_from_yt} posts using YouTube as source"
+        else:
+            str_outcome = "Hey, no posts were generated..."
+        
+        Utils.say_something(text=str_outcome)
+        print()
+        print(str_outcome)
+        print()
 

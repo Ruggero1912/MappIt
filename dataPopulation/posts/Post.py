@@ -44,6 +44,20 @@ class Post:
 
     DICT_IGNORED_ATTRIBUTES = []
 
+##########################################
+########   POST PREVIEW SETUP  ###########
+##########################################
+    POST_PREVIEW_FIELDS = [
+        KEY_ID,
+        KEY_TITLE,
+        KEY_AUTHOR_USERNAME,
+        KEY_DESC,
+        KEY_THUMBNAIL
+    ]
+##########################################
+########   POST PREVIEW SETUP  ###########
+##########################################
+
     def __init__(self, author_id, place_id, author_username : str, place_name : str, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
         setattr(self, Post.KEY_TITLE            , title         if title        is not None else Post.fake.sentence(nb_words=4)        ) #short sentence as fake title
         setattr(self, Post.KEY_DESC             , description   if description  is not None else Post.fake.paragraph()                 )
@@ -152,4 +166,10 @@ class Post:
         assert isinstance(exp_date, date)
         ret_dict[Post.KEY_EXPERIENCE_DATE] = Utils.convert_date_to_datetime(exp_date) #datetime(exp_date.year, exp_date.month, exp_date.day)
 
+        return ret_dict
+
+    def get_post_preview_dict(self) -> dict:
+        ret_dict = {}
+        for key in Post.POST_PREVIEW_FIELDS:
+            ret_dict[key] = getattr(self, key)
         return ret_dict

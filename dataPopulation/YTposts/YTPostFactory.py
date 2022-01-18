@@ -71,7 +71,7 @@ class YTPostFactory:
             
             yt_video_id     = yt_video['id']['videoId']
 
-            Utils.temporary_log(f"Video {video_results_index} out of {len(yt_video)} | Loading details...")
+            Utils.temporary_log(f"Video {video_results_index} out of {len(yt_videos)} | Loading details...")
 
             #we have to check if it already exists a post for this YT video
             already_existing_post = YTPostFactory.load_post_from_video_id(yt_video_id)
@@ -142,11 +142,13 @@ class YTPostFactory:
 
         #we add the post_id to posts fields of User and Place Documents
 
-        user_modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        #user_modified_rows = UserFactory.add_post_id_to_post_array( yt_post.get_author(), yt_post_doc_id)
+        user_modified_rows = UserFactory.add_post_preview_to_post_array( yt_post.get_author(), yt_post)
         if user_modified_rows != 1:
             YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the User posts field, modified_rows = " + str(user_modified_rows))
 
-        place_modified_rows = PlaceFactory.add_post_id_to_post_array( yt_post.get_place(), yt_post_doc_id)
+        #place_modified_rows = PlaceFactory.add_post_id_to_post_array( yt_post.get_place(), yt_post_doc_id)
+        place_modified_rows = PlaceFactory.add_post_preview_to_post_array( yt_post.get_place(), yt_post)
         if place_modified_rows != 1:
             YTPostFactory.LOGGER.warning("The YouTube post_id has not been added to the Place posts field, modified_rows = " + str(place_modified_rows))
 

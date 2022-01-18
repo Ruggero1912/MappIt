@@ -4,6 +4,7 @@ from neo4j import (
 )
 import pymongo
 from bson.objectid import ObjectId
+from places.placeFactory import PlaceFactory
 from utilities.utils import Utils
 from posts.Post import Post
 
@@ -29,6 +30,10 @@ class PostFactory:
 
     neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
+    def get_post_dict_by_id(post_id : str) -> dict:
+        post_doc = PostFactory.POSTS_COLLECTION.find_one({Post.KEY_ID : ObjectId((str(post_id)))})
+        return post_doc
+
     def update_likes_counter(post_id : str, num : int):
         """
         updates the likes counter of the given post (if the post_id corresponds to a post)
@@ -39,6 +44,11 @@ class PostFactory:
         #the '$inc' operator creates the field if it does not exists,
         # it increase the counter of the given 'num' quantity (can be positive or negative) 
         ret = PostFactory.POSTS_COLLECTION.update_one(filter={Post.KEY_ID : ObjectId(str(post_id))}, update={"$inc":{Post.KEY_LIKES_COUNTER : num}})
+        #it has also to update the redundant field 'totalLikes' in the Place collection
+        # retrieve the place id
+        post_doc = PostFactory.get_post_dict_by_id(post_id)
+        place_id = str ( post_doc.get(Post.KEY_PLACE, "") )
+        PlaceFactory.increment_aggregated_likes_counter(place_id)     
         return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :
