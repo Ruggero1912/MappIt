@@ -22,8 +22,9 @@ class User:
     KEY_MAIL            = os.getenv("USER_MAIL_KEY")
     KEY_BIRTH_DATE      = os.getenv("USER_BIRTH_DATE_KEY")
     KEY_PASSWORD        = os.getenv("USER_PASSWORD_KEY")
-    KEY_ROLES            = os.getenv("USER_ROLES_KEY")
+    KEY_ROLES           = os.getenv("USER_ROLES_KEY")
     KEY_PROFILE_PIC     = os.getenv("USER_PROFILE_PIC_KEY")
+    KEY_COUNTRY_CODE    = os.getenv("USER_COUNTRY_CODE_KEY")
     KEY_POST_ARRAY      = os.getenv("USER_POST_ARRAY_KEY")
     KEY_POST_IDS_ARRAY  = Utils.load_config("USER_POST_IDS_ARRAY_KEY")  #legacy. DO NOT USE THIS ATTRIBUTE FOR NEW FEATURES
     KEY_FOLLOWER_COUNTER= os.getenv("USER_FOLLOWER_COUNTER")
@@ -34,7 +35,7 @@ class User:
 
     fake                = Utils.fake
 
-    def __init__(self, username=None, name=None, surname=None, mail=None, profile_pic=None, post_array=[]) -> None:
+    def __init__(self, username=None, name=None, surname=None, mail=None, country_code=None, profile_pic=None, post_array=[]) -> None:
         """
         generates a random user object using given parameter if any, or the faker generator
         """
@@ -44,6 +45,7 @@ class User:
         setattr(self, User.KEY_NAME        , name if name is not None else User.fake.first_name()                       )
         setattr(self, User.KEY_SURNAME     , surname if surname is not None else User.fake.last_name()                  )
         setattr(self, User.KEY_MAIL        , mail if mail is not None else User.fake.safe_email()                       )
+        setattr(self, User.KEY_COUNTRY_CODE, country_code                                                               )
         setattr(self, User.KEY_BIRTH_DATE  , User.fake.date_of_birth(minimum_age=20, maximum_age=75)                    )
         setattr(self, User.KEY_PASSWORD    , User.DEFAULT_HASHED_PWD                                                    )
         setattr(self, User.KEY_ROLES       , [User.DEFAULT_USER_ROLE]                                                   )
@@ -62,6 +64,7 @@ class User:
         setattr(self, User.KEY_NAME        , user_dict[User.KEY_NAME]                     )
         setattr(self, User.KEY_SURNAME     , user_dict[User.KEY_SURNAME]                  )
         setattr(self, User.KEY_MAIL        , user_dict[User.KEY_MAIL]                     )
+        setattr(self, User.KEY_COUNTRY_CODE, user_dict[User.KEY_COUNTRY_CODE]             )
         setattr(self, User.KEY_BIRTH_DATE  , user_dict[User.KEY_BIRTH_DATE]               )
         setattr(self, User.KEY_PASSWORD    , user_dict[User.KEY_PASSWORD]                 )
         setattr(self, User.KEY_ROLES        , user_dict.get(User.KEY_ROLES, User.DEFAULT_USER_ROLE ))
