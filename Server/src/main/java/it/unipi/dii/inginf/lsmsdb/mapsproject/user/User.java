@@ -24,6 +24,7 @@ public class User implements Serializable {
 	public static final String KEY_SURNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "surname");
 	public static final String KEY_BIRTHDATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "birthdate");
 	public static final String KEY_ROLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "roles");
+	public static final String KEY_COUNTRY_CODE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "countryCode");
 	public static final String KEY_PROFILE_PIC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "profilepic");
 	public static final String KEY_PUBLISHED_POSTS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "postsArray");
 	public static final String KEY_FOLLOWERS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, "followers");
@@ -47,6 +48,7 @@ public class User implements Serializable {
 	protected String surname;
 	protected Date birthDate;
 	protected List<String> roles;
+	protected String countryCode;
 	protected Image profilePic;
 	protected List<PostPreview> publishedPosts;
 
@@ -72,6 +74,7 @@ public class User implements Serializable {
 			this.roles = roles;
 		}
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
+		//this.countryCode = doc.get(KEY_COUNTRY_CODE).toString();
 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
 		//this.publishedPosts = doc.getList(KEY_PUBLISHED_POSTS, PostPreview.class);
 	}
@@ -82,7 +85,7 @@ public class User implements Serializable {
 		return u;
 	}
 
-	public User(String _id, String nm, String snm, String uname, String psw, String email, Date bday, List<String> roles, List<PostPreview> posts) {
+	public User(String _id, String nm, String snm, String uname, String psw, String email, Date bday, List<String> roles, String cc, Image pic, List<PostPreview> posts) {
 		this._id = _id;
 		this.name = nm;
 		this.surname = snm;
@@ -91,6 +94,8 @@ public class User implements Serializable {
 		this.email = email;
 		this.birthDate = bday;
 		this.roles = roles;
+		this.countryCode = cc;
+		this.profilePic = pic;
 		this.publishedPosts = posts;
 	}
 
@@ -166,6 +171,10 @@ public class User implements Serializable {
 	public void setProfilePic(Image pic) {
 		this.profilePic = pic;
 	}
+
+	public String getCountryCode(){ return this.countryCode; }
+
+	public void setCountryCode(String cc){ this.countryCode=cc; }
 
 	public List<PostPreview> getPublishedPosts(){ return this.publishedPosts; }
 
