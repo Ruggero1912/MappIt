@@ -9,7 +9,10 @@ import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;
 import org.bson.Document;
@@ -30,15 +33,44 @@ public class PostManagerMongoDB implements PostManager {
         this.postCollection = MongoConnection.getCollection(MongoConnection.Collections.POSTS.toString());
     }
 
-    @Override
-    public Post storePost(Post newPost) {
+    public Post storePost(Post newPost){
+        Post res=storeInPostCollection(newPost);
+        storeEmbeddedPosts(newPost);
+        return res;
+    }
+
+    private Post storeInPostCollection(Post newPost) {
         Document postDoc = newPost.createDocument();
 
         try{
             postCollection.insertOne(postDoc);
-            String id = postDoc.getObjectId(Post.KEY_AUTHOR_ID).toString();
-            postDoc.append(Post.KEY_AUTHOR_ID, id);
+            String id = postDoc.getObjectId(Post.KEY_ID).toString();
+            postDoc.append(Post.KEY_ID, id);
             return new Post(postDoc);
+        } catch(MongoException me){
+            return null;
+        }
+    }
+
+    private PostPreview storeEmbeddedPosts(Post newPost) {
+        String authorId = newPost.getAuthorId();
+        String placeId = newPost.getPlaceId();
+
+        PostPreview newPostPreview = new PostPreview(newPost);
+        Document postPreviewDoc = newPostPreview.createDocument();
+
+        try{
+            Bson userFilter = Filters.eq(User.KEY_ID, authorId);
+            Bson userUpdate = Updates.push(User.KEY_PUBLISHED_POSTS, postPreviewDoc);
+            MongoCollection userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
+            userCollection.updateOne(userFilter, userUpdate);
+
+            Bson placeFilter = Filters.eq(Place.KEY_ID, placeId);
+            Bson placeUpdate = Updates.push(Place.KEY_POSTS_ARRAY, postPreviewDoc);
+            MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
+            placeCollection.updateOne(placeFilter, placeUpdate);
+
+            return newPostPreview;
         } catch(MongoException me){
             return null;
         }
