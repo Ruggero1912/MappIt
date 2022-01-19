@@ -7,17 +7,22 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RequestMapping("/api")
 @RestController
@@ -76,13 +81,16 @@ public class PostController {
     }
 
     @ApiOperation(value = "store a new post in the databases")
-    @PostMapping(value = "/post")
-    public ResponseEntity<?> newPost(@RequestBody Post newPost) {
+    @RequestMapping(path = "/post", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<?> newPost(@RequestPart PostSubmission newPost, @RequestPart(required = false) MultipartFile thumbnail, @RequestPart(required = false) List<MultipartFile> pics) {
 
-        //TODO: handle the files upload and specify as author the current user
-        Post insertedPost;
+        PostSubmission insertedPost;
+        //retrieve the current logged-in user for storing in the doc also username and user _id
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userSpring.getApplicationUser();
+
         try{
-            insertedPost = PostService.createNewPost(newPost);
+            insertedPost = PostService.createNewPost(newPost, currentUser, thumbnail, pics);
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "{Error : Unable to store new post}");
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Something went wrong in inserting new post:" + e.getMessage());

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.neo4j.driver.Value;
 
@@ -69,6 +70,21 @@ public class Post {
         this.tags = tags;
         this.videoId = vidId;
         this.thumbnail = thumb;
+        this.pics = pics;
+    }
+
+    public Post(PostSubmission submittedPost, User author, String thumbnail, List<String> pics){
+        this.authorUsername = author.getUsername();
+        this.authorId = author.getId();
+        this.placeId = submittedPost.getPlaceId();
+        this.title= submittedPost.getTitle();
+        this.date = submittedPost.getExperienceDate();
+        this.postDate = new Date();
+        this.description = submittedPost.getDescription();
+        this.activity = submittedPost.getActivity();
+        this.tags = submittedPost.getTags();
+        this.videoId = submittedPost.getYTvideoId();
+        this.thumbnail = thumbnail;
         this.pics = pics;
     }
 

@@ -13,7 +13,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserM
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,29 +36,33 @@ public class PostService {
 
     /**
      * return the newly created Yt Post or Null if something goes wrong
-     * @param newPost the YouTube Post object containing all the info
+     * @param submittedPost the YouTube Post object containing all the info
      * @return YtPost object if the insert is successful or null otherwise
      */
-    public static Post createNewPost(Post newPost) throws DatabaseErrorException {
-        if(newPost == null){
+    public static PostSubmission createNewPost(PostSubmission submittedPost, User author, MultipartFile thumb, List<MultipartFile> pics) throws DatabaseErrorException {
+        if(submittedPost == null){
             return null;
         }
 
         PostManager pm = PostManagerFactory.getPostManager();
+        //TODO: from MultipartFile to String (FileService class)
+        List<String> picsLinks = new ArrayList<>();
+        Post newPost = new Post(submittedPost, author, "", picsLinks);
         Post addedNewPostMongo = pm.storePost(newPost);
+
         if(addedNewPostMongo == null){
-            LOGGER.log(Level.SEVERE, "Error during insert: Neo4j new favourite place failed!");
+            LOGGER.log(Level.SEVERE, "Error: MongoDB new post insertion failed!");
             throw new DatabaseErrorException("MongoDB new post insert failed");
         }
 
         PostSocialManager psm = PostSocialManagerFactory.getPostManager();
         boolean insertedNewPostNeo;
         try{
-            insertedNewPostNeo = psm.storePost(newPost);
+            insertedNewPostNeo = psm.storePost(addedNewPostMongo);
             if(!insertedNewPostNeo){
                 //we have to delete the newly inserted post from MongoDB
                 LOGGER.log(Level.SEVERE, "Error during new post insert: Neo4j failed!");
-                pm.deletePost(newPost);
+                pm.deletePost(addedNewPostMongo);
                 return null;
             }
         } catch (Exception e){
@@ -64,7 +70,7 @@ public class PostService {
             return null;
         }
 
-        return newPost;
+        return submittedPost;
     }
 
     /**
