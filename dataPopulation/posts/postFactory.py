@@ -7,6 +7,7 @@ from bson.objectid import ObjectId
 from places.placeFactory import PlaceFactory
 from utilities.utils import Utils
 from posts.Post import Post
+from utilities.neoConnectionManager import NeoConnectionManager
 
 class PostFactory:
 
@@ -28,7 +29,7 @@ class PostFactory:
     NEO4J_RELATION_POST_PLACE = Utils.load_config("NEO4J_RELATION_POST_PLACE")
     NEO4J_RELATION_POST_USER = Utils.load_config("NEO4J_RELATION_POST_USER")
 
-    neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
+    neo_driver          = NeoConnectionManager.get_static_driver() #GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     def get_post_dict_by_id(post_id : str) -> dict:
         post_doc = PostFactory.POSTS_COLLECTION.find_one({Post.KEY_ID : ObjectId((str(post_id)))})

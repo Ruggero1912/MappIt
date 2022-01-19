@@ -4,6 +4,7 @@ from textwrap import *
 
 from YTposts.YTPostFactory import YTPostFactory
 from FlickrPosts.FlickrPostFactory import FlickrPostFactory
+from places.osmPlaceFactory import OsmPlaceFactory
 from places.placeFactory import PlaceFactory
 from utilities.utils import Utils
 from utilities.persistentEntitiesManager import PersistentEntitiesManager
@@ -29,12 +30,13 @@ class CommandPrompt:
     LOGGER = Utils.start_logger("CommandPrompt")
 
     COMMANDS_DESCRIPTIONS = {
-                                "list"              : "params: \"entity\" | \"relations\" | \"post-sources\"",
+                                "list"              : "params: \"entity\" | \"relations\" | \"post-sources\" | places-areas",
                                 "delete"            : "deletes the specified entities from the db | if 'ALL' is given: deletes all the entities",
                                 "generate"          :   {
                                                             "posts"             : "generates posts from the specified sources | use the option -n (/ --num) to specify how many different places | use -a (/ --all-places) to run the generation on all the places in db | if -s (/ --skip) is given, skips all the places for which at least it has been done one search for the specified kinds of generation",
                                                             "users"             : "generates users. use the option -n (/--num) followed by the required number of users use -s (/--social-relations) if the generation is required | use -ns (/--no-social-relations) if the generation is forbidden | NOTE: it is suggested to use 'generate posts', which handles also the generation of users starting from the API obtained infos",
-                                                            "social-relations"  : "generates social relations for the given kinds of relations. use the option -n (/--how-many) to specify how many different users must be used for the generations"
+                                                            "social-relations"  : "generates social relations for the given kinds of relations. use the option -n (/--how-many) to specify how many different users must be used for the generations",
+                                                            "places"        : "if you specify an option from [ --node-ids | --relations-ids | ways-ids ], parses all the following parameters of ids of the given kinds and tries to load the places with the given ids. else you can specify the places-areas for which you want to generate places from OpenStreetMap"
                                                         },
                             }
 
@@ -70,12 +72,14 @@ class CommandPrompt:
                             "list"              : self.list,
                             "delete"            : self.delete,
                             "generate"          : self.generate,
-                            "exit"              : self.stop
+                            "exit"              : self.stop,
+                            "exit()"            : self.stop
                         }
         self.generations_commands = {
                                         "posts"             : self.generate_posts,
                                         "users"             : self.generate_users,
-                                        "social-relations"  : self.generate_social_relations
+                                        "social-relations"  : self.generate_social_relations,
+                                        "places"            : self.generate_places
                                     }
 
     def start(self):
@@ -148,6 +152,7 @@ class CommandPrompt:
         - if a param "relations" is given, lists instead the available social relations
         - if a param "post-sources" is given, returns the list of available post sources
         """
+        print_entity_list = False
         if param is None or param == [] or param == "":
             print_entity_list = True
             param = []
@@ -168,6 +173,10 @@ class CommandPrompt:
                 print("Available generations kinds:")
                 for generable_instance in self.generations_commands:
                     print(generable_instance)
+            if option.lower() in ["places-areas", "place-area", "places-area", "place-areas"]:
+                print("Available places' generation areas: ")
+                for area in OsmPlaceFactory.AREAS.keys():
+                    print(area)
 
         if print_entity_list:
             print("Available entity kinds:")
@@ -210,6 +219,51 @@ class CommandPrompt:
             return
 
         self.generations_commands[user_specified_generation](param = user_parameters)
+
+    def generate_places(self, param):
+        """
+        if you specify an option from [ --node-ids | --relations-ids | ways-ids ], parses all the following parameters of ids of the given kinds and tries to load the places with the given ids. else you can specify the places-area for which you want to generate places from OpenStreetMap
+        """
+        parsing_nodes = False
+        parsing_ways = False
+        parsing_relations = False
+        nodes_ids = []
+        ways_ids = []
+        relations_ids = []
+        places_area = ""
+
+        for option in param:
+            assert isinstance(option, str)
+            if option.lower() in ["--node-ids", "--nodes-ids", "--nodes-id"]:
+                parsing_nodes = True
+                parsing_ways = False
+                parsing_relations = False
+            elif option.lower() in ["--relations-ids", "--relation-id", "relations-id", "relations-ids"]:
+                parsing_nodes = False
+                parsing_ways = False
+                parsing_relations = True
+            elif option.lower() in ["--ways-ids", "--way-id", "ways-id", "ways-ids"]:
+                parsing_nodes = False
+                parsing_ways = True
+                parsing_relations = False
+            if parsing_nodes:
+                nodes_ids.append(int(option))
+            elif parsing_ways:
+                ways_ids.append(int(option))
+            elif parsing_relations:
+                relations_ids.append(int(option))
+            else:
+                places_area = option
+                break
+        if places_area != "":
+            generated, skipped = OsmPlaceFactory.search_and_parse(places_area)
+        else:
+            generated, skipped = OsmPlaceFactory.search_and_parse_by_ids(nodes_ids, ways_ids, relations_ids)
+        str_outcome = f"Place generation task completed! Generated {len(generated)} places and {len(skipped)} skipped"
+        Utils.say_something(text=str_outcome)
+        print()
+        print(str_outcome)
+        print()
 
     def generate_social_relations(self, param):
         """

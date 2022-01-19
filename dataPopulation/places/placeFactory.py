@@ -5,9 +5,11 @@ from neo4j import (
     GraphDatabase,
     WRITE_ACCESS,
 )
+from utilities.neoConnectionManager import NeoConnectionManager
 
 from utilities.utils import Utils
 from posts.Post import Post
+from places.place import Place
 
 class PlaceFactory:
 
@@ -35,7 +37,8 @@ class PlaceFactory:
     NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
 
-    neo_driver          = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
+    neo_driver          = NeoConnectionManager.get_static_driver()
+    #GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     def load_place_by_id(place_id):
         """
@@ -43,6 +46,66 @@ class PlaceFactory:
         """
         place = PlaceFactory.PLACES_COLLECTION.find_one({PlaceFactory.PLACE_ID_KEY : place_id})
         return place
+
+    def store_place(place_obj : Place) -> str:
+        """
+        stores a given place object in MongoDB
+        :returns the given place_obj with the id set to the id of the stored document
+        """
+        inserted_id = PlaceFactory.__store_in_mongo(place_obj)
+        place_obj.set_id(inserted_id)
+        #it has to store the place in Neo4J too!
+        PlaceFactory.__store_in_neo(place_obj)
+        return place_obj
+
+    def __store_in_mongo(place_obj : Place) -> str:
+        """
+        returns the _id of the stored document
+        """
+        ret = PlaceFactory.PLACES_COLLECTION.insert_one(place_obj.get_dict())
+        return str(ret.inserted_id)
+
+    def __store_in_neo(place_obj : Place):
+        session = PlaceFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
+        place_id = place_obj.get_id()
+        place_name = place_obj.get_name()
+        ret = session.run(f"MERGE (a:{PlaceFactory.NEO4J_PLACE_LABEL} {{id: $id, name: $name}})", {"id": place_id, "name": place_name})
+        session.close()
+        result_summary = ret.consume()
+        return result_summary.counters.nodes_created
+
+    def is_place_already_present(place_obj : Place):
+        """
+        returns True if a Place with:
+        - the same osm_id 
+        - or
+        - the same loc attribute
+        - or
+        - the same name and a position in a radius of 0.5 km
+        is already present in the Places collection, else False
+        """
+        radius_in_km = 0.5
+        radius_in_degrees = radius_in_km / 111.12
+        lon, lat = place_obj.get_center()
+        #if the given place does not have proper coordinates, returns that the place is already present to avoid the insertion of spare elements
+        if lon is False:    return True
+        fil = {
+            "$or" : [
+            {Place.KEY_OSM_ID   : place_obj.get_osm_id()},
+            #{Place.KEY_LOC      : place_obj.get_loc()   },
+            {"$and" : [
+                { Place.KEY_NAME        : place_obj.get_name()  },
+                #{"$geoWithin": {"$center"  : [[lon, lat], radius_in_degrees]}}
+                {Place.KEY_LOC : {"$geoWithin"    : {"$center" : [[lon, lat], radius_in_degrees]}} }
+                ]
+            }
+            ]
+        }
+        cur = PlaceFactory.PLACES_COLLECTION.find(filter=fil)
+        if len(list(cur)):
+            return True
+        else:
+            return False
 
     def add_activity_to_fits(place_id, activity_name):
         """
