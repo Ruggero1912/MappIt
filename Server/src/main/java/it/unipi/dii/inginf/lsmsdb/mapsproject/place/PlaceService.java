@@ -33,8 +33,14 @@ public class PlaceService {
      * @return associated Place object or null if not found
      */
     public static Place getPlaceFromId(String id){
-        PlaceManager um = PlaceManagerFactory.getPlaceManager();
-        return um.getPlaceFromId(id);
+        Place res;
+        try {
+            PlaceManager um = PlaceManagerFactory.getPlaceManager();
+            res = um.getPlaceFromId(id);
+        }catch (Exception e){
+            res = null;
+        }
+        return res;
     }
 
     /**

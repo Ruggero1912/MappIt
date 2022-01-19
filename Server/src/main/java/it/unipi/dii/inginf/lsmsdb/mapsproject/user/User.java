@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import org.bson.Document;
 
 
@@ -47,11 +48,7 @@ public class User implements Serializable {
 	protected Date birthDate;
 	protected List<String> roles;
 	protected Image profilePic;
-	protected List<String> publishedPostsId;
-	protected List<String> followedUsersId;
-	protected List<String> favouritePlacesId;
-	protected List<String> likedPostsId;
-	protected int totalPost;
+	protected List<PostPreview> publishedPosts;
 
 	//need default constructor for JSON Parsing
 	public User(){
@@ -65,18 +62,18 @@ public class User implements Serializable {
 		this.email = doc.get(KEY_EMAIL).toString();
 		this.name = doc.get(KEY_NAME).toString();
 		this.surname = doc.get(KEY_SURNAME).toString();
-		//try {
+		try {
 			this.roles = doc.getList(KEY_ROLE, String.class);
-		/*}catch (ClassCastException c){
+		}catch (ClassCastException c){
 			//this happens if it is parsing a document in which the role is a string instead of an array
 			String role = doc.getString(KEY_ROLE);
 			List<String> roles = new ArrayList<>();
 			roles.add(role);
 			this.roles = roles;
-		}*/
+		}
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
-		//this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
+		//this.publishedPosts = doc.getList(KEY_PUBLISHED_POSTS, PostPreview.class);
 	}
 
 	public static User buildUser(@NotNull Document doc){
@@ -85,14 +82,16 @@ public class User implements Serializable {
 		return u;
 	}
 
-	public User(String _id, String nm, String snm, String uname, String psw, String email, List<String> roles) {
+	public User(String _id, String nm, String snm, String uname, String psw, String email, Date bday, List<String> roles, List<PostPreview> posts) {
 		this._id = _id;
 		this.name = nm;
 		this.surname = snm;
 		this.username = uname;
 		this.password = psw;
 		this.email = email;
+		this.birthDate = bday;
 		this.roles = roles;
+		this.publishedPosts = posts;
 	}
 
 
@@ -168,9 +167,8 @@ public class User implements Serializable {
 		this.profilePic = pic;
 	}
 
-	public List<String> getPublishedPostsId(){ return this.publishedPostsId; }
+	public List<PostPreview> getPublishedPosts(){ return this.publishedPosts; }
 
-	// write methods to retrive: pathProfilePic, followedUsers, favouritePosts, likedPosts, totalPosts
 
 	@Override
 	public String toString() {
