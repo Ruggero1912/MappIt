@@ -21,9 +21,6 @@ public class MongoConnection {
 
     private static final String MongoURI = PropertyPicker.getProperty(PropertyPicker.MongoURI);
     private static final String DatabaseName = PropertyPicker.getProperty(PropertyPicker.MongoDBName);
-    // TODO: add those explainations to the doc:
-    //https://stackoverflow.com/questions/42654193/mongodb-java-how-to-manage-the-connection
-    //https://stackoverflow.com/questions/19938153/do-i-need-to-explicitly-close-connection
     private static final MongoConnection obj = new MongoConnection(); //we can always use the same as the threads are managed by the library
 
     private MongoClient mongoClient;
