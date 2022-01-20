@@ -94,8 +94,10 @@ public interface UserSocialManager {
 
 
     /**
-     * return all the posts of an user in the db, given the user obj
-     * @return Post Previews List or null if there are no posts
+     * returns a list of suggested post to check out, based on user likes
+     * @param user the User that asks for new posts to check out
+     * @param howMany is quantity of posts to show
+     * @return a list of PostPreview
      */
-    List<PostPreview> retrieveAllPostPreviews(User user);
+    List<PostPreview> getSuggestedPosts(User user, int howMany);
 }

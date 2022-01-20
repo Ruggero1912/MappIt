@@ -289,9 +289,41 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
 
-            return userPostPreviews;
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+    @Override
+    public List<PostPreview> getSuggestedPosts(User user, int maxHowMany) {
+        Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
+
+        try (Session session = neo4jConnection.getDriver().session()) {
+            return session.writeTransaction((TransactionWork<List<PostPreview>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "USER_ID", user.getId() );
+                params.put("HOW_MANY", maxHowMany);
+                String newLine = System.getProperty("line.separator");
+                String query = String.join(newLine,
+        "MATCH (u:"+ User.NEO_USER_LABEL +"{"+User.NEO_KEY_ID+":$USER_ID})-[:"+ User.NEO_RELATION_LIKES +"]->(p:"+ Post.NEO_POST_LABEL +")-[:"
+                + Post.NEO_RELATION_LOCATION +"]->(pl:"+ Place.NEO_PLACE_LABEL +") ",
+                "WITH DISTINCT pl AS places, COLLECT(p) AS likedPosts ",
+                "MATCH (:"+ User.NEO_USER_LABEL +")-[l:"+ User.NEO_RELATION_LIKES +"]->(sp:"+ Post.NEO_POST_LABEL +" WHERE NOT(sp IN likedPosts))-[:"+ Post.NEO_RELATION_LOCATION +"]->(places) ",
+                "MATCH (author:"+ User.NEO_USER_LABEL +")-[:"+ Post.NEO_RELATION_AUTHOR +"]->(sp) ",
+                "WITH DISTINCT sp AS suggestedPosts, COUNT(l) AS likeReceived, author.username AS authorUsername, author.id AS authorId ",
+                "ORDER BY likeReceived DESC ",
+                "LIMIT $HOW_MANY ",
+                "RETURN suggestedPosts, authorUsername, authorId, likeReceived ");
+
+                Result res = tx.run(query, params);
+                List<PostPreview> suggestedPosts = new ArrayList<>();
+                while(res.hasNext()){
+                    Record r = res.next();
+                    Value postValue = r.get("suggestedPosts");
+                    Value authorUsername = r.get("authorUsername");
+                    Value authorId = r.get("authorId");
+                    PostPreview postPreview = new PostPreview(postValue, authorId, authorUsername);
+                    suggestedPosts.add(postPreview);
+                }
+                return suggestedPosts;
+            });
+        } catch (Neo4jException ne){
+            System.out.println(ne.getMessage());
             return null;
         }
     }

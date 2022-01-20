@@ -35,11 +35,12 @@ public class PostPreview {
     /**
      * We exploit this constructor to parse a Post Preview object from a Neo4j Node
      * @param valueFromPostNode corresponds to the value gathered from the Post Node in Neo4j
-     * @param valueFromAuthorNode corresponds to the value gathered from the User Node in Neo4j
+     * @param authorId corresponds to the id value gathered from the User node in Neo4j
+     * @param authorUsername corresponds to the username value gathered from the User node in Neo4j
      */
-    public PostPreview(Value valueFromPostNode, Value valueFromAuthorNode) {
-        this._id =  valueFromAuthorNode.get(User.NEO_KEY_ID).asString();
-        this.authorUsername = valueFromAuthorNode.get(User.NEO_KEY_USERNAME).asString();
+    public PostPreview(Value valueFromPostNode, Value authorId, Value authorUsername) {
+        this._id =  authorId.asString();
+        this.authorUsername = authorUsername.asString();
         this.title = valueFromPostNode.get(Post.NEO_KEY_TITLE).asString();
         this.description = valueFromPostNode.get(Post.NEO_KEY_DESC).asString();
         this.thumbnail = valueFromPostNode.get(Post.NEO_KEY_THUMBNAIL).asString();
