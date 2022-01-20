@@ -14,6 +14,8 @@ class User:
 
     BEGIN               = start()
 
+    DEFAULT_COUNTRY_CODE = Utils.load_config("DEFAULT_COUNTRY_CODE")
+
     KEY_YT_CHANNEL      = os.getenv("USER_YT_CHANNEL_ID_KEY")
     KEY_ID              = os.getenv("USER_ID_KEY")
     KEY_USERNAME        = os.getenv("USER_USERNAME_KEY")
@@ -45,7 +47,7 @@ class User:
         setattr(self, User.KEY_NAME        , name if name is not None else User.fake.first_name()                       )
         setattr(self, User.KEY_SURNAME     , surname if surname is not None else User.fake.last_name()                  )
         setattr(self, User.KEY_MAIL        , mail if mail is not None else User.fake.safe_email()                       )
-        setattr(self, User.KEY_COUNTRY_CODE, country_code                                                               )
+        setattr(self, User.KEY_COUNTRY_CODE, country_code  if country_code is not None else User.DEFAULT_COUNTRY_CODE   )
         setattr(self, User.KEY_BIRTH_DATE  , User.fake.date_of_birth(minimum_age=20, maximum_age=75)                    )
         setattr(self, User.KEY_PASSWORD    , User.DEFAULT_HASHED_PWD                                                    )
         setattr(self, User.KEY_ROLES       , [User.DEFAULT_USER_ROLE]                                                   )
@@ -64,7 +66,7 @@ class User:
         setattr(self, User.KEY_NAME        , user_dict[User.KEY_NAME]                     )
         setattr(self, User.KEY_SURNAME     , user_dict[User.KEY_SURNAME]                  )
         setattr(self, User.KEY_MAIL        , user_dict[User.KEY_MAIL]                     )
-        setattr(self, User.KEY_COUNTRY_CODE, user_dict[User.KEY_COUNTRY_CODE]             )
+        setattr(self, User.KEY_COUNTRY_CODE, user_dict.get(User.KEY_COUNTRY_CODE, User.DEFAULT_COUNTRY_CODE)  )
         setattr(self, User.KEY_BIRTH_DATE  , user_dict[User.KEY_BIRTH_DATE]               )
         setattr(self, User.KEY_PASSWORD    , user_dict[User.KEY_PASSWORD]                 )
         setattr(self, User.KEY_ROLES        , user_dict.get(User.KEY_ROLES, User.DEFAULT_USER_ROLE ))

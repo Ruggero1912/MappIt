@@ -54,7 +54,7 @@ class UserFactory:
 
     USERS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][USERS_COLLECTION_NAME]
 
-    def get_author_obj_from_YTchannel(channel_id, channel_name) -> User:
+    def get_author_obj_from_YTchannel(channel_id, channel_name, post_country_code) -> User:
         """
         return the User obj of an user associated to the given channel_id
         if a user associated with that channel_id does not exists, 
@@ -63,7 +63,7 @@ class UserFactory:
         associated_user = UserFactory.find_user_by_YT_channel_id(channel_id)
         if associated_user is None:
             #if there is no user associated with that channel, we have to create it
-            new_user = UserFactory.create_user_by_username(username=channel_name)
+            new_user = UserFactory.create_user_by_username(username=channel_name, country_code = post_country_code)
             new_user_id = new_user.get_id()
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_channel(user_id=new_user_id, channel_id=channel_id)
@@ -71,7 +71,7 @@ class UserFactory:
         else:
             return associated_user #associated_user[UserFactory.USER_ID_KEY]
 
-    def get_author_obj_from_flickr_account_id(flickr_account_id, flickr_username, flickr_realname = None) -> User:
+    def get_author_obj_from_flickr_account_id(flickr_account_id, flickr_username, flickr_realname = None, post_country_code : str = None) -> User:
         """
         return the User obj of an user associated to the given flickr_account_id
         if a user associated with that flickr_account_id does not exists, 
@@ -91,7 +91,7 @@ class UserFactory:
                 else:
                     name = flickr_realname
 
-            new_user = UserFactory.create_user_by_username(username=flickr_username, name=name, surname=surname)
+            new_user = UserFactory.create_user_by_username(username=flickr_username, name=name, surname=surname, country_code=post_country_code)
             new_user_id = new_user.get_id()
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_Flickr_account(user_id=new_user_id, flickr_account_id=flickr_account_id)
@@ -125,7 +125,7 @@ class UserFactory:
             UserFactory.generate_social_relations_for_the_user(user_id)
         return user
 
-    def create_user_by_username(username, name=None, surname=None) -> User:
+    def create_user_by_username(username, name=None, surname=None, country_code = None) -> User:
         """
         :param username str 
         :return the user id 
@@ -138,7 +138,7 @@ class UserFactory:
             name = splitted[0]
             surname = splitted[1]
 
-        user = User(username=username, name=name, surname=surname)
+        user = User(username=username, name=name, surname=surname, country_code=country_code)
         #here it should store it in the database
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
         user_id = db_ret.inserted_id

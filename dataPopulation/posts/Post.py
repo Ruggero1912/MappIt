@@ -23,6 +23,7 @@ class Post:
 
     DEFAULT_ACTIVITY    = os.getenv("POST_GENERIC_DEFAULT_ACTIVITY")
     DEFAULT_THUMBNAIL   = os.getenv("POST_DEFAULT_THUMBNAIL")
+    DEFAULT_COUNTRY_CODE= Utils.load_config("DEFAULT_COUNTRY_CODE")
     MAX_YEARS_BETWEEN_EXP_AND_POST = int( os.getenv("MAX_YEARS_BETWEEN_EXP_AND_POST") )   #MAXIMUM INTERVAL BETWEEN POST DATE AND EXPERIENCE DATE
 
     fake                = Utils.fake
@@ -59,7 +60,7 @@ class Post:
 ########   POST PREVIEW SETUP  ###########
 ##########################################
 
-    def __init__(self, author_id, place_id, author_username : str, place_name : str, title=None, description=None, post_date : datetime =None, exp_date=None, country_code=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
+    def __init__(self, author_id, place_id, author_username : str, place_name : str, title=None, description=None, post_date : datetime =None, exp_date=None, country_code=DEFAULT_COUNTRY_CODE, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
         setattr(self, Post.KEY_TITLE            , title         if title        is not None else Post.fake.sentence(nb_words=4)        ) #short sentence as fake title
         setattr(self, Post.KEY_DESC             , description   if description  is not None else Post.fake.paragraph()                 )
 
@@ -71,7 +72,7 @@ class Post:
         setattr(self, Post.KEY_POST_DATE        , post_date     if post_date    is not None else datetime.now()                        )
         post_date = self.get_post_datetime().date()
         setattr(self, Post.KEY_EXPERIENCE_DATE  , exp_date      if exp_date     is not None else Post.fake.date_between(end_date=post_date, start_date=(post_date - timedelta(days=365*Post.MAX_YEARS_BETWEEN_EXP_AND_POST)))                      )
-        setattr(self, Post.KEY_COUNTRY_CODE     , country_code                                                                         )
+        setattr(self, Post.KEY_COUNTRY_CODE     , country_code  if country_code is not None else Post.DEFAULT_COUNTRY_CODE             )
 
         #empty params:
         setattr(self, Post.KEY_LIKES_COUNTER    ,   0)
@@ -176,7 +177,7 @@ class Post:
     def get_dict(self) -> dict:
         ret_dict = vars(self).copy()   #self.__dict__  #NOTE: in the commented way you have a linking between the returned dict and the class object!
         #in this way it return a copy of ret_dict, not a reference to ret_dict (which by itself references to self)
-        
+
         for ignored_attribute in self.DICT_IGNORED_ATTRIBUTES:
             del ret_dict[ignored_attribute] # use ret_dict.pop(ignored_attribute, None) if u want to ignore the key not found error
 

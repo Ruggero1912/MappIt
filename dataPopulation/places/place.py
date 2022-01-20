@@ -3,6 +3,8 @@ from utilities.utils import Utils
 
 class Place:
 
+    DEFAULT_COUNTRY_CODE      = Utils.load_config("DEFAULT_COUNTRY_CODE")
+
     KEY_ID                    = Utils.load_config("PLACE_ID_KEY")
     KEY_NAME                  = Utils.load_config("PLACE_NAME_KEY")
     KEY_OSM_ID                = Utils.load_config("PLACE_OSMID_KEY")

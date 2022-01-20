@@ -56,7 +56,7 @@ class YTPostFactory:
     POSTS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     YT_DETAILS_COLLECTION   = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][YT_DETAILS_COLLECTION_NAME]
     
-    def posts_in_given_place(place_name, place_lon, place_lat, place_id):
+    def posts_in_given_place(place_name, place_lon, place_lat, place_id, place_country_code):
 
         yt_videos = YTClient.youtube_search_query(place_name=place_name, lon=place_lon, lat=place_lat)
 
@@ -87,7 +87,7 @@ class YTPostFactory:
 
             yt_video_full_details = YTClient.youtube_video_details(video_id=yt_video_id)
 
-            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id, place_name)
+            yt_post = YTPostFactory.parse_post_from_details(yt_video_full_details, place_id, place_name, place_country_code)
 
             YTPostFactory.store_in_persistent_db(yt_post=yt_post, all_yt_details=yt_video_full_details)
 
@@ -100,12 +100,13 @@ class YTPostFactory:
         PlaceFactory.update_last_yt_search(place_id=place_id)
         return posts
 
-    def parse_post_from_details(yt_video_full_details : dict, place_id : str, place_name : str) -> YTPost:
+    def parse_post_from_details(yt_video_full_details : dict, place_id : str, place_name : str, place_country_code : str) -> YTPost:
         """
         receives a dict with the yt video details and crafts the post starting from them
         - the activity category can be determined by the YTPost constructor
         - the author is loaded by 'UserFactory.get_author_id_from_YTchannel' that is called inside this method
         :param yt_video_full_details dict
+        :param place_country_code will be used also as country_code of the post (as it is relative to that place) and also to the user, if it has to be created
         :return the YTPost object of the created post (to be stored in the database still)
         """
         channel_id = YTPostFactory.get_channelId_yt_resp(yt_video_full_details)
@@ -118,7 +119,7 @@ class YTPostFactory:
         yt_thumb_link = YTPostFactory.get_thumb_link_yt_resp(yt_video_full_details)
 
         author_obj = UserFactory.get_author_obj_from_YTchannel(channel_id=channel_id,
-                                 channel_name=channel_name)
+                                 channel_name=channel_name, post_country_code=place_country_code)
         author_id = author_obj.get_id()
         author_username = author_obj.get_username()
 
@@ -126,7 +127,8 @@ class YTPostFactory:
         yt_post=YTPost(author_id=author_id  , yt_video_id=yt_video_id, yt_channel_id=channel_id ,
                        title=title          , description=description, post_date=yt_post_date   ,
                        tags_array=yt_tags   , thumbnail=yt_thumb_link, place_id=place_id        ,
-                       author_username=author_username, place_name=place_name
+                       author_username=author_username, place_name=place_name                   ,
+                       country_code=place_country_code
         ) 
         return yt_post
 

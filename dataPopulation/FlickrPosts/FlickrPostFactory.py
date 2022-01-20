@@ -40,7 +40,7 @@ class FlickrPostFactory:
     FLICKR_DETAILS_COLLECTION       = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][FLICKR_DETAILS_COLLECTION_NAME]
 
 
-    def posts_in_given_place(place_name, place_lon, place_lat, place_id):
+    def posts_in_given_place(place_name, place_lon, place_lat, place_id, place_country_code):
         """
         finds all the posts associated to the given place
         """
@@ -77,7 +77,7 @@ class FlickrPostFactory:
                 flickr_photo_details = FlickrClient.photos_getInfo(flickr_photo_id)
 
                 #parse the flickr-origin post from the json response
-                flickr_post = FlickrPostFactory.parse_post_from_details(flickr_photo_details, place_id, place_name)
+                flickr_post = FlickrPostFactory.parse_post_from_details(flickr_photo_details, place_id, place_name, place_country_code)
 
                 #store the post
                 FlickrPostFactory.store_in_persistent_db(flickr_post=flickr_post, all_flickr_details=flickr_photo_details)
@@ -91,12 +91,13 @@ class FlickrPostFactory:
         #return the list of creatd posts
         return posts
 
-    def parse_post_from_details(flickr_post_full_details : dict, place_id : str, place_name : str) -> FlickrPost:
+    def parse_post_from_details(flickr_post_full_details : dict, place_id : str, place_name : str, place_country_code : str) -> FlickrPost:
         """
         receives a dict with the FlickrPost details and crafts the post starting from them
         - the activity category can be determined by the FlickrPost constructor
         - the author is loaded by 'UserFactory.get_author_id_from_FlickrAccount' that is called inside this method
         :param flickr_post_full_details dict
+        :param place_country_code will be used also as country_code of the post (as it is relative to that place) and also to the user, if it has to be created
         :return the FlickrPost object of the created post (to be stored in the database still)
         """
         
@@ -116,7 +117,7 @@ class FlickrPostFactory:
 
         #NOTE: at the moment the comments are ignored for anything, included category detection
 
-        author_obj = UserFactory.get_author_obj_from_flickr_account_id(flickr_author_id, flickr_author_username, flickr_realname=flickr_author_realname)
+        author_obj = UserFactory.get_author_obj_from_flickr_account_id(flickr_author_id, flickr_author_username, flickr_realname=flickr_author_realname, post_country_code = place_country_code)
         author_id = author_obj.get_id()
         author_username = author_obj.get_username()
 
@@ -124,7 +125,7 @@ class FlickrPostFactory:
         flickr_post = FlickrPost(author_id=author_id    ,  place_id=place_id, title=flickr_title      ,   description=flickr_description, 
                                 post_date=flickr_posted_datetime, exp_date=flickr_taken_datetime,tags_array=flickr_tags_array, 
                                 pics_array=[flickr_pic_link], thumbnail=flickr_thumb_link, flickr_post_id=flickr_post_id    ,
-                                place_name=place_name,      author_username=author_username)
+                                place_name=place_name,      author_username=author_username, country_code=place_country_code)
 
         #FlickrPostFactory.LOGGER.debug("pics_array: {pics_arr}".format(pics_arr=flickr_post.get_pics_array()))
         return flickr_post

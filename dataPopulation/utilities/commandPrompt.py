@@ -6,6 +6,7 @@ from YTposts.YTPostFactory import YTPostFactory
 from FlickrPosts.FlickrPostFactory import FlickrPostFactory
 from places.osmPlaceFactory import OsmPlaceFactory
 from places.placeFactory import PlaceFactory
+from places.place import Place
 from utilities.utils import Utils
 from utilities.persistentEntitiesManager import PersistentEntitiesManager
 from users.userFactory import UserFactory
@@ -425,13 +426,14 @@ class CommandPrompt:
                 place_id = str(place[PlaceFactory.PLACE_ID_KEY])
                 place_name = place[PlaceFactory.PLACE_NAME_KEY]
                 (lon, lat) = Utils.load_coordinates(place)
+                place_country_code = place.get(Place.KEY_COUNTRY_CODE, Place.DEFAULT_COUNTRY_CODE)
                 if generate_yt:
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, None):
-                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id, place_country_code)
                         how_many_posts_from_yt += len(yt_posts)
                 if generate_flickr:
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, None):
-                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id, place_country_code)
                         how_many_posts_from_flickr += len(flickr_posts)
         else:
             if generate_yt:
@@ -441,19 +443,21 @@ class CommandPrompt:
                     place_id = str(place[PlaceFactory.PLACE_ID_KEY])
                     place_name = place[PlaceFactory.PLACE_NAME_KEY]
                     (lon, lat) = Utils.load_coordinates(place)
+                    place_country_code = place.get(Place.KEY_COUNTRY_CODE, Place.DEFAULT_COUNTRY_CODE)
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_YT_SEARCH_KEY, None):
-                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        yt_posts = YTPostFactory.posts_in_given_place(place_name, lon, lat, place_id, place_country_code)
                         how_many_posts_from_yt += len(yt_posts)
             
             if generate_flickr:
-                flickr_places = PlaceFactory.load_places_for_flickr_search(how_many_places)
+                flickr_places = PlaceFactory.load_places_for_flickr_search(how_many_places, place_country_code)
                 for place in flickr_places:
                     assert isinstance(place, dict)
                     place_id = str(place[PlaceFactory.PLACE_ID_KEY])
                     place_name = place[PlaceFactory.PLACE_NAME_KEY]
                     (lon, lat) = Utils.load_coordinates(place)
+                    place_country_code = place.get(Place.KEY_COUNTRY_CODE, Place.DEFAULT_COUNTRY_CODE)
                     if not skip or not place.get(PlaceFactory.PLACE_LAST_FLICKR_SEARCH_KEY, None):
-                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id)
+                        flickr_posts = FlickrPostFactory.posts_in_given_place(place_name, lon, lat, place_id, place_country_code)
                         how_many_posts_from_flickr += len(flickr_posts)
 
         str_outcome = ""
