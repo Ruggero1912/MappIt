@@ -116,12 +116,12 @@ public class PlaceController {
     // places that are favourites of a given user (it should receive the id of the user)
     @ApiOperation(value = "returns the list of favourite places for the specified user or for the current if no userId is specified")
     @GetMapping(value = "/places/favourites", produces = "application/json")
-    public ResponseEntity<?> favouritePlaces(@RequestParam( required = false) String userId) {
+    public ResponseEntity<?> favouritePlaces(@RequestParam( required = false, defaultValue = "current") String userId) {
         ResponseEntity<?> result;
         User u;
 
         try {
-            if (userId == "current" || userId == null) {
+            if (userId.equals("current") || userId == null) {
                 //retrieve the current user
                 UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 u = userSpring.getApplicationUser();
@@ -140,12 +140,12 @@ public class PlaceController {
     // places visited by a given user
     @ApiOperation(value = "returns the list of visited places for the specified user or for the current if no userId is specified")
     @GetMapping(value = "/places/visited", produces = "application/json")
-    public ResponseEntity<?> visitedPlaces(@RequestParam( required = false) String userId) {
+    public ResponseEntity<?> visitedPlaces(@RequestParam( required = false, defaultValue = "current") String userId) {
         ResponseEntity<?> result;
         User u;
 
         try {
-            if (userId == "current" || userId == null) {
+            if (userId.equals("current") || userId == null) {
                 //retrieve the current user
                 UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 u = userSpring.getApplicationUser();

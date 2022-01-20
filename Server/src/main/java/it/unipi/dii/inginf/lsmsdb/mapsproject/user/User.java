@@ -75,7 +75,8 @@ public class User implements Serializable {
 			this.roles = roles;
 		}
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
-		//this.countryCode = doc.get(KEY_COUNTRY_CODE).toString();
+		if(doc.get(KEY_COUNTRY_CODE) != null)
+			this.countryCode = doc.get(KEY_COUNTRY_CODE).toString();
 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
 		Object embeddedPosts = doc.get(KEY_PUBLISHED_POSTS);
 		if(embeddedPosts instanceof ArrayList<?>) {
