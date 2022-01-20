@@ -136,6 +136,7 @@ class FlickrPostFactory:
         flickr_post_doc = flickr_post.get_dict()
         ret = FlickrPostFactory.POSTS_COLLECTION.insert_one(flickr_post_doc)
         flickr_post_doc_id = ret.inserted_id
+        flickr_post.set_id(flickr_post_doc_id)
 
         ret_flickr_details = FlickrPostFactory.FLICKR_DETAILS_COLLECTION.insert_one(all_flickr_details)
         flickr_details_doc_id = ret_flickr_details.inserted_id

@@ -135,8 +135,11 @@ class YTPostFactory:
         #we can easily retrieve the YT_DETAILS by using the yt_video_id field of the Post,
         #but maybe it would be better to use as _id of the doc the id given from yt
         yt_post_doc = yt_post.get_dict()
+        #YTPostFactory.LOGGER.debug(f"[store_in_persistent_db] value of post._id before mongo store: {yt_post.get_id()}")
         ret = YTPostFactory.POSTS_COLLECTION.insert_one(yt_post_doc)
+        #YTPostFactory.LOGGER.debug(f"[store_in_persistent_db] value of post._id after mongo store: {yt_post.get_id()}")
         yt_post_doc_id = ret.inserted_id
+        yt_post.set_id(yt_post_doc_id)
 
         ret_yt_details = YTPostFactory.YT_DETAILS_COLLECTION.insert_one(all_yt_details)
         yt_details_doc_id = ret_yt_details.inserted_id
