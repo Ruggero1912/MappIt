@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import org.bson.Document;
 import org.neo4j.driver.Value;
 
@@ -32,7 +33,7 @@ public class Place {
     private String name;
     private Coordinate coordinates;
     private List<String> fits;
-    private List<String> posts; // here we store the ids of the posts done by the user
+    private List<PostPreview> posts = new ArrayList<>(); // here we store the ids of the posts done by the user
     private Image image;
     private String osmId;
     private int favouritesCounter;
@@ -52,8 +53,16 @@ public class Place {
     public Place (Document doc){
         this._id = doc.get(KEY_ID).toString();
         this.name = doc.get(KEY_NAME).toString();
-        this.fits = (List<String>) doc.get(KEY_FITS, List.class);   // TODO: test it (does this cast works properly)
-        this.posts = (List<String>) doc.get(KEY_POSTS_ARRAY, List.class);
+        this.fits = doc.getList(KEY_FITS, String.class);
+        Object embeddedPosts = doc.get(KEY_POSTS_ARRAY);
+        if(embeddedPosts instanceof ArrayList<?>) {
+            ArrayList<?> embeddedPostsList = (ArrayList<?>) embeddedPosts;
+            for (Object dboNestedObj : embeddedPostsList) {
+                if (dboNestedObj instanceof Document) {
+                    this.posts.add(new PostPreview((Document) dboNestedObj));
+                }
+            }
+        }
         Document loc = doc.get(KEY_LOC, Document.class);
         List<Double> coord = loc.getList(KEY_COORDINATES, Double.class);
         double lon = coord.get(0);
@@ -61,8 +70,7 @@ public class Place {
         this.coordinates = new Coordinate(lat, lon);
         this.osmId = doc.getString(KEY_OSMID);
         this.favouritesCounter = doc.getInteger(KEY_FAVOURITES, 0);
-        this.image = new Image();
-        this.image.setPath(doc.getString(KEY_IMAGE));
+        this.image = new Image(doc.getString(KEY_IMAGE));
     }
 
     /**
@@ -104,6 +112,22 @@ public class Place {
 
     public void setImagePath(Image path) {
         this.image = path;
+    }
+
+    public List<String> getFits(){
+        return this.fits;
+    }
+
+    public String getOsmId() {
+        return osmId;
+    }
+
+    public int getFavouritesCounter() {
+        return favouritesCounter;
+    }
+
+    public List<PostPreview> getPosts(){
+        return posts;
     }
 
     @Override
