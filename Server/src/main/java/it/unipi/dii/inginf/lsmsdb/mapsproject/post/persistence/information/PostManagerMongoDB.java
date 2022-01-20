@@ -32,10 +32,13 @@ public class PostManagerMongoDB implements PostManager {
     public PostManagerMongoDB(){
         this.postCollection = MongoConnection.getCollection(MongoConnection.Collections.POSTS.toString());
     }
-
+    @Override
     public Post storePost(Post newPost){
-        Post res=storeInPostCollection(newPost);
-        storeEmbeddedPosts(newPost);
+        if(newPost == null)
+            return null;
+        Post res = storeInPostCollection(newPost);
+        if(res != null)
+            storeEmbeddedPosts(res);
         return res;
     }
 
@@ -53,31 +56,51 @@ public class PostManagerMongoDB implements PostManager {
     }
 
     private PostPreview storeEmbeddedPosts(Post newPost) {
-        String authorId = newPost.getAuthorId();
-        String placeId = newPost.getPlaceId();
+
+        ObjectId placeObjId;
+        ObjectId authorObjId;
+        try{
+            placeObjId = new ObjectId(newPost.getPlaceId());
+            authorObjId = new ObjectId(newPost.getAuthorId());
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return null;
+        }
 
         PostPreview newPostPreview = new PostPreview(newPost);
         Document postPreviewDoc = newPostPreview.createDocument();
 
         try{
-            Bson userFilter = Filters.eq(User.KEY_ID, authorId);
+            Bson userFilter = Filters.eq(User.KEY_ID, authorObjId);
             Bson userUpdate = Updates.push(User.KEY_PUBLISHED_POSTS, postPreviewDoc);
             MongoCollection userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
             userCollection.updateOne(userFilter, userUpdate);
 
-            Bson placeFilter = Filters.eq(Place.KEY_ID, placeId);
+            Bson placeFilter = Filters.eq(Place.KEY_ID, placeObjId);
             Bson placeUpdate = Updates.push(Place.KEY_POSTS_ARRAY, postPreviewDoc);
             MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
             placeCollection.updateOne(placeFilter, placeUpdate);
 
             return newPostPreview;
         } catch(MongoException me){
+            LOGGER.severe("Mongo store embedded documents error");
+            me.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public boolean deletePost(Post postToDelete) {
+    public boolean deletePost(Post postToDelete){
+        if(postToDelete == null)
+            return  false;
+        boolean deletedEmbeddedDocs = false;
+        boolean deletedFromPostCollection = deletePostInPostCollection(postToDelete);
+        if(deletedFromPostCollection)
+            deletedEmbeddedDocs = deleteEmbeddedPosts(postToDelete);
+        return deletedEmbeddedDocs && deletedFromPostCollection;
+    }
+
+    private boolean deletePostInPostCollection(Post postToDelete){
         if(postToDelete==null)
             return false;
 
@@ -96,16 +119,56 @@ public class PostManagerMongoDB implements PostManager {
         return ret.wasAcknowledged();
     }
 
+    public boolean deleteEmbeddedPosts(Post postToDelete) {
+        ObjectId postObjId;
+        ObjectId placeObjId;
+        ObjectId authorObjId;
+        try{
+            postObjId = new ObjectId(postToDelete.getId());
+            placeObjId = new ObjectId(postToDelete.getPlaceId());
+            authorObjId = new ObjectId(postToDelete.getAuthorId());
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+
+        PostPreview postPreviewToDelete = new PostPreview(postToDelete);
+        Document postPreviewToDeleteDoc = postPreviewToDelete.createDocument();
+
+        try{
+            Bson userFilter = Filters.eq(User.KEY_ID, authorObjId);
+            Bson userUpdate = Updates.pull(User.KEY_PUBLISHED_POSTS, postPreviewToDeleteDoc);
+            MongoCollection userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
+            userCollection.updateOne(userFilter, userUpdate);
+
+            Bson placeFilter = Filters.eq(Place.KEY_ID, placeObjId);
+            Bson placeUpdate = Updates.pull(Place.KEY_POSTS_ARRAY, postPreviewToDeleteDoc);
+            MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
+            placeCollection.updateOne(placeFilter, placeUpdate);
+            return true;
+        } catch(MongoException me){
+            return false;
+        }
+    }
+
     @Override
     public boolean deletePostsOfGivenUser(User user) {
+        if (user == null)
+            return false;
+        boolean deletedFromPostCollection = false;
+        boolean deletedEmbeddedDocs = deleteEmbeddedPostsOfGivenUser(user);
+        if(deletedEmbeddedDocs)
+            deletedFromPostCollection = deletePostsOfGivenUserInPostCollection(user);
+        return (deletedEmbeddedDocs && deletedFromPostCollection);
+    }
+    private boolean deletePostsOfGivenUserInPostCollection(User user) {
         if(user==null)
             return false;
 
         ObjectId objId;
-        String authorId = user.getId();
 
         try{
-            objId = new ObjectId(authorId);
+            objId = new ObjectId(user.getId());
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, e.getMessage());
             return false;
@@ -114,6 +177,33 @@ public class PostManagerMongoDB implements PostManager {
         Bson idFilter = Filters.eq(Post.KEY_AUTHOR_ID, objId);
         DeleteResult ret = postCollection.deleteMany(idFilter);
         return ret.wasAcknowledged();
+    }
+
+    private boolean deleteEmbeddedPostsOfGivenUser(User user) {
+        ObjectId authorObjId;
+        try{
+            authorObjId = new ObjectId(user.getId());
+        } catch (Exception e){
+            LOGGER.log(Level.SEVERE, e.getMessage());
+            return false;
+        }
+        try{
+            Bson userFilter = Filters.eq(User.KEY_ID, authorObjId);
+
+            //Bson userUpdate = Updates.pull(User.KEY_PUBLISHED_POSTS, new Document(Post.KEY_AUTHOR_ID, authorObjId));
+            // equivalent to dropping the attribute...
+            Bson userUpdate = Updates.unset(User.KEY_PUBLISHED_POSTS);
+            MongoCollection userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
+            userCollection.updateMany(userFilter, userUpdate);
+
+            //TODO: not so optimized query:
+            Bson placeUpdate = Updates.pull(Place.KEY_POSTS_ARRAY, new Document(Post.KEY_AUTHOR_ID, authorObjId));
+            MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
+            placeCollection.updateMany(null, placeUpdate);
+            return true;
+        } catch(MongoException me){
+            return false;
+        }
     }
 
 

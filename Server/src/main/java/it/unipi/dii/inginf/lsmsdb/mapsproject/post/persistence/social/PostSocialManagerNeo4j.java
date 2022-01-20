@@ -4,15 +4,18 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerMongoDB;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.neo4j.driver.Session;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class PostSocialManagerNeo4j implements PostSocialManager{
 
     private static final int POST_DESCRIPTION_MAX_LENGTH = 75;
+    private static final Logger LOGGER = Logger.getLogger(PostSocialManagerNeo4j.class.getName());
 
     @Override
     public boolean storePost(Post newPost) {
@@ -69,6 +72,28 @@ public class PostSocialManagerNeo4j implements PostSocialManager{
                 return true;
             });
         }catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deletePost(Post post){
+        if(post == null) {
+            LOGGER.warning("The given post to be deleted was null");
+            return false;
+        }
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            return session.writeTransaction(tx -> {
+                String query = "MATCH (p:"+Post.NEO_POST_LABEL+") WHERE p."+Post.NEO_KEY_ID+"='"+post.getId()+"' " +
+                        "DETACH DELETE p";
+                tx.run(query);
+                return true;
+            });
+        }catch (Exception e){
+            LOGGER.severe("Neo4j query exception!");
+            e.printStackTrace();
             return false;
         }
     }

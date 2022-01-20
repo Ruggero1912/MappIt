@@ -19,6 +19,13 @@ public interface PostSocialManager {
     boolean deleteAllPostsOfGivenUser(User u);
 
     /**
+     * deletes the specified post
+     * @param post the Post to be deleted
+     * @return true if the deletion of all the posts is successful, else false
+     */
+    boolean deletePost(Post post);
+
+    /**
      * Adds like from a user u to a post p
      * @param u user that likes the post
      * @param p post that received the appreciation

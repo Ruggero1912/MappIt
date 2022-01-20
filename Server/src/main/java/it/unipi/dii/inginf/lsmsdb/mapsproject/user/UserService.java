@@ -5,11 +5,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerMongoDB;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
@@ -22,9 +20,7 @@ import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerNeo4j;
 import org.neo4j.driver.exceptions.Neo4jException;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserService {
@@ -43,7 +39,7 @@ public class UserService {
 
         User u = um.getUserFromUsername(username);
         if (u != null) {
-            String pwdHash = u.getPassword();
+            String pwdHash = u._getPassword();
             if (UserService.checkPassword(password, pwdHash)) {
                 return u;
             }
@@ -405,7 +401,8 @@ public class UserService {
      * @return Posts List or null if there are no posts
      */
     public static List<PostPreview> retrieveAllPostPreviewsFromUser(User user){
-        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        return usm.retrieveAllPostPreviews(user);
+        //UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        //return usm.retrieveAllPostPreviews(user);
+        return user.getPublishedPosts();
     }
 }

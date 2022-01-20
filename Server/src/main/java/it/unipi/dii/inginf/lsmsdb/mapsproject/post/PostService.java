@@ -1,6 +1,10 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFileService;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
@@ -39,18 +43,37 @@ public class PostService {
      * @param submittedPost the YouTube Post object containing all the info
      * @return YtPost object if the insert is successful or null otherwise
      */
-    public static PostSubmission createNewPost(PostSubmission submittedPost, User author, MultipartFile thumb, List<MultipartFile> pics) throws DatabaseErrorException {
+    public static Post createNewPost(PostSubmission submittedPost, User author, Place placeOfThePost, MultipartFile thumb, List<MultipartFile> pics) throws DatabaseErrorException {
         if(submittedPost == null){
             return null;
         }
 
-        PostManager pm = PostManagerFactory.getPostManager();
-        //TODO: from MultipartFile to String (FileService class)
-        List<String> picsLinks = new ArrayList<>();
-        Post newPost = new Post(submittedPost, author, "", picsLinks);
-        Post addedNewPostMongo = pm.storePost(newPost);
+        ImageFileService imageFileService = new ImageFileService();
 
-        if(addedNewPostMongo == null){
+        String thumbId = "";
+        List<String> picsLinks = new ArrayList<>();
+
+        try {
+            if (thumb != null)
+                thumbId = imageFileService.uploadImage(thumb);
+            if( ! pics.isEmpty()){
+                for(MultipartFile pic : pics){
+                    String picId = (imageFileService.uploadImage(pic));
+                    picsLinks.add(picId);
+                }
+            }
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Error during file storing!");
+            e.printStackTrace();
+            return null;
+        }
+
+        PostManager pm = PostManagerFactory.getPostManager();
+
+        Post newPost = new Post(submittedPost, author, placeOfThePost, thumbId, picsLinks);
+        newPost = pm.storePost(newPost);
+
+        if(newPost == null){
             LOGGER.log(Level.SEVERE, "Error: MongoDB new post insertion failed!");
             throw new DatabaseErrorException("MongoDB new post insert failed");
         }
@@ -58,19 +81,44 @@ public class PostService {
         PostSocialManager psm = PostSocialManagerFactory.getPostManager();
         boolean insertedNewPostNeo;
         try{
-            insertedNewPostNeo = psm.storePost(addedNewPostMongo);
+            insertedNewPostNeo = psm.storePost(newPost);
             if(!insertedNewPostNeo){
                 //we have to delete the newly inserted post from MongoDB
-                LOGGER.log(Level.SEVERE, "Error during new post insert: Neo4j failed!");
-                pm.deletePost(addedNewPostMongo);
-                return null;
+                LOGGER.log(Level.SEVERE, "Error during new post insert: Neo4j failed... Roll back completed");
+                pm.deletePost(newPost);
+                throw new DatabaseErrorException("Neo4J new post insertion failed");
             }
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error during insert: Neo4j new post insert failed!");
             return null;
         }
+        return newPost;
+    }
 
-        return submittedPost;
+    /**
+     * return True if post is successfully deleted, False otherwise
+     * @param post the post to be deleted
+     * @return True if post is successfully deleted, else False
+     */
+    public static boolean deletePost(Post post){
+        PostManager pm = PostManagerFactory.getPostManager();
+        boolean deletedFromDocDb = pm.deletePost(post);
+        if(deletedFromDocDb){
+            PostSocialManager um = PostSocialManagerFactory.getPostManager();
+            boolean deletedFromGraph = um.deletePost(post);
+            if(deletedFromGraph)
+                return true;
+            else{
+                //in this case we have to restore the post to mongodb
+                LOGGER.warning("CANNOT delete from GraphDB the post" + post.getId() + "! Rolling back delete operation from Mongo");
+                pm.storePost(post);
+                return false;
+            }
+        }else{
+            LOGGER.warning("Cannot delete the post " + post.getId() + " from documentDB! No changes.");
+            return false;
+        }
+
     }
 
     /**

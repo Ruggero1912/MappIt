@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +68,7 @@ public class PostController {
         try{
             List<PostPreview> postPreviews = UserService.retrieveAllPostPreviewsFromUser(u);
             if(postPreviews==null)
-                LOGGER.log(Level.WARNING, "Empty list");
+                LOGGER.log(Level.WARNING, String.format("Empty posts list for the user %s", u.getId()));
             result = ResponseEntity.status(HttpStatus.OK).body(postPreviews);
         }catch (NullPointerException e){
             LOGGER.log(Level.WARNING, "Error: the given ID does not correspond to a userId");
@@ -81,21 +83,54 @@ public class PostController {
     }
 
     @ApiOperation(value = "store a new post in the databases")
-    @RequestMapping(path = "/post", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<?> newPost(@RequestPart PostSubmission newPost, @RequestPart(required = false) MultipartFile thumbnail, @RequestPart(required = false) List<MultipartFile> pics) {
+    @RequestMapping(path = "/post", method = POST)  //, consumes = {MediaType.MULTIPART_MIXED_VALUE}
+    public ResponseEntity<?> newPost(@RequestBody() PostSubmission newPost //,
+                                     //@RequestParam(name = "thumbnail", required = false) MultipartFile thumbnail,
+                                     //@RequestParam(name = "pics", required = false) MultipartFile[] pics
+    ) {
 
-        PostSubmission insertedPost;
+        Post insertedPost = null;
+        MultipartFile[] pics = {};
+        MultipartFile thumbnail = null;
         //retrieve the current logged-in user for storing in the doc also username and user _id
         UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User currentUser = userSpring.getApplicationUser();
 
+        Place placeOfThePost = PlaceService.getPlaceFromId(newPost.getPlaceId());
+        if(placeOfThePost == null){
+            LOGGER.info("The user specified placeId " + newPost.getPlaceId() + " was not found");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: The specified place was not found (id=" + newPost.getPlaceId() + ")");
+        }
+
+        //List<MultipartFile> pics = null;
+        LOGGER.info("Received store request for a new post");
         try{
-            insertedPost = PostService.createNewPost(newPost, currentUser, thumbnail, pics);
+            insertedPost = PostService.createNewPost(newPost, currentUser, placeOfThePost, thumbnail, Arrays.asList(pics));
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "{Error : Unable to store new post}");
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Something went wrong in inserting new post:" + e.getMessage());
         }
 
         return ResponseEntity.ok(insertedPost);
+    }
+    @DeleteMapping(value={"/post/{id}"})
+    public ResponseEntity<?> deletePost(@PathVariable(value = "id") String id){
+        ResponseEntity<?> result;
+        try{
+            Post postToDelete = PostService.getPostFromId(id);
+            if(postToDelete != null) {
+                PostService.deletePost(postToDelete);
+                result = ResponseEntity.ok("Post successfully deleted (id="+id+ ")");
+                LOGGER.log(Level.INFO, "Post successfully deleted: (id="+id+ ")");
+            } else {
+                result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find Post (id=" + id + ")");
+            }
+        }
+        catch (Exception e){
+            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete Post (id=" + id + ")");
+            LOGGER.log(Level.WARNING, "Error: could not delete Post, an exception has occurred: " + e);
+        }
+        return result;
     }
 }

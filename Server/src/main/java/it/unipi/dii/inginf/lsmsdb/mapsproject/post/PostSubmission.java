@@ -14,21 +14,17 @@ public class PostSubmission {
 
     private String title;
     private String placeId;
-    private String authorId;
-    private String authorUsername;
     private String description;
     private Date experienceDate;
     private String activity;
     private String YTvideoId;
     private List<String> tags;
-    private MultipartFile thumbnail;
-    private List<MultipartFile> pics;
+    //private MultipartFile thumbnail;
+    //private List<MultipartFile> pics;
 
     public Document createDocument(){
 
-        Document postDoc = new Document(Post.KEY_AUTHOR_USERNAME, authorUsername)
-                .append(Post.KEY_AUTHOR_ID, authorId)
-                .append(Post.KEY_PLACE_ID, placeId)
+        Document postDoc = new Document(Post.KEY_PLACE_ID, placeId)
                 .append(Post.KEY_TITLE,title)
                 .append(Post.KEY_DESCRIPTION, description)
                 .append(Post.KEY_DATE, experienceDate)
@@ -52,7 +48,4 @@ public class PostSubmission {
 
     public String getYTvideoId(){ return YTvideoId; }
 
-    public void setAuthorId(String id){ this.authorId = id; }
-
-    public void setAuthorUsername(String uname){ this.authorUsername = uname; }
 }

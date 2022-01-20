@@ -109,6 +109,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
             return favouritePlaces;
         }catch (Exception e){
+            LOGGER.warning("Neo4j Error occurred during retrieveFavouritePlaces() method run");
             System.out.println(e.getMessage());
             return null;
         }

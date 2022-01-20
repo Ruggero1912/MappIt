@@ -19,8 +19,8 @@ public class PlaceService {
     public static final List<String> orderByCriterias = Arrays.asList(ORDER_CRITERIA_DISTANCE, ORDER_CRITERIA_POPULARITY);
     public static final String defaultOrderByCriteria = ORDER_CRITERIA_DISTANCE;
     public static final double defaultSearchRadius = 10.0;
-    public static final int DEFAULT_MAXIMUM_QUANTITY = 100;
-    public static final int LIMIT_MAXIMUM_QUANTITY = 300;
+    public static final int DEFAULT_MAXIMUM_QUANTITY = 20;
+    public static final int LIMIT_MAXIMUM_QUANTITY = 50;
     public static final String noActivityFilterKey = "any";
 
     public static final int DEFAULT_MAX_HOW_MANY_SUGGESTED = 10;

@@ -2,6 +2,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
@@ -9,6 +10,7 @@ import org.bson.Document;
 import org.neo4j.driver.Value;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -73,10 +75,12 @@ public class Post {
         this.pics = pics;
     }
 
-    public Post(PostSubmission submittedPost, User author, String thumbnail, List<String> pics){
+    public Post(PostSubmission submittedPost, User author, Place placeOfThePost, String thumbnail, List<String> pics){
         this.authorUsername = author.getUsername();
         this.authorId = author.getId();
+        this.authorUsername = author.getUsername();
         this.placeId = submittedPost.getPlaceId();
+        this.placeName = placeOfThePost.getName();
         this.title= submittedPost.getTitle();
         this.date = submittedPost.getExperienceDate();
         this.postDate = new Date();
@@ -93,13 +97,14 @@ public class Post {
         this.authorUsername = doc.get(KEY_AUTHOR_USERNAME).toString();
         this.authorId = doc.get(KEY_AUTHOR_ID).toString();
         this.placeId = doc.get(KEY_PLACE_ID).toString();
+        this.placeName = doc.getString(KEY_PLACE_NAME);
         this.title = doc.get(KEY_TITLE).toString();
         this.date = (Date) doc.get(KEY_DATE);
         this.postDate = (Date) doc.get(KEY_POST_DATE);
         this.description = doc.get(KEY_DESCRIPTION).toString();
         this.activity = doc.get(KEY_ACTIVITY).toString();
         this.tags = (List<String>) doc.get(KEY_TAGS, List.class);
-        this.videoId = doc.get(KEY_YT_VIDEO_ID).toString();
+        this.videoId = doc.getString(KEY_YT_VIDEO_ID);
         this.thumbnail = doc.get(KEY_THUMBNAIL).toString();
         this.pics = (List<String>) doc.get(KEY_PICS, List.class);
     }
@@ -108,6 +113,9 @@ public class Post {
         Document postDoc = new Document(KEY_TITLE, this.title)
                 .append(KEY_AUTHOR_USERNAME, this.authorUsername)
                 .append(KEY_DESCRIPTION, this.description)
+                .append(KEY_PLACE_ID, this.placeId)
+                .append(KEY_PLACE_NAME, this.placeName)
+                .append(KEY_TITLE, this.title)
                 .append(KEY_TAGS, this.tags)
                 .append(KEY_ACTIVITY, this.activity)
                 .append(KEY_POST_DATE, this.postDate)
@@ -204,8 +212,32 @@ public class Post {
         this.videoId = id;
     }
 
+    /**
+     * if the thumbanil is stored on our platform, converts the image id to image link (an absolute path)
+     * @return the Link to the thumbnail of the given post
+     */
     public String getThumbnail() {
+        if(this.thumbnail == null)
+            return null;
+        if(ImageFile.isServerImageId(this.thumbnail))
+            return ImageFile.getResourceURIFromId(this.thumbnail);
         return this.thumbnail;
+    }
+
+    /**
+     * if one or more of the images are stored on our platform, converts the image id to image link (an absolute path)
+     * @return a list of Links to the images of the given post
+     */
+    public List<String> getPics() {
+        List<String> picsLinks = new ArrayList<>();
+        for( String pic : this.pics){
+            if(pic == null)
+                return null;
+            if(ImageFile.isServerImageId(pic))
+                picsLinks.add( ImageFile.getResourceURIFromId(this.thumbnail) );
+            picsLinks.add(pic);
+        }
+        return picsLinks;
     }
 
     public void setThumbnail(String t) {
@@ -215,7 +247,7 @@ public class Post {
     public String toString() {
 
         String ret =
-                "User{" +
+                "Post{" +
                         "id=" + _id +
                         ", title='" + title + '\'' +
                         ", author='" + authorUsername + '\'' +
