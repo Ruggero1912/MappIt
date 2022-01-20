@@ -41,6 +41,7 @@ class Post:
     KEY_ACTIVITY        = os.getenv("POST_ACTIVITY_KEY")
     KEY_TAGS            = os.getenv("POST_TAGS_KEY")
     KEY_LIKES_COUNTER   = os.getenv("POST_LIKES_COUNTER_KEY")
+    KEY_COUNTRY_CODE   = os.getenv("POST_COUNTRY_CODE_KEY")
 
     DICT_IGNORED_ATTRIBUTES = []
 
@@ -58,7 +59,7 @@ class Post:
 ########   POST PREVIEW SETUP  ###########
 ##########################################
 
-    def __init__(self, author_id, place_id, author_username : str, place_name : str, title=None, description=None, post_date : datetime =None, exp_date=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
+    def __init__(self, author_id, place_id, author_username : str, place_name : str, title=None, description=None, post_date : datetime =None, exp_date=None, country_code=None, tags_array : list =[], activity=None, pics_array : list =[], thumbnail=None) -> None:
         setattr(self, Post.KEY_TITLE            , title         if title        is not None else Post.fake.sentence(nb_words=4)        ) #short sentence as fake title
         setattr(self, Post.KEY_DESC             , description   if description  is not None else Post.fake.paragraph()                 )
 
@@ -70,6 +71,7 @@ class Post:
         setattr(self, Post.KEY_POST_DATE        , post_date     if post_date    is not None else datetime.now()                        )
         post_date = self.get_post_datetime().date()
         setattr(self, Post.KEY_EXPERIENCE_DATE  , exp_date      if exp_date     is not None else Post.fake.date_between(end_date=post_date, start_date=(post_date - timedelta(days=365*Post.MAX_YEARS_BETWEEN_EXP_AND_POST)))                      )
+        setattr(self, Post.KEY_COUNTRY_CODE     , country_code                                                                         )
 
         #empty params:
         setattr(self, Post.KEY_LIKES_COUNTER    ,   0)
@@ -111,6 +113,11 @@ class Post:
         desc = getattr(self, Post.KEY_DESC)
         assert isinstance(desc, str)
         return desc
+
+    def get_country_code(self):
+        country_code = getattr(self, Post.KEY_COUNTRY_CODE)
+        assert isinstance(country_code,str)
+        return country_code
 
     def get_tags_array(self):
         """
