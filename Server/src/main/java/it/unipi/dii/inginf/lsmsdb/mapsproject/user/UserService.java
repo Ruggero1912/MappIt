@@ -405,4 +405,55 @@ public class UserService {
         //return usm.retrieveAllPostPreviews(user);
         return user.getPublishedPosts();
     }
+
+
+    /**
+     * returns a list of suggested User to follow, based on the ones followed by followed users
+     * @param user the User that asks for new users to start following
+     * @return a list of User
+     */
+    public static List<User> getSuggestedFollowers(User user){
+        if(user == null){
+            return null;
+        }
+        int maxHowMany = DEFAULT_MAX_HOW_MANY_SUGGESTED;
+        UserSocialManager um = UserSocialManagerFactory.getUserManager();
+        List<String> suggestedFollowersIds = um.getSuggestedFollowersIds(user, maxHowMany);
+
+        if(suggestedFollowersIds.size()==0){
+            LOGGER.log(Level.INFO, "No suggestion about users to follow");
+            return null;
+        }
+
+        List<User> userToFollow = new ArrayList<>();
+        for(String uId: suggestedFollowersIds){
+            User u = UserService.getUserFromId(uId);
+            userToFollow.add(u);
+        }
+
+        return userToFollow;
+    }
+
+
+    /**
+     * returns a list of suggested post to check out, based on user likes
+     * @param user the User that asks for new posts to check out
+     * @param howMany is quantity of posts to show
+     * @return a list of PostPreview
+     */
+    public static List<PostPreview> getSuggestedPosts(User user, Integer howMany){
+        if(user == null){
+            return null;
+        }
+        howMany = (howMany<0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
+        UserSocialManager um = UserSocialManagerFactory.getUserManager();
+        List<PostPreview> suggestedPosts = um.getSuggestedPosts(user, howMany);
+
+        if(suggestedPosts.size()==0){
+            LOGGER.log(Level.INFO, "No suggestion about users to follow");
+            return null;
+        }
+
+        return suggestedPosts;
+    }
 }

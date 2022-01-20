@@ -214,4 +214,47 @@ public class UserController {
 
 		return result;
 	}
+
+	// suggested followers for the current user
+	@ApiOperation(value = "returns a list of suggested followers for the current user")
+	@GetMapping(value = "/user/follow/suggestions", produces = "application/json")
+	public ResponseEntity<?> suggestedFollowers() {
+		ResponseEntity<?> result;
+		try {
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			List<User> suggestedFollowers = UserService.getSuggestedFollowers(currentUser);
+
+			if(suggestedFollowers.size()==0 || suggestedFollowers==null)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"No suggestion about new users to follow\"}");
+			else
+				result = ResponseEntity.status(HttpStatus.OK).body(suggestedFollowers);
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested followers\"}");
+		}
+
+		return result;
+	}
+
+
+	// suggested followers for the current user
+	@ApiOperation(value = "returns a list of suggested posts for the current user")
+	@GetMapping(value = "/user/post/suggestions", produces = "application/json")
+	public ResponseEntity<?> suggestedPosts(@RequestParam(required = false) Integer howMany) {
+		ResponseEntity<?> result;
+		try {
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			List<PostPreview> suggestedPosts = UserService.getSuggestedPosts(currentUser, howMany);
+
+			if(suggestedPosts.size()==0 || suggestedPosts==null)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"No suggestion about new posts to check out\"}");
+			else
+				result = ResponseEntity.status(HttpStatus.OK).body(suggestedPosts);
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested posts\"}");
+		}
+
+		return result;
+	}
 }

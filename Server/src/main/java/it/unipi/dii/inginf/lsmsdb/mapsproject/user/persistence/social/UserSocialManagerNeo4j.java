@@ -252,28 +252,42 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<PostPreview> retrieveAllPostPreviews(User user) {
-        String id = user.getId();
-        List<PostPreview> userPostPreviews;
+    public List<String> getSuggestedFollowersIds(User user, int maxHowMany) {
+        Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
 
-        try ( Session session = Neo4jConnection.getDriver().session() )
-        {
-            userPostPreviews = session.readTransaction((TransactionWork<List<PostPreview>>) tx -> {
+        try (Session session = neo4jConnection.getDriver().session()) {
+            return session.writeTransaction((TransactionWork<List<String>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
-                params.put( "id", id );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ Post.NEO_RELATION_AUTHOR +"]->(p:"+ Post.NEO_POST_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN p AS Post, u AS Author";
-                Result result = tx.run(query,params);
-                ArrayList<PostPreview> postsPreview = new ArrayList<>();
-                while(result.hasNext())
-                {
-                    Record r = result.next();
-                    Value post=r.get("Post");
-                    Value author=r.get("Author");
-                    PostPreview p = new PostPreview(post, author);
-                    postsPreview.add(p);
+                params.put( "USER_ID", user.getId() );
+                params.put("HOW_MANY", maxHowMany);
+                String newLine = System.getProperty("line.separator");
+                String query = String.join(newLine,
+                "MATCH (u:"+ User.NEO_USER_LABEL +"{"+User.NEO_KEY_ID+":$USER_ID})-[:"+ User.NEO_RELATION_FOLLOWS +"]->(f:"+User.NEO_USER_LABEL+
+                        ")-[:"+ User.NEO_RELATION_FOLLOWS +"]->(s:"+User.NEO_USER_LABEL+") ",
+                "WHERE u."+User.NEO_KEY_ID+"<>s."+User.NEO_KEY_ID+" AND NOT((u)-[:"+ User.NEO_RELATION_FOLLOWS +"]->(s)) ",
+                "WITH DISTINCT s AS suggestedUsers ",
+                "MATCH (suggestedUsers)<-[r:"+ User.NEO_RELATION_FOLLOWS +"]-(:"+ User.NEO_USER_LABEL +") ",
+                "WITH suggestedUsers.id AS id, suggestedUsers."+User.NEO_KEY_ID+" AS userId, COUNT(DISTINCT r) AS followers ",
+                "ORDER BY followers DESC ",
+                "LIMIT $HOW_MANY ",
+                "RETURN id, userId, followers");
+
+                Result res = tx.run(query, params);
+                List<String> suggestedFollowersIds = new ArrayList<>();
+                while(res.hasNext()){
+                    Record r = res.next();
+                    Value v = r.get("id");
+                    String userIdToFollow = v.asString();
+                    suggestedFollowersIds.add(userIdToFollow);
                 }
-                return postsPreview;
+                return suggestedFollowersIds;
             });
+        } catch (Neo4jException ne){
+            System.out.println(ne.getMessage());
+            return null;
+        }
+    }
+
 
             return userPostPreviews;
         }catch (Exception e){
