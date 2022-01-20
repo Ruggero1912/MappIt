@@ -75,5 +75,8 @@ class Place:
         return getattr(self, Place.KEY_NAME, "")
 
     def get_dict(self) -> dict:
-        ret_dict = self.__dict__
+        """
+        returns a copy of the attributes of self
+        """
+        ret_dict = self.__dict__.copy()
         return ret_dict

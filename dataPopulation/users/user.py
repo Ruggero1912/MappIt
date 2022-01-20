@@ -71,7 +71,10 @@ class User:
         return self
 
     def get_dict(self) -> dict:
-        ret_dict = self.__dict__
+        """
+        returns a copy of the attributes of self
+        """
+        ret_dict = self.__dict__.copy()
         birth_date = ret_dict[User.KEY_BIRTH_DATE]
         assert isinstance(birth_date, date)
         ret_dict[User.KEY_BIRTH_DATE] = datetime(year=birth_date.year, month=birth_date.month, day=birth_date.day) #.isoformat()
@@ -81,12 +84,12 @@ class User:
         return getattr(self, User.KEY_BIRTH_DATE)
 
     def set_id(self, id : str):
-        if self.get_id() == None:
+        if self.get_id() == "":
             setattr(self, User.KEY_ID, str(id))
         return self.get_id()
 
     def get_id(self):
-        return getattr(self, User.KEY_ID, None)
+        return str(getattr(self, User.KEY_ID, "") )
 
     def get_username(self):
         return getattr(self, User.KEY_USERNAME, None)

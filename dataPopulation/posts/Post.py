@@ -152,9 +152,24 @@ class Post:
     def get_place(self) -> str:
         return getattr(self, Post.KEY_PLACE)
 
-    def get_dict(self) -> dict:
-        ret_dict = self.__dict__
+    def get_id(self) -> str:
+        return str(getattr(self, Post.KEY_ID, ""))
 
+    def set_id(self, id):
+        """
+        sets the id of self to the given one
+        - converts the given id to str
+        - if an id was already set for self, LOGS a warning
+        """
+        current_id = self.get_id()
+        if(current_id != ""):
+            Post.LOGGER.warning(f"received a call to the method 'set_id' on a Post that already has an attribute id! Current value: {current_id} | received value: {id}")
+        setattr(self, Post.KEY_ID, str(id))
+
+    def get_dict(self) -> dict:
+        ret_dict = vars(self).copy()   #self.__dict__  #NOTE: in the commented way you have a linking between the returned dict and the class object!
+        #in this way it return a copy of ret_dict, not a reference to ret_dict (which by itself references to self)
+        
         for ignored_attribute in self.DICT_IGNORED_ATTRIBUTES:
             del ret_dict[ignored_attribute] # use ret_dict.pop(ignored_attribute, None) if u want to ignore the key not found error
 
@@ -166,7 +181,7 @@ class Post:
         assert isinstance(exp_date, date)
         ret_dict[Post.KEY_EXPERIENCE_DATE] = Utils.convert_date_to_datetime(exp_date) #datetime(exp_date.year, exp_date.month, exp_date.day)
 
-        return ret_dict
+        return ret_dict  
 
     def get_post_preview_dict(self) -> dict:
         ret_dict = {}
