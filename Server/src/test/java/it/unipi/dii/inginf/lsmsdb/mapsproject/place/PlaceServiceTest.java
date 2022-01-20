@@ -29,7 +29,7 @@ public class PlaceServiceTest {
     @DisplayName("Test PlaceService.getSuggestedPlaces correct behaviour")
     @Test
     void GIVEN_get_Suggested_Places_WHEN_correct_parameters_are_passed_THEN_return_list_of_suggested_places(){
-        User u = UserService.getUserFromId("61d3428101336eeafcb438e5");
+        User u = UserService.getUserFromId("61e567f53169df0c39dc8ac9");
         List<Place> places = PlaceService.getSuggestedPlaces(u);
         for(Place p : places){
             System.out.println(p.toString());

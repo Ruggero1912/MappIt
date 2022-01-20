@@ -125,7 +125,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
      */
     private Bson ActivityFilter(String activityName){
         if(activityName == null || activityName == PlaceService.noActivityFilterKey){
-            return null;
+            return new BasicDBObject();
         }
         BasicDBObject filter=new BasicDBObject();
         filter.put(Place.KEY_FITS, activityName);
