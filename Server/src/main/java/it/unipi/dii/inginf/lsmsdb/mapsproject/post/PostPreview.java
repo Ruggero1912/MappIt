@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.neo4j.driver.Value;
@@ -37,14 +38,23 @@ public class PostPreview {
      * @param valueFromAuthorNode corresponds to the value gathered from the User Node in Neo4j
      */
     public PostPreview(Value valueFromPostNode, Value valueFromAuthorNode) {
+        this._id =  valueFromAuthorNode.get(User.NEO_KEY_ID).asString();
         this.authorUsername = valueFromAuthorNode.get(User.NEO_KEY_USERNAME).asString();
         this.title = valueFromPostNode.get(Post.NEO_KEY_TITLE).asString();
         this.description = valueFromPostNode.get(Post.NEO_KEY_DESC).asString();
         this.thumbnail = valueFromPostNode.get(Post.NEO_KEY_THUMBNAIL).asString();
     }
 
+    /**
+     * Parses a PostPreview object from a (MongoDB) Document
+     * @param doc the Document that MUST includes the PostPreview keys
+     */
     public PostPreview(Document doc){
-        this._id = doc.get(Post.KEY_ID).toString();
+        try {
+            this._id = doc.get(Post.KEY_ID).toString();
+        }catch(Exception e){
+            this._id = null;
+        }
         this.authorUsername = doc.get(Post.KEY_AUTHOR_USERNAME).toString();
         this.title = doc.get(Post.KEY_TITLE).toString();
         this.description = doc.get(Post.KEY_DESCRIPTION).toString();
@@ -57,7 +67,15 @@ public class PostPreview {
                 .append(Post.KEY_DESCRIPTION, this.description)
                 .append(Post.KEY_THUMBNAIL, this.thumbnail);
 
+        if(this._id != null){
+            postPreviewDoc.append(Post.KEY_ID, this._id);
+        }
+
         return postPreviewDoc;
+    }
+
+    public String getId(){
+        return _id;
     }
 
     public String getAuthorUsername() {
@@ -84,7 +102,15 @@ public class PostPreview {
         this.description = des;
     }
 
+    /**
+     * if the thumbanil is stored on our platform, converts the image id to image link (an absolute path)
+     * @return the Link to the thumbnail of the given post
+     */
     public String getThumbnail() {
+        if(this.thumbnail == null)
+            return null;
+        if(ImageFile.isServerImageId(this.thumbnail))
+            return ImageFile.getResourceURIFromId(this.thumbnail);
         return this.thumbnail;
     }
 

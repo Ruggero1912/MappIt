@@ -48,7 +48,8 @@ public class User implements Serializable {
 	protected Date birthDate;
 	protected List<String> roles;
 	protected Image profilePic;
-	protected List<PostPreview> publishedPosts;
+	protected int followersCounter;
+	protected List<PostPreview> publishedPosts = new ArrayList<>();
 
 	//need default constructor for JSON Parsing
 	public User(){
@@ -73,7 +74,16 @@ public class User implements Serializable {
 		}
 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
-		//this.publishedPosts = doc.getList(KEY_PUBLISHED_POSTS, PostPreview.class);
+		Object embeddedPosts = doc.get(KEY_PUBLISHED_POSTS);
+		if(embeddedPosts instanceof ArrayList<?>) {
+			ArrayList<?> embeddedPostsList = (ArrayList<?>) embeddedPosts;
+			for (Object dboNestedObj : embeddedPostsList) {
+				if (dboNestedObj instanceof Document) {
+					this.publishedPosts.add(new PostPreview((Document) dboNestedObj));
+				}
+			}
+		}
+		this.followersCounter = doc.getInteger(KEY_FOLLOWERS, 0);
 	}
 
 	public static User buildUser(@NotNull Document doc){
@@ -94,6 +104,9 @@ public class User implements Serializable {
 		this.publishedPosts = posts;
 	}
 
+	public int getFollowersCounter(){
+		return followersCounter;
+	}
 
 	public String getId() {
 		return _id;
@@ -115,7 +128,7 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
+	public String _getPassword() {
 		return password;
 	}
 
@@ -177,7 +190,6 @@ public class User implements Serializable {
 				", name='" + name + '\'' +
 				", surname='" + surname + '\'' +
 				", username='" + username + '\'' +
-				", password='" + password + '\'' +
 				", email='" + email + '\'' +
 				", role='" + roles + '\'' +
 				'}';
