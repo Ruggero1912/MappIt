@@ -6,8 +6,6 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManager;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;

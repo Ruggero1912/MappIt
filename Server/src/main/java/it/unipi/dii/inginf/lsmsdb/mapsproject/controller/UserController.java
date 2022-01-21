@@ -1,31 +1,21 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
-import com.google.gson.Gson;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.JwtTokenUtil;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @RequestMapping("/api")
 @RestController
