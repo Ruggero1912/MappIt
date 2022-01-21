@@ -33,6 +33,7 @@ public class Post {
     public static final String KEY_YT_VIDEO_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "videoId");
     public static final String KEY_PICS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "pics");
     public static final String KEY_LIKES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "likes");
+    public static final String KEY_COUNTRY_CODE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "countryCode");
 
     public static final String NEO_POST_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.postEntity);
     public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, "id");
@@ -58,6 +59,7 @@ public class Post {
     private String thumbnail;
     private List<String> pics;
     private int likeCounter;
+    private String countryCode;
 
     public Post(String id, String author, String authorID, String place_id, String t, Date d, String des, String activities, List<String> tags, String vidId, String thumb, List<String> pics) {
         this._id = id;
@@ -81,6 +83,7 @@ public class Post {
         this.authorUsername = author.getUsername();
         this.placeId = submittedPost.getPlaceId();
         this.placeName = placeOfThePost.getName();
+        this.countryCode = placeOfThePost.getCountryCode();
         this.title= submittedPost.getTitle();
         this.date = submittedPost.getExperienceDate();
         this.postDate = new Date();
@@ -107,6 +110,8 @@ public class Post {
         this.videoId = doc.getString(KEY_YT_VIDEO_ID);
         this.thumbnail = doc.get(KEY_THUMBNAIL).toString();
         this.pics = (List<String>) doc.get(KEY_PICS, List.class);
+        this.likeCounter = doc.getInteger(KEY_LIKES, 0);
+        this.countryCode = doc.getString(KEY_COUNTRY_CODE);
     }
 
     public Document createDocument(){
@@ -120,7 +125,8 @@ public class Post {
                 .append(KEY_ACTIVITY, this.activity)
                 .append(KEY_POST_DATE, this.postDate)
                 .append(KEY_DATE, this.date)
-                .append(KEY_THUMBNAIL, this.thumbnail);
+                .append(KEY_THUMBNAIL, this.thumbnail)
+                .append(KEY_COUNTRY_CODE, this.countryCode);
 
         if (this.authorId != null){
             postDoc.append(KEY_AUTHOR_ID, this.authorId);
@@ -242,6 +248,22 @@ public class Post {
 
     public void setThumbnail(String t) {
         this.thumbnail = t;
+    }
+
+    public String getCountryCode(){
+        return countryCode;
+    }
+
+    public Date getPostDate() {
+        return postDate;
+    }
+
+    public int getLikeCounter() {
+        return likeCounter;
+    }
+
+    public String getPlaceName() {
+        return placeName;
     }
 
     public String toString() {
