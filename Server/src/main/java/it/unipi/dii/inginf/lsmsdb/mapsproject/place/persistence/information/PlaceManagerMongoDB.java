@@ -124,7 +124,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
      * @return a Bson object representing the activity filter, null if the filter is not applicable
      */
     private Bson ActivityFilter(String activityName){
-        if(activityName == null || activityName == PlaceService.noActivityFilterKey){
+        if(activityName == null || activityName.equals(PlaceService.noActivityFilterKey)){
             return new BasicDBObject();
         }
         BasicDBObject filter=new BasicDBObject();
@@ -152,10 +152,10 @@ public class PlaceManagerMongoDB implements PlaceManager{
      * @return the Bson object representing the specified order by criteria
      */
     private Bson orderBy(String criteria){
-        if(criteria == PlaceService.ORDER_CRITERIA_DISTANCE || ! PlaceService.orderByCriterias.contains(criteria)){
+        if(criteria.equals(PlaceService.ORDER_CRITERIA_DISTANCE) || ! PlaceService.orderByCriterias.contains(criteria)){
             return null;
         }
-        if(criteria == PlaceService.ORDER_CRITERIA_POPULARITY){
+        if(criteria.equals(PlaceService.ORDER_CRITERIA_POPULARITY)){
             //NOTE: to determine which Place is popular maybe we could also return the Places
             //      whose post received the greatest number of interactions
             return Sorts.descending(Place.KEY_FAVOURITES);
@@ -183,7 +183,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
 
     @Override
     public boolean updateFavouriteCounter(String placeId, int k) {
-        if(placeId == "" || k>1 || k<-1 || k==0)
+        if(placeId.equals("") || k>1 || k<-1 || k==0)
             return false;
         Bson idFilter = Filters.eq(Place.KEY_ID, new ObjectId(placeId));
         UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.KEY_FAVOURITES, k));

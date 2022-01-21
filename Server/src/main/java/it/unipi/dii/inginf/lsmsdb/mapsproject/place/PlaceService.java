@@ -55,7 +55,7 @@ public class PlaceService {
         if( ! orderByCriterias.contains(orderBy)){
             orderBy = defaultOrderByCriteria;
         }
-        if(activityFilter != noActivityFilterKey){
+        if(!activityFilter.equals(noActivityFilterKey)){
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
                 activityFilter = noActivityFilterKey;
             }
@@ -65,7 +65,7 @@ public class PlaceService {
         }
         // how should we check the correctness of the provided coordinates? We assume that those are always valid
         PlaceManager pm = PlaceManagerFactory.getPlaceManager();
-        if(activityFilter == noActivityFilterKey){
+        if(activityFilter.equals(noActivityFilterKey)){
             return pm.getPlacesInRadius(coordinates, radius, orderBy);
         }else{
             return pm.getPlacesInRadiusFilteredByFits(coordinates, radius, orderBy, activityFilter);
@@ -97,7 +97,7 @@ public class PlaceService {
      * @return a list Place objects
      */
     public static List<Place> getPopularPlaces(String activityFilter, int maxQuantity) {
-        if(activityFilter != noActivityFilterKey){
+        if(!activityFilter.equals(noActivityFilterKey)){
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
                 activityFilter = noActivityFilterKey;
             }
