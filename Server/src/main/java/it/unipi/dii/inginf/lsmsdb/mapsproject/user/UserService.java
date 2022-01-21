@@ -187,6 +187,7 @@ public class UserService {
 
         String userId = userToDelete.getId();
 
+        //TODO: call to PostService.deletePostsOfGivenUser instead of using the PostManager's methods
         PostManager pm = PostManagerFactory.getPostManager();
         boolean PostsDeletedFromMongo = pm.deletePostsOfGivenUser(userToDelete);
 

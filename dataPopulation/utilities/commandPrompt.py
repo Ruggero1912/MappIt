@@ -10,6 +10,7 @@ from places.place import Place
 from utilities.utils import Utils
 from utilities.persistentEntitiesManager import PersistentEntitiesManager
 from users.userFactory import UserFactory
+from redundanciesUpdater.redundaciesUpdater import RedundanciesUpdater
 
 def separator():
     print()
@@ -32,6 +33,7 @@ class CommandPrompt:
 
     COMMANDS_DESCRIPTIONS = {
                                 "list"              : "params: \"entity\" | \"relations\" | \"post-sources\" | places-areas",
+                                "update-redundancies" : "params: '--skip-followers' | '--skip-likes' | '--skip-favourites'",
                                 "delete"            : "deletes the specified entities from the db | if 'ALL' is given: deletes all the entities",
                                 "generate"          :   {
                                                             "posts"             : "generates posts from the specified sources | use the option -n (/ --num) to specify how many different places | use -a (/ --all-places) to run the generation on all the places in db | if -s (/ --skip) is given, skips all the places for which at least it has been done one search for the specified kinds of generation",
@@ -71,6 +73,7 @@ class CommandPrompt:
         self.commands = {
                             ""                  : self.dummy,
                             "list"              : self.list,
+                            "update-redundancies": self.update_redundancies,
                             "delete"            : self.delete,
                             "generate"          : self.generate,
                             "exit"              : self.stop,
@@ -126,6 +129,7 @@ class CommandPrompt:
                 print(wrapper.fill(desc))
                 #output = f"{command}\t\t-> {desc}"
             #print(output)
+            print()
         print()
         
     def run_command(self, command_parameters_list : list):
@@ -197,6 +201,32 @@ class CommandPrompt:
             for entity_kind in PersistentEntitiesManager.ENTITY_KINDS:
                 print(entity_kind)
         return
+
+    def update_redundancies(self, param):
+        """
+        updates the redundacies of the documents in MongoDB
+        - available user parameters:
+        - --skip-favourites     : do not update the favsCounters
+        - --skip-likes          : do not update the likesCounters
+        - --skip-followers      : do not update the followersCounters
+        """
+        update_followers = True
+        update_favourites = True
+        update_likes = True
+        for option in param:
+            assert isinstance(option, str)
+            if option.lower() in ["--skip-followers", "--skip-follower", "--skip-follow"]:
+                update_followers = False
+            if option.lower() in ["--skip-favourites", "--skip-favourite", "--skip-fav", "--skip-favs"]:
+                update_favourites = False
+            if option.lower() in ["--skip-likes", "--skip-like"]:
+                update_likes = False
+        print()
+        print(f"'update_redundancies' calling the method with options update_followers = {update_followers}, update_favourites = {update_favourites}, update_likes = {update_likes}")
+        print()
+        red_updater = RedundanciesUpdater()
+        red_updater.run(update_followers, update_favourites, update_likes)
+
 
     def delete(self, param):
         """
@@ -298,7 +328,7 @@ class CommandPrompt:
 
         for index, option in enumerate(param):
             assert isinstance(option, str)
-            if option.lower() in ["all", "*"]:
+            if option.lower() in ["all", "*", "all-relations"]:
                 generate_all = True
             elif option.lower() in ["-n", "--num", "--how-many", "-h"]:
                 #the next element in the param array must be the how_many_users param

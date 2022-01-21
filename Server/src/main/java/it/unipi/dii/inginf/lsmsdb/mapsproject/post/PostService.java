@@ -138,8 +138,25 @@ public class PostService {
      * @return True if posts are successfully deleted, else False
      */
     public static boolean deletePostsOfGivenUser(User user){
-        PostSocialManager um = PostSocialManagerFactory.getPostManager();
-        return um.deleteAllPostsOfGivenUser(user);
+        if(user == null){
+            LOGGER.warning("An empty user object was given for the method 'deletePostsOfGivenUser'");
+            return false;
+        }
+        PostManager pm = PostManagerFactory.getPostManager();
+        boolean deletedPostsFromMongo = pm.deletePostsOfGivenUser(user);
+        if(deletedPostsFromMongo) {
+            PostSocialManager um = PostSocialManagerFactory.getPostManager();
+            boolean deleteFromNeo = um.deleteAllPostsOfGivenUser(user);
+            if(deleteFromNeo){
+                return true;
+            }else{
+                LOGGER.severe("Cannot delete the posts of the user " + user.getId() + "from Neo4j!");
+                return false;
+            }
+        }else{
+            LOGGER.warning("'deletePostsOfGivenUser': cannot delete the posts of the user " + user.getId() + " from Mongo");
+            return false;
+        }
     }
 
     /**

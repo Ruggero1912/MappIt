@@ -143,6 +143,20 @@ class PlaceFactory:
         ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : ObjectId(str(place_id))}, update={"$inc":{PlaceFactory.PLACE_FAVOURITES_COUNTER_KEY : num}})
         return ret.modified_count
 
+    def set_favourites_counter(place_id : str, value : int):
+        """
+        sets the favourites counter attribute to the given value
+        - :param num should be a positive number
+        - :returns the modified_count 
+        """
+        if(value < 0):
+            PlaceFactory.LOGGER.warning(f"[x] 'set_favourites_counter': received a negative number for the favouritesCounter! num: {value} ")
+            return 0
+        if(value == 0):
+            PlaceFactory.LOGGER.debug(f"[-] 'set_favourites_counter': received 0 as favouritesCounter for the place_id: {place_id} ")
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={Place.KEY_ID : ObjectId(str(place_id))}, update={"$set":{Place.KEY_FAVOURITES_COUNTER : value}})
+        return ret.modified_count
+
     def increment_aggregated_likes_counter(place_id : str):
         """
         updates the redundant aggregated field 'totalLikes' which indicates the total of likes received by all the posts done in the specified place
