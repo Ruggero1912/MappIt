@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.activity.ActivityService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
+import org.bson.Document;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +34,9 @@ public class UserService {
     private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
 
     public static final int DEFAULT_MAX_HOW_MANY_SUGGESTED = 10;
+    public static final String noActivityFilterKey = "any";
+    public static final int DEFAULT_MAXIMUM_QUANTITY = 20;
+    public static final int LIMIT_MAXIMUM_QUANTITY = 50;
 
 
     /**
@@ -460,5 +465,26 @@ public class UserService {
         }
 
         return suggestedPosts;
+    }
+
+    /**
+     * return a list of the most active users ordered by the number of posts written, given a certain category
+     * @param activityFilter: the name of the activity that the returned places should fit or "any"
+     * @param maxQuantity: the maximum number of users instances to be returned
+     * @return a list of Document containing the user's aggregate values
+     */
+    public static List<Document> mostActiveUsersByActivity(String activityFilter, int maxQuantity) {
+        if(!activityFilter.equals(noActivityFilterKey)){
+            if( ! ActivityService.checkIfActivityExists(activityFilter)){
+                activityFilter = noActivityFilterKey;
+            }
+        }
+        if(maxQuantity <= 0){
+            maxQuantity = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(maxQuantity > LIMIT_MAXIMUM_QUANTITY){
+            maxQuantity = LIMIT_MAXIMUM_QUANTITY;
+        }
+        UserManager um = UserManagerFactory.getUserManager();
+        return um.retrieveMostActiveUsers(activityFilter, maxQuantity);
     }
 }

@@ -2,6 +2,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import org.bson.Document;
 
 import java.util.List;
 
@@ -70,4 +71,12 @@ public interface UserManager {
      * @return true if followers counter was correctly increased, false otherwise
      */
     boolean updateFollowersCounter(User user, int k);
+
+    /**
+     * return a list of the most active users ordered by the number of posts written, given a certain category
+     * @param activityFilter: the name of the activity that the returned places should fit or "any"
+     * @param maxQuantity: the maximum number of users instances to be returned
+     * @return a list of Document containing the user's aggregate values
+     */
+    List<Document> retrieveMostActiveUsers(String activityFilter, int maxQuantity);
 }

@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerMongoDB;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,5 +92,17 @@ public class UserManagerMongoDBTest {
         @Test
         void GIVEN_change_password_WHEN_empty_id_is_passed_THEN_return_false(){
             assertFalse(user.changePassword(EMPTY_FIELD, DEFAULT_PASSWORD), "Empty id case in changePassword() is not well handled");
+        }
+
+        @DisplayName("Test UserManagerMongoDB.retrieveMostActiveUsers standard behaviour")
+        @Test
+        void GIVEN_retrieveMostActiveUsers_WHEN_standard_parameters_are_passed_THEN_print_correct_values(){
+
+            try {
+                UserManagerMongoDB um = new UserManagerMongoDB();
+                um.retrieveMostActiveUsers("skiing",15);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
         }
 }

@@ -13,6 +13,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
+import org.bson.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -257,6 +258,27 @@ public class UserController {
 				result = ResponseEntity.status(HttpStatus.OK).body(suggestedPosts);
 		}catch (Exception e) {
 			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested posts\"}");
+		}
+
+		return result;
+	}
+
+
+	// most active users in therms of posts written, given an activity
+	@ApiOperation(value = "returns an aggregated result containing list of users by activity and their # of posts")
+	@GetMapping(value = "/user/most-active", produces = "application/json")
+	public ResponseEntity<?> mostActiveUsers(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+
+		//TODO: admin role check
+
+		ResponseEntity<?> result;
+
+		try {
+			List<Document> aggregatedValues = UserService.mostActiveUsersByActivity(activityFilter, maxQuantity);
+			result = ResponseEntity.status(HttpStatus.OK).body(aggregatedValues);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting the aggregated value about most active users\"}");
 		}
 
 		return result;

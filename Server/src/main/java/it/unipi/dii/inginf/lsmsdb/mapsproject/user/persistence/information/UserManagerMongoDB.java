@@ -17,6 +17,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -157,5 +158,34 @@ public class UserManagerMongoDB implements UserManager{
         Bson idFilter = Filters.eq(User.KEY_ID, new ObjectId(userId));
         UpdateResult res = userCollection.updateOne(idFilter, Updates.inc("followers", k));
         return res.wasAcknowledged();
+    }
+
+    @Override
+    public List<Document> retrieveMostActiveUsers(String activityName, int maxQuantity) {
+        MongoCollection<Document> userColl = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
+
+        Document addFields = new Document("$addFields", new Document("userId", new Document("$toString", "$_id")));
+        Document lookup = new Document("$lookup", new Document("from", "post").append("localField", "userId").append("foreignField", "author").append("as", "posts"));
+        Document unwind = new Document("$unwind", "$posts");
+        Document match = new Document("$match", new Document("posts.activity", activityName));
+        Document group = new Document("$group", new Document("_id", "$username").append("publishedPosts", new Document("$sum", 1)));
+        Document sort = new Document("$sort", new Document("publishedPosts", -1));
+        Document limit = new Document("$limit", maxQuantity);
+
+        List<Document> results = new ArrayList<>();
+        List<Document> pipeline;
+        try{
+            if(activityName.equals("any"))
+                pipeline = Arrays.asList(addFields,lookup,unwind,group,sort,limit);
+            else
+                pipeline = Arrays.asList(addFields,lookup,unwind,match,group,sort,limit);
+            AggregateIterable<Document> cursor = userColl.aggregate(pipeline);
+            for(Document doc : cursor) { results.add(doc); }
+        } catch (MongoException ex){
+            ex.printStackTrace();
+            LOGGER.severe("Error: MongoDB Analytic about aggregated values on most active users failed");
+        }
+
+        return results;
     }
 }
