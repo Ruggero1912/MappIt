@@ -83,9 +83,21 @@ public interface UserSocialManager {
      */
     boolean deleteFollower(User user, User userToUnfollow);
 
+
     /**
-     * return all the posts of an user in the db, given the user obj
-     * @return Post Previews List or null if there are no posts
+     * returns a list of suggested User to follow, based on the ones followed by followed users
+     * @param user the User that asks for new users to start following
+     * @param maxHowMany: the maximum number of User instances to be returned
+     * @return a list of string containing the id of the user to follow
      */
-    List<PostPreview> retrieveAllPostPreviews(User user);
+    List<String> getSuggestedFollowersIds(User user, int maxHowMany);
+
+
+    /**
+     * returns a list of suggested post to check out, based on user likes
+     * @param user the User that asks for new posts to check out
+     * @param howMany is quantity of posts to show
+     * @return a list of PostPreview
+     */
+    List<PostPreview> getSuggestedPosts(User user, int howMany);
 }

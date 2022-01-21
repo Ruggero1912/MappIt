@@ -5,6 +5,8 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
@@ -14,6 +16,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserM
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,10 +25,14 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocial
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public class UserService {
 
     private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
+
+    public static final int DEFAULT_MAX_HOW_MANY_SUGGESTED = 10;
+
 
     /**
      * return the User associated to the given credentials if password hashes match, return Null otherwise
@@ -401,8 +408,57 @@ public class UserService {
      * @return Posts List or null if there are no posts
      */
     public static List<PostPreview> retrieveAllPostPreviewsFromUser(User user){
-        //UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        //return usm.retrieveAllPostPreviews(user);
         return user.getPublishedPosts();
+    }
+
+
+    /**
+     * returns a list of suggested User to follow, based on the ones followed by followed users
+     * @param user the User that asks for new users to start following
+     * @return a list of User
+     */
+    public static List<User> getSuggestedFollowers(User user){
+        if(user == null){
+            return null;
+        }
+        int maxHowMany = DEFAULT_MAX_HOW_MANY_SUGGESTED;
+        UserSocialManager um = UserSocialManagerFactory.getUserManager();
+        List<String> suggestedFollowersIds = um.getSuggestedFollowersIds(user, maxHowMany);
+
+        if(suggestedFollowersIds.size()==0){
+            LOGGER.log(Level.INFO, "No suggestion about users to follow");
+            return null;
+        }
+
+        List<User> userToFollow = new ArrayList<>();
+        for(String uId: suggestedFollowersIds){
+            User u = UserService.getUserFromId(uId);
+            userToFollow.add(u);
+        }
+
+        return userToFollow;
+    }
+
+
+    /**
+     * returns a list of suggested post to check out, based on user likes
+     * @param user the User that asks for new posts to check out
+     * @param howMany is quantity of posts to show
+     * @return a list of PostPreview
+     */
+    public static List<PostPreview> getSuggestedPosts(User user, Integer howMany){
+        if(user == null){
+            return null;
+        }
+        howMany = (howMany<0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
+        UserSocialManager um = UserSocialManagerFactory.getUserManager();
+        List<PostPreview> suggestedPosts = um.getSuggestedPosts(user, howMany);
+
+        if(suggestedPosts.size()==0){
+            LOGGER.log(Level.INFO, "No suggestion about users to follow");
+            return null;
+        }
+
+        return suggestedPosts;
     }
 }

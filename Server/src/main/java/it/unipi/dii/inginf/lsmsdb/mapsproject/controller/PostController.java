@@ -58,7 +58,7 @@ public class PostController {
         ResponseEntity<?> result;
         User u;
 
-        if(userId == "current"){
+        if(userId.equals("current")){
             //retrieve the current user
             UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             u = userSpring.getApplicationUser();
