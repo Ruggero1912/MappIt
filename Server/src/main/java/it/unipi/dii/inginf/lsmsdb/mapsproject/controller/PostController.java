@@ -12,6 +12,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
+import org.bson.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -131,6 +134,50 @@ public class PostController {
             result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete Post (id=" + id + ")");
             LOGGER.log(Level.WARNING, "Error: could not delete Post, an exception has occurred: " + e);
         }
+        return result;
+    }
+
+    // most popular posts for given category
+    @ApiOperation(value = "returns a list of popular places")
+    @GetMapping(value = "/post/most-popular", produces = "application/json")
+    public ResponseEntity<?> popularPosts(@RequestParam(name = "fromDate", required = false) LocalDate fromDate, @RequestParam(name = "toDate", required = false) LocalDate toDate,
+                                          @RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+        ResponseEntity<?> result;
+
+        if(toDate==null)
+            toDate = LocalDate.now();
+        if(fromDate==null)
+            fromDate = toDate.minusMonths(6);
+
+        try {
+            List<Post> popularPosts = PostService.getPopularPosts(fromDate, toDate, activityFilter, maxQuantity);
+            result = ResponseEntity.status(HttpStatus.OK).body(popularPosts);
+        }catch (Exception e) {
+            e.printStackTrace();
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting popular posts\"}");
+        }
+
+        return result;
+    }
+
+
+    // most popular posts for given category
+    @ApiOperation(value = "returns an aggregated result containing list of year-activity-number of posts")
+    @GetMapping(value = "/post/per-year", produces = "application/json")
+    public ResponseEntity<?> postsPerYearAndActivity(@RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+
+        //TODO: admin role check
+
+        ResponseEntity<?> result;
+
+        try {
+            List<Document> aggregatedValues = PostService.getPostsPerYearAndActivity(maxQuantity);
+            result = ResponseEntity.status(HttpStatus.OK).body(aggregatedValues);
+        }catch (Exception e) {
+            e.printStackTrace();
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting the aggregated value about posts\"}");
+        }
+
         return result;
     }
 }

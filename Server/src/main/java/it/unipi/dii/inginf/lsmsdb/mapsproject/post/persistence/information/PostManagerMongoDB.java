@@ -1,31 +1,43 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information;
 
-import com.mongodb.MongoException;
+import com.mongodb.*;
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.mongodb.client.model.Accumulators.sum;
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Projections.*;
+
 public class PostManagerMongoDB implements PostManager {
 
     private static final Logger LOGGER = Logger.getLogger(PostManagerMongoDB.class.getName());
+    private static final int DEFAULT_MAXIMUM_QUANTITY = 50;
 
     private MongoCollection postCollection;
 
@@ -253,5 +265,84 @@ public class PostManagerMongoDB implements PostManager {
         Bson idFilter = Filters.eq(Post.KEY_ID, new ObjectId(postId));
         UpdateResult res = postCollection.updateOne(idFilter, Updates.inc("likes", k));
         return res.wasAcknowledged();
+    }
+
+    /**
+     * It uses the $in Mongo Operator. The results will have the specified activity in the fits array
+     * @param activityName: the name of the activity that should be in the fits of the returned Places or "any"
+     *                     NOTE that the activityName should be validated in advance
+     * @return a Bson object representing the activity filter, null if the filter is not applicable
+     */
+    private Bson ActivityFilter(String activityName){
+        if(activityName == null || activityName.equals(PostService.noActivityFilterKey)){
+            return new BasicDBObject();
+        }
+        BasicDBObject filter=new BasicDBObject();
+        filter.put(Post.KEY_ACTIVITY, activityName);
+        return filter;
+    }
+
+    private Bson FromDateToDatePeriodFilter(LocalDate fromDate, LocalDate toDate){
+        BasicDBObject filter = new BasicDBObject();
+        Date FromDate = java.util.Date.from(fromDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+        Date ToDate = java.util.Date.from(toDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+        filter.put("postDate", BasicDBObjectBuilder.start("$gte", FromDate).add("$lte", ToDate).get());
+        return filter;
+    }
+
+    /**
+     * use this method to query the Post Collection
+     * @param activityAndTimePeriodFilters : a Bson object representing the union of the 2 filters by activity and by startDate-endDate
+     * @param sort : a Bson object representing the order by criteria to be used for the result set
+     * @param maxQuantity : the maximum quantity of Posts to be returned
+     * @return null if empty set, else a List of Posts respecting the given filters
+     */
+    private List<Post> queryPostCollection(Bson activityAndTimePeriodFilters, Bson sort, int maxQuantity){
+        if(maxQuantity <= 0){
+            maxQuantity = DEFAULT_MAXIMUM_QUANTITY;
+        }
+        List<Post> posts = new ArrayList<>();
+        FindIterable<Document> iterable = postCollection.find(activityAndTimePeriodFilters).sort(sort).limit(maxQuantity);
+        iterable.forEach(doc -> posts.add(new Post(doc)));
+        return posts;
+    }
+
+    @Override
+    public List<Post> getPopularPosts(LocalDate fromDate, LocalDate toDate, String activityName, int maxQuantity) {
+        Bson activityFilter = ActivityFilter(activityName);
+        Bson timePeriodFilter = FromDateToDatePeriodFilter(fromDate, toDate);
+        return this.queryPostCollection(Filters.and(activityFilter, timePeriodFilter), Sorts.descending(Post.KEY_LIKES), maxQuantity);
+    }
+
+    @Override
+    public List<Document> getPostsPerYearAndActivity(int maxQuantity) {
+        MongoCollection<Document> postColl = MongoConnection.getCollection(MongoConnection.Collections.POSTS.toString());
+
+        Document firstGroup = new Document("$group",
+                new Document("_id",
+                        new Document("year", new Document("$year","$postDate"))
+                                .append("activity", "$activity"))
+                        .append("postPublished", new Document("$sum", 1)));
+
+        Document sort = new Document("$sort", new Document("_id.year", -1).append("postPublished", -1));
+        //Document project = new Document("$project", new Document("year", "$_id.year").append("activity", "$_id.activity").append("postsPublished", "$postPublished"));
+        Document limit = new Document("$limit", maxQuantity);
+
+        List<Document> results = new ArrayList<>();
+
+        try{
+            List<Document> pipeline = Arrays.asList(firstGroup, sort, limit); //project
+            AggregateIterable<Document> cursor = postColl.aggregate(pipeline);
+            for(Document doc : cursor) { results.add(doc); }
+        } catch (MongoException ex){
+            ex.printStackTrace();
+            LOGGER.severe("Error: MongoDB Analytic about aggregated values on posts failed");
+        }
+
+        return results;
     }
 }

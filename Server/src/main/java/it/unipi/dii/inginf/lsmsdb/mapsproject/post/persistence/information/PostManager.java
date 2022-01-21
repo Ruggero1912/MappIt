@@ -1,8 +1,12 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import org.bson.Document;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 
@@ -48,4 +52,21 @@ public interface PostManager {
      * @return true if likes counter was correctly increased, false otherwise
      */
     boolean updateLikesCounter(Post post, int k);
+
+    /**
+     * returns a list of the most popular posts ordered by popularity in therms of likes received, filtering by period and activity
+     * @param fromDate the starting date of the period
+     * @param toDate the ending date of the period
+     * @param activityName can be "any" or the name of an activity that should be in the activity field of the returned Post
+     * @param maxQuantity
+     * @return a List of Posts ordered by popularity
+     */
+    List<Post> getPopularPosts(LocalDate fromDate, LocalDate toDate, String activityName, int maxQuantity);
+
+    /**
+     * returns a list of aggregated values in the following shape: year-activityName-#ofPosts
+     * @param maxQuantity the quantity of the aggregated values to be returned
+     * @return a List of Document containing the aggregated values in json format
+     */
+    List<Document> getPostsPerYearAndActivity(int maxQuantity);
 }
