@@ -20,6 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
@@ -140,14 +142,32 @@ public class PostController {
     // most popular posts for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/post/most-popular", produces = "application/json")
-    public ResponseEntity<?> popularPosts(@RequestParam(name = "fromDate", required = false) LocalDate fromDate, @RequestParam(name = "toDate", required = false) LocalDate toDate,
+    public ResponseEntity<?> popularPosts(@RequestParam(name = "from Date", required = false, defaultValue = "1-Jan-2021") String fromDateString, @RequestParam(name = "to Date", required = false, defaultValue = "today") String toDateString,
                                           @RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
+        Date fromDate, toDate;
 
-        if(toDate==null)
-            toDate = LocalDate.now();
-        if(fromDate==null)
-            fromDate = toDate.minusMonths(6);
+        //handle toDate value empty
+        if(toDateString==null || toDateString.equals("today")){
+            toDate = new Date();
+        }
+        //otherwise we need to cast from String value to Date obj
+        else{
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            try {
+                toDate = formatter.parse(fromDateString);
+            } catch (ParseException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect toDate format, please specify dd-MMM-yyy (1-Jan-2021)\"}");
+            }
+        }
+        //fromDate value empty is handled by default value inside @RequestParam,
+        //we just need to cast it from String to Date obj
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        try {
+            fromDate = formatter.parse(fromDateString);
+        } catch (ParseException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect fromDate format, please specify dd-MMM-yyy (1-Jan-2021)\"}");
+        }
 
         try {
             List<Post> popularPosts = PostService.getPopularPosts(fromDate, toDate, activityFilter, maxQuantity);

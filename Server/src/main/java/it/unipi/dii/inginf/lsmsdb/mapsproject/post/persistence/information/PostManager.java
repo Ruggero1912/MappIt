@@ -61,7 +61,7 @@ public interface PostManager {
      * @param maxQuantity
      * @return a List of Posts ordered by popularity
      */
-    List<Post> getPopularPosts(LocalDate fromDate, LocalDate toDate, String activityName, int maxQuantity);
+    List<Post> getPopularPosts(Date fromDate, Date toDate, String activityName, int maxQuantity);
 
     /**
      * returns a list of aggregated values in the following shape: year-activityName-#ofPosts

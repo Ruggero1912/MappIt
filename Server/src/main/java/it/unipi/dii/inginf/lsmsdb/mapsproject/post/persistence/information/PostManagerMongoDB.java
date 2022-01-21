@@ -8,21 +8,16 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -30,9 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.mongodb.client.model.Accumulators.sum;
-import static com.mongodb.client.model.Aggregates.*;
-import static com.mongodb.client.model.Projections.*;
 
 public class PostManagerMongoDB implements PostManager {
 
@@ -212,7 +204,7 @@ public class PostManagerMongoDB implements PostManager {
             //Bson placeFilter = Filters.eq(Place.KEY_POSTS_ARRAY + "." +);
             Bson placeUpdate = Updates.pull(Place.KEY_POSTS_ARRAY, new Document(Post.KEY_AUTHOR_ID, authorObjId));
             MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
-            placeCollection.updateMany(null, placeUpdate);
+            placeCollection.updateMany(new BasicDBObject(), placeUpdate);
             return true;
         } catch(MongoException me){
             return false;
@@ -282,15 +274,9 @@ public class PostManagerMongoDB implements PostManager {
         return filter;
     }
 
-    private Bson FromDateToDatePeriodFilter(LocalDate fromDate, LocalDate toDate){
+    private Bson FromDateToDateFilter(Date fromDate, Date toDate){
         BasicDBObject filter = new BasicDBObject();
-        Date FromDate = java.util.Date.from(fromDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant());
-        Date ToDate = java.util.Date.from(toDate.atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant());
-        filter.put("postDate", BasicDBObjectBuilder.start("$gte", FromDate).add("$lte", ToDate).get());
+        filter.put("postDate", BasicDBObjectBuilder.start("$gte", fromDate).add("$lte", toDate).get());
         return filter;
     }
 
@@ -312,9 +298,9 @@ public class PostManagerMongoDB implements PostManager {
     }
 
     @Override
-    public List<Post> getPopularPosts(LocalDate fromDate, LocalDate toDate, String activityName, int maxQuantity) {
+    public List<Post> getPopularPosts(Date fromDate, Date toDate, String activityName, int maxQuantity) {
         Bson activityFilter = ActivityFilter(activityName);
-        Bson timePeriodFilter = FromDateToDatePeriodFilter(fromDate, toDate);
+        Bson timePeriodFilter = FromDateToDateFilter(fromDate, toDate);
         return this.queryPostCollection(Filters.and(activityFilter, timePeriodFilter), Sorts.descending(Post.KEY_LIKES), maxQuantity);
     }
 

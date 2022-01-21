@@ -230,7 +230,7 @@ public class PostService {
      * @param maxQuantity
      * @return a List of Posts ordered by popularity
      */
-    public static List<Post> getPopularPosts(LocalDate fromDate, LocalDate toDate, String activityFilter, int maxQuantity){
+    public static List<Post> getPopularPosts(Date fromDate, Date toDate, String activityFilter, int maxQuantity){
         if(!activityFilter.equals(noActivityFilterKey)){
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
                 activityFilter = noActivityFilterKey;
