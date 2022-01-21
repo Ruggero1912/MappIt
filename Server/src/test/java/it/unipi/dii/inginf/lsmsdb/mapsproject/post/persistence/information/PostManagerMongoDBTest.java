@@ -51,4 +51,16 @@ public class PostManagerMongoDBTest {
             e.printStackTrace();
         }
     }
+
+    @DisplayName("Test PostManagerMongoDB.getPostsPerYearAndActivity standard behaviour")
+    @Test
+    void GIVEN_getPostsPerYearAndActivity_WHEN_standard_parameters_are_passed_THEN_print_correct_values(){
+
+        try {
+            PostManagerMongoDB pm = new PostManagerMongoDB();
+            pm.getPostsPerYearAndActivity(3);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }

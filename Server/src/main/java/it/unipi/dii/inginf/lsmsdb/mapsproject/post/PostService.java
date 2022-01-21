@@ -1,5 +1,9 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.Filters;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.activity.ActivityService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFileService;
@@ -17,9 +21,13 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserM
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +35,9 @@ import java.util.logging.Logger;
 public class PostService {
 
     private static final Logger LOGGER = Logger.getLogger(PostService.class.getName());
+    public static final int DEFAULT_MAXIMUM_QUANTITY = 5;
+    public static final int LIMIT_MAXIMUM_QUANTITY = 100;
+    public static final String noActivityFilterKey = "any";
 
     /**
      * return null if it does not exist a post with that id, otherwise returns the associated post
@@ -191,5 +202,42 @@ public class PostService {
         }
 
         return true;
+    }
+
+
+    /**
+     * returns a list of the most popular posts ordered by popularity in therms of likes received, filtering by period and activity
+     * @param fromDate the starting date of the period
+     * @param toDate the ending date of the period
+     * @param activityFilter can be "any" or the name of an activity that should be in the activity field of the returned Post
+     * @param maxQuantity
+     * @return a List of Posts ordered by popularity
+     */
+    public static List<Post> getPopularPosts(LocalDate fromDate, LocalDate toDate, String activityFilter, int maxQuantity){
+        if(!activityFilter.equals(noActivityFilterKey)){
+            if( ! ActivityService.checkIfActivityExists(activityFilter)){
+                activityFilter = noActivityFilterKey;
+            }
+        }
+
+        if(maxQuantity <= 0){
+            maxQuantity = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(maxQuantity > LIMIT_MAXIMUM_QUANTITY){
+            maxQuantity = LIMIT_MAXIMUM_QUANTITY;
+        }
+        PostManager pm = PostManagerFactory.getPostManager();
+        return pm.getPopularPosts(fromDate, toDate, activityFilter, maxQuantity);
+    }
+
+    public static List<Document> getPostsPerYearAndActivity(int maxQuantity) {
+
+        if(maxQuantity <= 0){
+            maxQuantity = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(maxQuantity > LIMIT_MAXIMUM_QUANTITY){
+            maxQuantity = LIMIT_MAXIMUM_QUANTITY;
+        }
+
+        PostManager pm = PostManagerFactory.getPostManager();
+        return pm.getPostsPerYearAndActivity(maxQuantity);
     }
 }
