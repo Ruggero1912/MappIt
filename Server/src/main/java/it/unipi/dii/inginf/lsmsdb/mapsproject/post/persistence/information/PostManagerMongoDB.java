@@ -44,7 +44,7 @@ public class PostManagerMongoDB implements PostManager {
 
     private Post storeInPostCollection(Post newPost) {
         Document postDoc = newPost.createDocument();
-
+        LOGGER.info("Going to store the following post document: " + newPost.toString());
         try{
             postCollection.insertOne(postDoc);
             String id = postDoc.getObjectId(Post.KEY_ID).toString();
@@ -197,6 +197,7 @@ public class PostManagerMongoDB implements PostManager {
             userCollection.updateMany(userFilter, userUpdate);
 
             //TODO: not so optimized query:
+            //Bson placeFilter = Filters.eq(Place.KEY_POSTS_ARRAY + "." +);
             Bson placeUpdate = Updates.pull(Place.KEY_POSTS_ARRAY, new Document(Post.KEY_AUTHOR_ID, authorObjId));
             MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
             placeCollection.updateMany(null, placeUpdate);
