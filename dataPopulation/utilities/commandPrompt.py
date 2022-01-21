@@ -128,6 +128,19 @@ class CommandPrompt:
             #print(output)
         print()
         
+    def run_command(self, command_parameters_list : list):
+        """
+        use this method to execute one command of the ones available for the command prompt
+        """
+        assert isinstance(command_parameters_list, list)
+        user_command = command_parameters_list.pop(0)
+
+        if user_command not in self.commands.keys():
+            print("\t[!] Unrecognized command [!]")
+            return
+
+        self.commands[user_command](param = command_parameters_list)
+        return
 
     def prompt(self):
         print(green("aide@MappIt") +":" + red("dataPopulation") + "$ ", end="")
