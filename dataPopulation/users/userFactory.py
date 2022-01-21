@@ -418,6 +418,20 @@ class UserFactory:
         ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : ObjectId(str(user_id))}, update={"$inc":{User.KEY_FOLLOWER_COUNTER : num}})
         return ret.modified_count
 
+    def set_follower_counter(user_id : str, value : int):
+        """
+        sets the follower counter attribute to the given value
+        - :param num should be a positive number
+        - :returns the modified_count 
+        """
+        if(value < 0):
+            UserFactory.LOGGER.warning(f"[x] 'set_follower_counter': received a negative number for the followerCounter! num: {value} ")
+            return 0
+        if(value == 0):
+            UserFactory.LOGGER.debug(f"[-] 'set_follower_counter': received 0 as followerCounter for the user_id: {user_id} ")
+        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : ObjectId(str(user_id))}, update={"$set":{User.KEY_FOLLOWER_COUNTER : value}})
+        return ret.modified_count
+
     def get_random_ids(how_many : int = 10) -> list :
         """
         returns a list of random user_ids
