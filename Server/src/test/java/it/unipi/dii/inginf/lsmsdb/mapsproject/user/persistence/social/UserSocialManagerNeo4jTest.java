@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
@@ -52,7 +53,7 @@ public class UserSocialManagerNeo4jTest {
     @Test
     void GIVEN_retrieve_favourite_places_WHEN_empty_user_is_passed_THEN_return_empty_list() {
         User usr = mock(User.class);
-        List<Place> places = user.retrieveFavouritePlaces(usr);
+        List<PlacePreview> places = user.retrieveFavouritePlaces(usr);
         places.isEmpty();
     }
 
@@ -60,7 +61,7 @@ public class UserSocialManagerNeo4jTest {
     @Test
     void GIVEN_retrieve_visited_places_WHEN_empty_user_is_passed_THEN_return_empty_list() {
         User usr = mock(User.class);
-        List<Place> places = (user.retrieveVisitedPlaces(usr));
+        List<PlacePreview> places = (user.retrieveVisitedPlaces(usr));
         places.isEmpty();
     }
 

@@ -273,4 +273,143 @@ public class UserController {
 
 		return result;
 	}
+
+
+	/**
+	 * @param userId is the id of the user for which we want to gather the followers
+	 * notes = "This method return the list of the users that follow the one specified")
+	 */
+	@PostMapping(value = "/user/{id}/followers", produces = "application/json")
+	public ResponseEntity<?> followersOfUser(@PathVariable(value = "id") String userId) {
+		ResponseEntity<?> result;
+
+		if(userId.equals("current") || userId.equals("") || userId == null){
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			if(currentUser == null){
+				LOGGER.log(Level.WARNING, "Could not find current logged in user");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find current logged in user");
+			}
+			userId=currentUser.getId();
+		}
+
+		try {
+			List<User> followers = UserService.getFollowers(userId);
+			result = ResponseEntity.status(HttpStatus.OK).body(followers);
+		}catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the followers of the user specified "+e.getMessage());
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting the followers of the user specified\"}");
+		}
+
+		return result;
+	}
+
+	/**
+	 * @param userId is the id of the user for which we want to gather the user followed
+	 * notes = "This method return the list of the users that are followed by the one specified")
+	 */
+	@PostMapping(value = "/user/{id}/followed", produces = "application/json")
+	public ResponseEntity<?> usersFollowedByUser(@PathVariable(value = "id") String userId) {
+		ResponseEntity<?> result;
+
+		if(userId.equals("current") || userId.equals("") || userId == null){
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			if(currentUser == null){
+				LOGGER.log(Level.WARNING, "Could not find current logged in user");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find current logged in user");
+			}
+			userId=currentUser.getId();
+		}
+
+		try {
+			List<User> followedUsers = UserService.getFollowedUsers(userId);
+			result = ResponseEntity.status(HttpStatus.OK).body(followedUsers);
+		}catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the followers of the user specified "+e.getMessage());
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting the followers of the user specified\"}");
+		}
+
+		return result;
+	}
+
+	// places that you visited
+	// places visited by a given user
+	@ApiOperation(value = "returns the list of visited places for the specified user or for the current if no userId is specified")
+	@GetMapping(value = "/places/visited", produces = "application/json")
+	public ResponseEntity<?> visitedPlaces(@RequestParam( required = false, defaultValue = "current") String userId) {
+		ResponseEntity<?> result;
+		User u;
+
+		try {
+			if (userId.equals("current") || userId == null) {
+				//retrieve the current user
+				UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				u = userSpring.getApplicationUser();
+			} else {
+				u = UserService.getUserFromId(userId);
+			}
+			List<PlacePreview> places = UserService.getVisitedPlaces(u);
+			result = ResponseEntity.status(HttpStatus.OK).body(places);
+		} catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting visited places\"}");
+		}
+
+		return result;
+	}
+
+	// your favourite places
+	// places that are favourites of a given user (it should receive the id of the user)
+	@ApiOperation(value = "returns the list of favourite places for the specified user or for the current if no userId is specified")
+	@GetMapping(value = "/places/favourites", produces = "application/json")
+	public ResponseEntity<?> favouritePlaces(@RequestParam( required = false, defaultValue = "current") String userId) {
+		ResponseEntity<?> result;
+		User u;
+
+		try {
+			if (userId.equals("current") || userId == null) {
+				//retrieve the current user
+				UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+				u = userSpring.getApplicationUser();
+			} else {
+				u = UserService.getUserFromId(userId);
+			}
+			List<PlacePreview> places = UserService.getFavouritePlaces(u);
+			result = ResponseEntity.status(HttpStatus.OK).body(places);
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting favourite places\"}");
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @param userId is the id of the user for which we want to gather the liked posts
+	 * notes = "This method return the list of the posts that are received a like by the user specified")
+	 */
+	@PostMapping(value = "/user/{id}/posts/liked", produces = "application/json")
+	public ResponseEntity<?> likedPosts(@PathVariable(value = "id") String userId) {
+		ResponseEntity<?> result;
+
+		if(userId.equals("current") || userId.equals("") || userId == null){
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			if(currentUser == null){
+				LOGGER.log(Level.WARNING, "Could not find current logged in user");
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Could not find current logged in user");
+			}
+			userId=currentUser.getId();
+		}
+
+		try {
+			List<PostPreview> likePosts = UserService.getLikedPosts(userId);
+			result = ResponseEntity.status(HttpStatus.OK).body(likePosts);
+		}catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the posts liked by the user specified "+e.getMessage());
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting the posts liked by the user specified\"}");
+		}
+
+		return result;
+	}
 }

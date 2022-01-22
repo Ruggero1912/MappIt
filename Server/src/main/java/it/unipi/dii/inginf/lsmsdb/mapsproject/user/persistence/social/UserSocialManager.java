@@ -33,14 +33,14 @@ public interface UserSocialManager {
      * @param user object for whom we want to know the favourite places
      * @return the List f the favourite places if any, else return null
      */
-    List<Place> retrieveFavouritePlaces(User user);
+    List<PlacePreview> retrieveFavouritePlaces(User user);
 
     /**
      * returns the list of places that the specified user has visited
      * @param user the user owner of the favourites list
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    List<Place> retrieveVisitedPlaces(User user);
+    List<PlacePreview> retrieveVisitedPlaces(User user);
 
     /**
      * adds the specified place to the favourite places of the specified user

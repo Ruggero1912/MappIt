@@ -85,23 +85,23 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<Place> retrieveFavouritePlaces(User user) {
+    public List<PlacePreview> retrieveFavouritePlaces(User user) {
         String id = user.getId();
-        List<Place> favouritePlaces;
+        List<PlacePreview> favouritePlaces;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            favouritePlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
+            favouritePlaces = session.readTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
                 String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_FAVOURITES +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as FavouritePlace";
                 Result result = tx.run(query,params);
-                ArrayList<Place> places = new ArrayList<>();
+                ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value place=r.get("FavouritePlace");
-                    Place p = new Place(place);
+                    PlacePreview p = new PlacePreview(place);
                     places.add(p);
                 }
                 return places;
@@ -116,23 +116,23 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<Place> retrieveVisitedPlaces(User user) {
+    public List<PlacePreview> retrieveVisitedPlaces(User user) {
         String id = user.getId();
-        List<Place> visitedPlaces;
+        List<PlacePreview> visitedPlaces;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            visitedPlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
+            visitedPlaces = session.readTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
                 String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace";
                 Result result = tx.run(query,params);
-                ArrayList<Place> places = new ArrayList<>();
+                ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value place=r.get("VisitedPlace");
-                    Place p = new Place(place);
+                    PlacePreview p = new PlacePreview(place);
                     places.add(p);
                 }
                 return places;
@@ -140,7 +140,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
             return visitedPlaces;
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve visited places of a user: "+e.getMessage());
             return null;
         }
     }

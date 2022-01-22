@@ -112,54 +112,6 @@ public class PlaceController {
 
         return result;
     }
-    // your favourite places
-    // places that are favourites of a given user (it should receive the id of the user)
-    @ApiOperation(value = "returns the list of favourite places for the specified user or for the current if no userId is specified")
-    @GetMapping(value = "/places/favourites", produces = "application/json")
-    public ResponseEntity<?> favouritePlaces(@RequestParam( required = false, defaultValue = "current") String userId) {
-        ResponseEntity<?> result;
-        User u;
-
-        try {
-            if (userId.equals("current") || userId == null) {
-                //retrieve the current user
-                UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                u = userSpring.getApplicationUser();
-            } else {
-                u = UserService.getUserFromId(userId);
-            }
-            List<Place> places = UserService.getFavouritePlaces(u);
-            result = ResponseEntity.status(HttpStatus.OK).body(places);
-        }catch (Exception e) {
-            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting favourite places\"}");
-        }
-
-        return result;
-    }
-    // places that you visited
-    // places visited by a given user
-    @ApiOperation(value = "returns the list of visited places for the specified user or for the current if no userId is specified")
-    @GetMapping(value = "/places/visited", produces = "application/json")
-    public ResponseEntity<?> visitedPlaces(@RequestParam( required = false, defaultValue = "current") String userId) {
-        ResponseEntity<?> result;
-        User u;
-
-        try {
-            if (userId.equals("current") || userId == null) {
-                //retrieve the current user
-                UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                u = userSpring.getApplicationUser();
-            } else {
-                u = UserService.getUserFromId(userId);
-            }
-            List<Place> places = UserService.getVisitedPlaces(u);
-            result = ResponseEntity.status(HttpStatus.OK).body(places);
-        } catch (Exception e) {
-            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting visited places\"}");
-        }
-
-        return result;
-    }
 
     // add to favourite a place (wants the id of the place)
     // remove from favourite a place (wants the id of the place)
@@ -200,7 +152,7 @@ public class PlaceController {
     }
     // add to visited a place (wants the id of the place)
     @ApiOperation(value = "adds the specified place to the visited places of the currently logged in user")
-    @PostMapping(value = "/place/{id}/visited", produces = "application/json")
+    @PostMapping(value = "/place/{id}/visit", produces = "application/json")
     public ResponseEntity<?> handleVisited(@PathVariable(name="id") String placeId, @RequestBody(required = false) LocalDateTime localDateTime) {
         ResponseEntity<?> result;
 

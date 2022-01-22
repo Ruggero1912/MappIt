@@ -237,7 +237,7 @@ public class UserService {
      * @param user the user owner of the favourites list
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    public static List<Place> getFavouritePlaces(User user){
+    public static List<PlacePreview> getFavouritePlaces(User user){
         if(user == null){
             return null;
         }
@@ -249,7 +249,7 @@ public class UserService {
      * @param user the user owner of the favourites list
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    public static List<Place> getVisitedPlaces(User user){
+    public static List<PlacePreview> getVisitedPlaces(User user){
         if(user == null){
             return null;
         }
