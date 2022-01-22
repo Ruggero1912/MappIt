@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 
 public class UserManagerMongoDB implements UserManager{
@@ -48,13 +49,14 @@ public class UserManagerMongoDB implements UserManager{
             return null;
     }
 
+    /*
     @Override
     public List<User> getAllUser(){
         List<User> users = new ArrayList<>();
         FindIterable<Document> iterable = userCollection.find();
         iterable.forEach(doc -> users.add(new User(doc)));
         return users;
-    }
+    }*/
 
     @Override
     public boolean checkDuplicateUsername(String username) {
@@ -140,7 +142,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean changePassword(String id, String newPassword){
-        if(id == "" || newPassword == "")
+        if(id.equals("") || id==null || newPassword.equals("") || newPassword==null )
             return false;
         String newEncryptedPassword = UserService.passwordEncryption(newPassword);
         Bson idFilter = Filters.eq(User.KEY_ID, new ObjectId(id));
@@ -187,5 +189,29 @@ public class UserManagerMongoDB implements UserManager{
         }
 
         return results;
+    }
+
+    @Override
+    public List<User> retrieveUsersFromUsername(String usernameSuffix, int howMany) {
+        if(usernameSuffix.equals("") || usernameSuffix==null)
+            return null;
+
+        List<User> matchingUsers = new ArrayList<>();
+        Pattern regex = Pattern.compile(usernameSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.eq(User.KEY_USERNAME, regex);
+        MongoCursor<Document> cursor = userCollection.find(suffixFilter).limit(howMany).cursor();
+        if(!cursor.hasNext()){
+            cursor.close();
+            return null;
+        }
+        else{
+            while(cursor.hasNext()){
+                Document userDoc = cursor.next();
+                User user = new User(userDoc);
+                matchingUsers.add(user);
+            }
+            cursor.close();
+            return matchingUsers;
+        }
     }
 }

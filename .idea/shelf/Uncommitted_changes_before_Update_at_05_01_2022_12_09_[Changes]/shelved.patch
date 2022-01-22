@@ -1,0 +1,24 @@
+Index: documentation/graphEntitiesScheme.drawio
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/documentation/graphEntitiesScheme.drawio b/documentation/graphEntitiesScheme.drawio
+new file mode 100644
+--- /dev/null	
++++ b/documentation/graphEntitiesScheme.drawio	
+@@ -0,0 +1,1 @@
++<mxfile host="app.diagrams.net" modified="2022-01-04T18:35:00.296Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="-afrYj4oPwl6efSiWhqR" version="15.9.5" type="device"><diagram id="7EfoneZfT0KE2pevMbne" name="Page-1">5Zpbc9o6EIB/DY/NWJJtnMdAyGmm9JApoW0ehS2DpsZiZBEgv/7IWL7J5hJq3JTzkpHWq7W0u/q0Vuig/mLzD8fL+VfmkaADDW/TQfcdCG2A5N9YsE0EXQsmghmnXiICuWBM34gSGkq6oh6JSoqCsUDQZVnosjAkrijJMOdsXVbzWVB+6xLPSEUwdnFQlf6gnpgnUgd2c/lnQmfz9M3Avk2eLHCqrFYSzbHH1gURGnRQnzMmktZi0ydB7LvUL8m4hz1Ps4lxEopTBpAv4dgZbyeDyZv/0nsd4xf29ElZecXBSi24A+1A2utNZWMWNyYR4alQWs/kmSJPJfJNFdlKjg7xgigfiG3qWDk5GUPZ6a3nVJDxErvxk7XMIimbi0Uge0A2fRoEfRYwvhuHPEwc35XySHD2ixSe2K5Dpv5uZrs1ES7IZq+zQBYCmbqELYjgW6miBjgqaCprIVL9dZ4DIA3svBD/dBxWaTfLLOeRkQ0VnHcECh4P1BOLxPmBElTI0FTEcvO5nC4FZWHNmPlqMQ0xDZqLrkUcz6yLrgOnyLabiW62J7cpbGrCa9aEN1NsPL7ohPgGsRPPDnCju9D3fejW7kLPntpWQ3FC3Y+2De2aMGkudVf8lXjKbST07uJTSHbdAEcRdctu5WwVejttI9beUPEzbt9YqvdSeHK/KXa2aSeU6/pZ7LzkFuJuPmzXS8cl8yZe5fjTgiPXxlbcJQeckp7LmM+IOMawarALwbRqYpnKOAmwoK/l6dYFWL3hiVG5kL17HllajiTLVKOK56huSEtKpDMh8UPFkMwDvC2oLWOFaP+EAdKS3zAOzgvYGtSskr5sJDPIkz+Lwfn7oVvZD8PHL4NxlTMyz4Z4KmvDUvrjgM7CeG/InJNVBurFuKCy+rpTDxbU82IbPU4i+oanO3tx+irvSeNWr2PdH+KNKg3V4LwgK6b6/s2+F06fjBsDoW7J5ykfzs3VVIX5fkSEFr5GAua0A7ACvsA5+Pp48NpzUrUDr6wYUXlm6gfcyfDSmKLbaYhdOiLNw+jSVofAu9ShCQ+q60WE0QIXbyvb7GE0HI5+XAkZndbJuCmbSa1aZQOX42Z6H3FhcIICOPMq8Bg682IvA+7HguefrfwsDQDwTHgirSLLqNwwPSvEclogFqheBd1Nnj+Pvl0HsYDRqU3BFpB1W7aKYGvMqrs0uvTX6qnl3odnFvqjzPrbvlbTqip7T/dIDQfqF3hZxlVv2b4/jh+fB/dXArk952wBchZohmrAbI1iZisUA+9nWOxPWMKYcWPCYxdvu94T4VQ6Jk6h/yffrCNYOpVvlv7teCm+6e+xDvMNaXyDrfDNqmyVh7vvo8k3ibgr+fJMaNAK4sxSALPDowXitXNJ18S3ZosXdfBv4BpyGqrbrD23Vk1zzdT/FXqEa6bGQXDbBteq12nDUf/u+XH075VQ7fCFmnEDoK1/Rv5evv4OxWQ3/9lKop7/9gcN/gM=</diagram></mxfile>
+\ No newline at end of file
+Index: documentation/graphEntitiesScheme.drawio
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/documentation/graphEntitiesScheme.drawio b/documentation/graphEntitiesScheme.drawio
+new file mode 100644
+--- /dev/null	
++++ b/documentation/graphEntitiesScheme.drawio	
+@@ -0,0 +1,1 @@
++<mxfile host="app.diagrams.net" modified="2022-01-04T18:35:00.296Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="-afrYj4oPwl6efSiWhqR" version="15.9.5" type="device"><diagram id="7EfoneZfT0KE2pevMbne" name="Page-1">5Zpbc9o6EIB/DY/NWJJtnMdAyGmm9JApoW0ehS2DpsZiZBEgv/7IWL7J5hJq3JTzkpHWq7W0u/q0Vuig/mLzD8fL+VfmkaADDW/TQfcdCG2A5N9YsE0EXQsmghmnXiICuWBM34gSGkq6oh6JSoqCsUDQZVnosjAkrijJMOdsXVbzWVB+6xLPSEUwdnFQlf6gnpgnUgd2c/lnQmfz9M3Avk2eLHCqrFYSzbHH1gURGnRQnzMmktZi0ydB7LvUL8m4hz1Ps4lxEopTBpAv4dgZbyeDyZv/0nsd4xf29ElZecXBSi24A+1A2utNZWMWNyYR4alQWs/kmSJPJfJNFdlKjg7xgigfiG3qWDk5GUPZ6a3nVJDxErvxk7XMIimbi0Uge0A2fRoEfRYwvhuHPEwc35XySHD2ixSe2K5Dpv5uZrs1ES7IZq+zQBYCmbqELYjgW6miBjgqaCprIVL9dZ4DIA3svBD/dBxWaTfLLOeRkQ0VnHcECh4P1BOLxPmBElTI0FTEcvO5nC4FZWHNmPlqMQ0xDZqLrkUcz6yLrgOnyLabiW62J7cpbGrCa9aEN1NsPL7ohPgGsRPPDnCju9D3fejW7kLPntpWQ3FC3Y+2De2aMGkudVf8lXjKbST07uJTSHbdAEcRdctu5WwVejttI9beUPEzbt9YqvdSeHK/KXa2aSeU6/pZ7LzkFuJuPmzXS8cl8yZe5fjTgiPXxlbcJQeckp7LmM+IOMawarALwbRqYpnKOAmwoK/l6dYFWL3hiVG5kL17HllajiTLVKOK56huSEtKpDMh8UPFkMwDvC2oLWOFaP+EAdKS3zAOzgvYGtSskr5sJDPIkz+Lwfn7oVvZD8PHL4NxlTMyz4Z4KmvDUvrjgM7CeG/InJNVBurFuKCy+rpTDxbU82IbPU4i+oanO3tx+irvSeNWr2PdH+KNKg3V4LwgK6b6/s2+F06fjBsDoW7J5ykfzs3VVIX5fkSEFr5GAua0A7ACvsA5+Pp48NpzUrUDr6wYUXlm6gfcyfDSmKLbaYhdOiLNw+jSVofAu9ShCQ+q60WE0QIXbyvb7GE0HI5+XAkZndbJuCmbSa1aZQOX42Z6H3FhcIICOPMq8Bg682IvA+7HguefrfwsDQDwTHgirSLLqNwwPSvEclogFqheBd1Nnj+Pvl0HsYDRqU3BFpB1W7aKYGvMqrs0uvTX6qnl3odnFvqjzPrbvlbTqip7T/dIDQfqF3hZxlVv2b4/jh+fB/dXArk952wBchZohmrAbI1iZisUA+9nWOxPWMKYcWPCYxdvu94T4VQ6Jk6h/yffrCNYOpVvlv7teCm+6e+xDvMNaXyDrfDNqmyVh7vvo8k3ibgr+fJMaNAK4sxSALPDowXitXNJ18S3ZosXdfBv4BpyGqrbrD23Vk1zzdT/FXqEa6bGQXDbBteq12nDUf/u+XH075VQ7fCFmnEDoK1/Rv5evv4OxWQ3/9lKop7/9gcN/gM=</diagram></mxfile>
+\ No newline at end of file
