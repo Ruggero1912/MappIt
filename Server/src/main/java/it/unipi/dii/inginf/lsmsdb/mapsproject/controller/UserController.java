@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 public class UserController {
 
 	private static final Logger LOGGER = Logger.getLogger( UserController.class.getName() );
+	private static final String ADMIN_ROLE="ADMIN";
 
 
 	/**
@@ -91,6 +92,13 @@ public class UserController {
 	//TODO: only an admin can delete a user, we need to check role level
 	@DeleteMapping(value={"/user/{id}"})
 	public ResponseEntity<?> deleteUser(@PathVariable(value = "id") String id){
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
+		if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
+			LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
+		}
+
 		ResponseEntity<?> result;
 		try{
 			User userToDelete = UserService.getUserFromId(id);
@@ -259,8 +267,12 @@ public class UserController {
 	@ApiOperation(value = "returns an aggregated result containing list of users by activity and their # of posts")
 	@GetMapping(value = "/user/most-active", produces = "application/json")
 	public ResponseEntity<?> mostActiveUsers(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
-
-		//TODO: admin role check
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
+		if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
+			LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
+		}
 
 		ResponseEntity<?> result;
 

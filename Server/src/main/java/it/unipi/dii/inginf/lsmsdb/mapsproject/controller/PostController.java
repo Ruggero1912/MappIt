@@ -37,7 +37,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 public class PostController {
 
     private static final Logger LOGGER = Logger.getLogger( PostController.class.getName() );
-
+    private static final String ADMIN_ROLE="ADMIN";
 
     @ApiOperation(value = "Get information of a specific post", notes = "This method retrieve information of a specific post, given its _id")
     @GetMapping(value = "/post/{id}", produces = "application/json")
@@ -57,35 +57,6 @@ public class PostController {
         return result;
     }
 
-    @ApiOperation(value = "returns the list of posts of the specified user or for the current if no userId is specified")
-    @GetMapping(value = "/post/list", produces = "application/json")
-    public ResponseEntity<?> allPostsPreviewFromUser(@RequestParam( defaultValue = "current") String userId) {
-        ResponseEntity<?> result;
-        User u;
-
-        if(userId.equals("current")){
-            //retrieve the current user
-            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            u = userSpring.getApplicationUser();
-        }else{
-            u = UserService.getUserFromId(userId);
-        }
-        try{
-            List<PostPreview> postPreviews = UserService.retrieveAllPostPreviewsFromUser(u);
-            if(postPreviews==null)
-                LOGGER.log(Level.WARNING, String.format("Empty posts list for the user %s", u.getId()));
-            result = ResponseEntity.status(HttpStatus.OK).body(postPreviews);
-        }catch (NullPointerException e){
-            LOGGER.log(Level.WARNING, "Error: the given ID does not correspond to a userId");
-            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"the given ID does not correspond to a userId\"}");
-        }catch (Exception e){
-            LOGGER.log(Level.WARNING, "Error: could not parse post list, an exception has occurred: " + e);
-            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not parse post list\" " +
-                                                                        "\"Reason\" : \""+e.getMessage()+"\"}");
-        }
-
-        return result;
-    }
 
     @ApiOperation(value = "store a new post in the databases")
     @RequestMapping(path = "/post", method = POST)  //, consumes = {MediaType.MULTIPART_MIXED_VALUE}
@@ -121,6 +92,13 @@ public class PostController {
     }
     @DeleteMapping(value={"/post/{id}"})
     public ResponseEntity<?> deletePost(@PathVariable(value = "id") String id){
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userSpring.getApplicationUser();
+        if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
+            LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
+        }
+
         ResponseEntity<?> result;
         try{
             Post postToDelete = PostService.getPostFromId(id);
@@ -185,8 +163,12 @@ public class PostController {
     @ApiOperation(value = "returns an aggregated result containing list of year-activity-number of posts")
     @GetMapping(value = "/post/per-year", produces = "application/json")
     public ResponseEntity<?> postsPerYearAndActivity(@RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
-
-        //TODO: admin role check
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = userSpring.getApplicationUser();
+        if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
+            LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
+        }
 
         ResponseEntity<?> result;
 
