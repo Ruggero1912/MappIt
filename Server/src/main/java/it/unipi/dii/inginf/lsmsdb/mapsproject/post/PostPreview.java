@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
@@ -9,6 +10,12 @@ import java.util.Date;
 import java.util.List;
 
 public class PostPreview {
+
+    public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "id");
+    public static final String KEY_AUTHOR_USERNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "authorUsername");
+    public static final String KEY_TITLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "title");
+    public static final String KEY_DESCRIPTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "description");
+    public static final String KEY_THUMBNAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "thumbnail");
 
     private String _id;
     private String authorUsername;

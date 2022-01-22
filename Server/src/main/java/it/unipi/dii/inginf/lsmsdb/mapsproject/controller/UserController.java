@@ -96,12 +96,12 @@ public class UserController {
 				result = ResponseEntity.ok("User successfully deleted (id="+id+ ")");
 				LOGGER.log(Level.INFO, "User successfully deleted: (id="+id+ ")");
 			} else {
-				result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find employee (id=" + id + ")");
+				result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find the user with id='" + id + "'");
 			}
 		}
 		catch (Exception e){
-			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete employee (id=" + id + ")");
-			LOGGER.log(Level.WARNING, "Error: could not delete Employee, an exception has occurred: " + e);
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete user (id=" + id + ")");
+			LOGGER.log(Level.WARNING, "Error: could not delete User, an exception has occurred: " + e);
 		}
 
 		return result;

@@ -139,6 +139,34 @@ public class PostController {
         return result;
     }
 
+    @DeleteMapping(value={"/posts/author/{author-id}"})
+    public ResponseEntity<?> deletePostsOfGivenUser(@PathVariable(value = "author-id") String userId){
+        ResponseEntity<?> result;
+        //TODO: check the privileges of the currently logged in user: only an admin can delete the posts of someone else
+        try{
+            User user = UserService.getUserFromId(userId);
+            if(user != null) {
+                boolean ret = PostService.deletePostsOfGivenUser(user);
+                if(ret == true) {
+                    result = ResponseEntity.ok("Posts of the user '" + userId + "' successfully deleted");
+                    LOGGER.log(Level.INFO, "Posts of the user '" + userId + "' successfully deleted");
+                }
+                else{
+                    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: could not delete the posts of the specified user (id=" + userId + ")");
+                    LOGGER.log(Level.WARNING, "Error: could not delete Posts of given user " + userId );
+                }
+            } else {
+                result = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: could not find the specified user (id=" + userId + ")");
+            }
+        }
+        catch (Exception e){
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: could not delete the posts of the specified user (id=" + userId + ")");
+            LOGGER.log(Level.WARNING, "Error: could not delete Posts of given user " + userId + ", an exception has occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     // most popular posts for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/post/most-popular", produces = "application/json")
