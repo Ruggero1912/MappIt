@@ -435,4 +435,34 @@ public class UserController {
 		}
 		return result;
 	}
+
+	@ApiOperation(value = "returns the list of posts of the specified user or for the current if no userId is specified")
+	@GetMapping(value = "/post/list", produces = "application/json")
+	public ResponseEntity<?> getPostsFromUser(@RequestParam( defaultValue = "current") String userId) {
+		ResponseEntity<?> result;
+		User u;
+
+		if(userId.equals("current")){
+			//retrieve the current user
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			u = userSpring.getApplicationUser();
+		}else{
+			u = UserService.getUserFromId(userId);
+		}
+		try{
+			List<PostPreview> postPreviews = UserService.retrieveAllPostPreviewsFromUser(u);
+			if(postPreviews==null)
+				LOGGER.log(Level.WARNING, String.format("Empty posts list for the user %s", u.getId()));
+			result = ResponseEntity.status(HttpStatus.OK).body(postPreviews);
+		}catch (NullPointerException e){
+			LOGGER.log(Level.WARNING, "Error: the given ID does not correspond to a userId");
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"the given ID does not correspond to a userId\"}");
+		}catch (Exception e){
+			LOGGER.log(Level.WARNING, "Error: could not parse post list, an exception has occurred: " + e);
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not parse post list\" " +
+					"\"Reason\" : \""+e.getMessage()+"\"}");
+		}
+
+		return result;
+	}
 }
