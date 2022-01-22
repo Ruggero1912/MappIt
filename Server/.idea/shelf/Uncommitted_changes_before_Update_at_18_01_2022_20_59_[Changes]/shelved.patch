@@ -1,0 +1,98 @@
+Index: ../.idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"288a0727-43fd-4f6b-964a-f7add2d42be6\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"216GxCsWAajQNmqJPnfhaOmhRMc\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"ProgettoDB\" type=\"Application\" factoryName=\"Application\">\r\n      <module name=\"LargeScaleProject\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"288a0727-43fd-4f6b-964a-f7add2d42be6\" name=\"Changes\" comment=\"\" />\r\n      <created>1637254373407</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1637254373407</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../.idea/workspace.xml b/../.idea/workspace.xml
+--- a/../.idea/workspace.xml	(revision ec3cf0f4c418e6de26410a2796c0a386da708f1b)
++++ b/../.idea/workspace.xml	(date 1641924012000)
+@@ -4,17 +4,32 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="">
++    <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="Added Graph DB Entities Scheme">
++      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostServiceTest.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDBTest.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/social/PostSocialManagerNeo4jTest.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/config/PropertyPicker.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/config/PropertyPicker.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManager.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/social/PostSocialManagerNeo4j.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/social/PostSocialManagerNeo4j.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/application.properties" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="CodeStyleSettingsInfer">
++    <option name="done" value="true" />
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="ProjectCodeStyleSettingsMigration">
++    <option name="version" value="2" />
+   </component>
+   <component name="ProjectId" id="216GxCsWAajQNmqJPnfhaOmhRMc" />
+   <component name="ProjectLevelVcsManager">
+@@ -46,6 +61,21 @@
+       <option name="presentableId" value="Default" />
+       <updated>1637254373407</updated>
+     </task>
++    <task id="LOCAL-00001" summary="Updated documentation diagrams">
++      <created>1639692021956</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1639692021956</updated>
++    </task>
++    <task id="LOCAL-00002" summary="Added Graph DB Entities Scheme">
++      <created>1641381022317</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1641381022317</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -62,5 +92,8 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
++    <MESSAGE value="Updated documentation diagrams" />
++    <MESSAGE value="Added Graph DB Entities Scheme" />
++    <option name="LAST_COMMIT_MESSAGE" value="Added Graph DB Entities Scheme" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/persistence/connection/MongoConnection.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection;\r\n\r\nimport com.mongodb.client.MongoClient;\r\nimport com.mongodb.client.MongoClients;\r\nimport com.mongodb.client.MongoCollection;\r\nimport com.mongodb.client.MongoDatabase;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;\r\nimport org.bson.Document;\r\n\r\nimport javax.xml.crypto.Data;\r\n\r\nimport java.util.logging.Level;\r\nimport java.util.logging.Logger;\r\n\r\nimport static com.mongodb.client.model.Filters.eq;\r\n\r\npublic class MongoConnection {\r\n\r\n    //private static final Logger LOGGER = Logger.getLogger( MongoConnection.class.getName() );\r\n\r\n    private static final String MongoURI = PropertyPicker.getProperty(PropertyPicker.MongoURI);\r\n    private static final String DatabaseName = PropertyPicker.getProperty(PropertyPicker.MongoDBName);\r\n    // TODO: add those explainations to the doc:\r\n    //https://stackoverflow.com/questions/42654193/mongodb-java-how-to-manage-the-connection\r\n    //https://stackoverflow.com/questions/19938153/do-i-need-to-explicitly-close-connection\r\n    private static final MongoConnection obj = new MongoConnection(); //we can always use the same as the threads are managed by the library\r\n\r\n    private MongoClient mongoClient;\r\n    private MongoDatabase database;\r\n\r\n    private MongoConnection(){\r\n        //LOGGER.log(Level.FINEST, \"using {0} as MongoURI\", new Object[]{MongoURI});\r\n        mongoClient = MongoClients.create((MongoURI));\r\n        database = mongoClient.getDatabase(DatabaseName);\r\n    }\r\n\r\n    public static MongoConnection getObj(){\r\n        return obj;\r\n    }\r\n\r\n    public static MongoDatabase getDatabase(){\r\n        return obj.database;\r\n    }\r\n\r\n    public static MongoCollection getCollection(String collectionName){\r\n        return getDatabase().getCollection(collectionName);\r\n    }\r\n\r\n    public enum Collections{\r\n        USERS(\"user\"),\r\n        PLACES(\"place\"),\r\n        POSTS(\"post\");\r\n\r\n        private String name;\r\n\r\n        Collections(String n){\r\n            this.name = n;\r\n        }\r\n\r\n        public String toString(){\r\n            return this.name;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/persistence/connection/MongoConnection.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/persistence/connection/MongoConnection.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/persistence/connection/MongoConnection.java	(revision ec3cf0f4c418e6de26410a2796c0a386da708f1b)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/persistence/connection/MongoConnection.java	(date 1642350843461)
+@@ -21,9 +21,7 @@
+ 
+     private static final String MongoURI = PropertyPicker.getProperty(PropertyPicker.MongoURI);
+     private static final String DatabaseName = PropertyPicker.getProperty(PropertyPicker.MongoDBName);
+-    // TODO: add those explainations to the doc:
+-    //https://stackoverflow.com/questions/42654193/mongodb-java-how-to-manage-the-connection
+-    //https://stackoverflow.com/questions/19938153/do-i-need-to-explicitly-close-connection
++
+     private static final MongoConnection obj = new MongoConnection(); //we can always use the same as the threads are managed by the library
+ 
+     private MongoClient mongoClient;

@@ -1,0 +1,97 @@
+Index: Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.place;\r\n\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;\r\n\r\nimport java.util.List;\r\nimport java.util.logging.Logger;\r\n\r\npublic class PlaceService {\r\n\r\n    private static final Logger LOG = Logger.getLogger(PlaceService.class.getName());\r\n\r\n    /**\r\n     * return null if it does not exist a place with that id, otherwise returns the associated place\r\n     * @param id the id of the requested place\r\n     * @return associated Place object or null if not found\r\n     */\r\n    public static Place getPlaceFromId(String id){\r\n        PlaceManager um = PlaceManagerFactory.getPlaceManager();\r\n        return um.getPlaceFromId(id);\r\n    }\r\n\r\n    public static List<Place> getPlacesGivenCoordinate(Coordinate coordinate) {\r\n        //...\r\n        return null;\r\n    }\r\n\r\n    public static List<Place> getPlacesGivenCoordinateAndActivity(Coordinate coordinate, String activity) {\r\n        //...\r\n        return null;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java b/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java
+--- a/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java	(revision a6c5719b7024a43132a4455e71de53cb50b4dadd)
++++ b/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java	(date 1641383611000)
+@@ -20,6 +20,7 @@
+         return um.getPlaceFromId(id);
+     }
+ 
++
+     public static List<Place> getPlacesGivenCoordinate(Coordinate coordinate) {
+         //...
+         return null;
+Index: documentation/graphEntitiesScheme.drawio
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/documentation/graphEntitiesScheme.drawio b/documentation/graphEntitiesScheme.drawio
+--- a/documentation/graphEntitiesScheme.drawio	(revision a6c5719b7024a43132a4455e71de53cb50b4dadd)
++++ b/documentation/graphEntitiesScheme.drawio	(date 1641321300556)
+@@ -1,0 +1,1 @@
++<mxfile host="app.diagrams.net" modified="2022-01-04T18:35:00.296Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="-afrYj4oPwl6efSiWhqR" version="15.9.5" type="device"><diagram id="7EfoneZfT0KE2pevMbne" name="Page-1">5Zpbc9o6EIB/DY/NWJJtnMdAyGmm9JApoW0ehS2DpsZiZBEgv/7IWL7J5hJq3JTzkpHWq7W0u/q0Vuig/mLzD8fL+VfmkaADDW/TQfcdCG2A5N9YsE0EXQsmghmnXiICuWBM34gSGkq6oh6JSoqCsUDQZVnosjAkrijJMOdsXVbzWVB+6xLPSEUwdnFQlf6gnpgnUgd2c/lnQmfz9M3Avk2eLHCqrFYSzbHH1gURGnRQnzMmktZi0ydB7LvUL8m4hz1Ps4lxEopTBpAv4dgZbyeDyZv/0nsd4xf29ElZecXBSi24A+1A2utNZWMWNyYR4alQWs/kmSJPJfJNFdlKjg7xgigfiG3qWDk5GUPZ6a3nVJDxErvxk7XMIimbi0Uge0A2fRoEfRYwvhuHPEwc35XySHD2ixSe2K5Dpv5uZrs1ES7IZq+zQBYCmbqELYjgW6miBjgqaCprIVL9dZ4DIA3svBD/dBxWaTfLLOeRkQ0VnHcECh4P1BOLxPmBElTI0FTEcvO5nC4FZWHNmPlqMQ0xDZqLrkUcz6yLrgOnyLabiW62J7cpbGrCa9aEN1NsPL7ohPgGsRPPDnCju9D3fejW7kLPntpWQ3FC3Y+2De2aMGkudVf8lXjKbST07uJTSHbdAEcRdctu5WwVejttI9beUPEzbt9YqvdSeHK/KXa2aSeU6/pZ7LzkFuJuPmzXS8cl8yZe5fjTgiPXxlbcJQeckp7LmM+IOMawarALwbRqYpnKOAmwoK/l6dYFWL3hiVG5kL17HllajiTLVKOK56huSEtKpDMh8UPFkMwDvC2oLWOFaP+EAdKS3zAOzgvYGtSskr5sJDPIkz+Lwfn7oVvZD8PHL4NxlTMyz4Z4KmvDUvrjgM7CeG/InJNVBurFuKCy+rpTDxbU82IbPU4i+oanO3tx+irvSeNWr2PdH+KNKg3V4LwgK6b6/s2+F06fjBsDoW7J5ykfzs3VVIX5fkSEFr5GAua0A7ACvsA5+Pp48NpzUrUDr6wYUXlm6gfcyfDSmKLbaYhdOiLNw+jSVofAu9ShCQ+q60WE0QIXbyvb7GE0HI5+XAkZndbJuCmbSa1aZQOX42Z6H3FhcIICOPMq8Bg682IvA+7HguefrfwsDQDwTHgirSLLqNwwPSvEclogFqheBd1Nnj+Pvl0HsYDRqU3BFpB1W7aKYGvMqrs0uvTX6qnl3odnFvqjzPrbvlbTqip7T/dIDQfqF3hZxlVv2b4/jh+fB/dXArk952wBchZohmrAbI1iZisUA+9nWOxPWMKYcWPCYxdvu94T4VQ6Jk6h/yffrCNYOpVvlv7teCm+6e+xDvMNaXyDrfDNqmyVh7vvo8k3ibgr+fJMaNAK4sxSALPDowXitXNJ18S3ZosXdfBv4BpyGqrbrD23Vk1zzdT/FXqEa6bGQXDbBteq12nDUf/u+XH075VQ7fCFmnEDoK1/Rv5evv4OxWQ3/9lKop7/9gcN/gM=</diagram></mxfile>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"288a0727-43fd-4f6b-964a-f7add2d42be6\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"216GxCsWAajQNmqJPnfhaOmhRMc\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"ProgettoDB\" type=\"Application\" factoryName=\"Application\">\r\n      <module name=\"LargeScaleProject\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"288a0727-43fd-4f6b-964a-f7add2d42be6\" name=\"Changes\" comment=\"\" />\r\n      <created>1637254373407</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1637254373407</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision a6c5719b7024a43132a4455e71de53cb50b4dadd)
++++ b/.idea/workspace.xml	(date 1641382138000)
+@@ -4,17 +4,23 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="">
++    <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="Added Graph DB Entities Scheme">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="CodeStyleSettingsInfer">
++    <option name="done" value="true" />
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="ProjectCodeStyleSettingsMigration">
++    <option name="version" value="2" />
+   </component>
+   <component name="ProjectId" id="216GxCsWAajQNmqJPnfhaOmhRMc" />
+   <component name="ProjectLevelVcsManager">
+@@ -46,6 +52,21 @@
+       <option name="presentableId" value="Default" />
+       <updated>1637254373407</updated>
+     </task>
++    <task id="LOCAL-00001" summary="Updated documentation diagrams">
++      <created>1639692021956</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1639692021956</updated>
++    </task>
++    <task id="LOCAL-00002" summary="Added Graph DB Entities Scheme">
++      <created>1641381022317</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1641381022317</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -62,5 +83,8 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
++    <MESSAGE value="Updated documentation diagrams" />
++    <MESSAGE value="Added Graph DB Entities Scheme" />
++    <option name="LAST_COMMIT_MESSAGE" value="Added Graph DB Entities Scheme" />
+   </component>
+ </project>
+\ No newline at end of file

@@ -1,0 +1,815 @@
+Index: ../.idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"288a0727-43fd-4f6b-964a-f7add2d42be6\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"216GxCsWAajQNmqJPnfhaOmhRMc\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"ProgettoDB\" type=\"Application\" factoryName=\"Application\">\r\n      <module name=\"LargeScaleProject\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"288a0727-43fd-4f6b-964a-f7add2d42be6\" name=\"Changes\" comment=\"\" />\r\n      <created>1637254373407</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1637254373407</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/../.idea/workspace.xml b/../.idea/workspace.xml
+--- a/../.idea/workspace.xml	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/../.idea/workspace.xml	(date 1642535975484)
+@@ -4,17 +4,32 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="">
++    <list default="true" id="288a0727-43fd-4f6b-964a-f7add2d42be6" name="Changes" comment="Added Graph DB Entities Scheme">
++      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostServiceTest.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDBTest.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Server/src/test/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/social/PostSocialManagerNeo4jTest.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/MapsApplication.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/config/PropertyPicker.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/config/PropertyPicker.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManager.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/social/PostSocialManagerNeo4j.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/social/PostSocialManagerNeo4j.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/main/resources/application.properties" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
++  </component>
++  <component name="CodeStyleSettingsInfer">
++    <option name="done" value="true" />
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="ProjectCodeStyleSettingsMigration">
++    <option name="version" value="2" />
+   </component>
+   <component name="ProjectId" id="216GxCsWAajQNmqJPnfhaOmhRMc" />
+   <component name="ProjectLevelVcsManager">
+@@ -46,6 +61,21 @@
+       <option name="presentableId" value="Default" />
+       <updated>1637254373407</updated>
+     </task>
++    <task id="LOCAL-00001" summary="Updated documentation diagrams">
++      <created>1639692021956</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1639692021956</updated>
++    </task>
++    <task id="LOCAL-00002" summary="Added Graph DB Entities Scheme">
++      <created>1641381022317</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1641381022317</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -62,5 +92,8 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
++    <MESSAGE value="Updated documentation diagrams" />
++    <MESSAGE value="Added Graph DB Entities Scheme" />
++    <option name="LAST_COMMIT_MESSAGE" value="Added Graph DB Entities Scheme" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/PostController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;\r\n\r\nimport io.swagger.annotations.ApiOperation;\r\nimport io.swagger.v3.oas.annotations.security.SecurityRequirement;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.security.core.context.SecurityContextHolder;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport java.util.List;\r\nimport java.util.logging.Level;\r\nimport java.util.logging.Logger;\r\n\r\n@RequestMapping(\"/api\")\r\n@RestController\r\n@SecurityRequirement(name = \"bearerAuth\")\r\npublic class PostController {\r\n\r\n    private static final Logger LOGGER = Logger.getLogger( PostController.class.getName() );\r\n\r\n\r\n    @ApiOperation(value = \"Get information of a specific post\", notes = \"This method retrieve information of a specific post, given its _id\")\r\n    @GetMapping(value = \"/post/{id}\", produces = \"application/json\")\r\n    public ResponseEntity<?> getPostById(@PathVariable(value = \"id\") String postId) {\r\n        ResponseEntity<?> result;\r\n        try{\r\n            Post post = PostService.getPostFromId(postId);\r\n            result = ResponseEntity.ok(post);\r\n            if(post==null) {\r\n                LOGGER.log(Level.WARNING, \"Error: could not find post (id=\" + postId + \")\");\r\n                result = ResponseEntity.status(HttpStatus.FORBIDDEN).body(\"{\\\"Error\\\" : \\\"Could not find post\\\"}\");\r\n            }\r\n        }catch (Exception e){\r\n            LOGGER.log(Level.WARNING, \"Error: could not parse post, an exception has occurred: \" + e);\r\n            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body(\"{\\\"Error\\\" : \\\"Could not parse post, and exception has occurred\\\"}\");\r\n        }\r\n        return result;\r\n    }\r\n\r\n    @ApiOperation(value = \"returns the list of posts of the specified user or for the current if no userId is specified\")\r\n    @GetMapping(value = \"/post/list\", produces = \"application/json\")\r\n    public ResponseEntity<?> allPostsPreviewFromUser(@RequestParam( defaultValue = \"current\") String userId) {\r\n        ResponseEntity<?> result;\r\n        User u;\r\n\r\n        if(userId == \"current\"){\r\n            //retrieve the current user\r\n            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();\r\n            u = userSpring.getApplicationUser();\r\n        }else{\r\n            u = UserService.getUserFromId(userId);\r\n        }\r\n        try{\r\n            List<PostPreview> postPreviews = UserService.retrieveAllPostPreviewsFromUser(u);\r\n            if(postPreviews==null)\r\n                LOGGER.log(Level.WARNING, \"Empty list\");\r\n            result = ResponseEntity.status(HttpStatus.OK).body(postPreviews);\r\n        }catch (NullPointerException e){\r\n            LOGGER.log(Level.WARNING, \"Error: the given ID does not correspond to a userId\");\r\n            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body(\"{\\\"Error\\\" : \\\"the given ID does not correspond to a userId\\\"}\");\r\n        }catch (Exception e){\r\n            LOGGER.log(Level.WARNING, \"Error: could not parse post list, an exception has occurred: \" + e);\r\n            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body(\"{\\\"Error\\\" : \\\"Could not parse post list\\\" \" +\r\n                                                                        \"\\\"Reason\\\" : \\\"\"+e.getMessage()+\"\\\"}\");\r\n        }\r\n\r\n        return result;\r\n    }\r\n\r\n    @ApiOperation(value = \"store a new post in the databases\")\r\n    @PostMapping(value = \"/post\")\r\n    public ResponseEntity<?> newPost(@RequestBody Post newPost) {\r\n\r\n        //TODO: handle the files upload and specify as author the current user\r\n        Post insertedPost;\r\n        try{\r\n            insertedPost = PostService.createNewPost(newPost);\r\n        } catch (Exception e){\r\n            LOGGER.log(Level.SEVERE, \"{Error : Unable to store new post}\");\r\n            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(\"Something went wrong in inserting new post:\" + e.getMessage());\r\n        }\r\n\r\n        return ResponseEntity.ok(insertedPost);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/PostController.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/PostController.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/PostController.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/PostController.java	(date 1642595649160)
+@@ -7,18 +7,23 @@
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
+ import org.springframework.http.HttpStatus;
++import org.springframework.http.MediaType;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.security.core.context.SecurityContextHolder;
+ import org.springframework.web.bind.annotation.*;
++import org.springframework.web.multipart.MultipartFile;
+ 
+ import java.util.List;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
++import static org.springframework.web.bind.annotation.RequestMethod.POST;
++
+ @RequestMapping("/api")
+ @RestController
+ @SecurityRequirement(name = "bearerAuth")
+@@ -76,13 +81,16 @@
+     }
+ 
+     @ApiOperation(value = "store a new post in the databases")
+-    @PostMapping(value = "/post")
+-    public ResponseEntity<?> newPost(@RequestBody Post newPost) {
++    @RequestMapping(path = "/post", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
++    public ResponseEntity<?> newPost(@RequestPart PostSubmission newPost, @RequestPart(required = false) MultipartFile thumbnail, @RequestPart(required = false) List<MultipartFile> pics) {
+ 
+-        //TODO: handle the files upload and specify as author the current user
+-        Post insertedPost;
++        PostSubmission insertedPost;
++        //retrieve the current logged-in user for storing in the doc also username and user _id
++        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
++        User currentUser = userSpring.getApplicationUser();
++
+         try{
+-            insertedPost = PostService.createNewPost(newPost);
++            insertedPost = PostService.createNewPost(newPost, currentUser, thumbnail, pics);
+         } catch (Exception e){
+             LOGGER.log(Level.SEVERE, "{Error : Unable to store new post}");
+             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Something went wrong in inserting new post:" + e.getMessage());
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostPreview.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.post;\r\n\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;\r\nimport org.neo4j.driver.Value;\r\n\r\npublic class PostPreview {\r\n\r\n    private String authorUsername;\r\n    private String title;\r\n    private String description;\r\n    private String thumbnail;\r\n\r\n    public PostPreview(String author, String title, String description, String thumbnail){\r\n        this.authorUsername = author;\r\n        this.title = title;\r\n        this.thumbnail = thumbnail;\r\n        this.description = description;\r\n    }\r\n\r\n    /**\r\n     * We exploit this constructor to parse a Post Preview object from a Neo4j Node\r\n     * @param valueFromPostNode corresponds to the value gathered from the Post Node in Neo4j\r\n     * @param valueFromAuthorNode corresponds to the value gathered from the User Node in Neo4j\r\n     */\r\n    public PostPreview(Value valueFromPostNode, Value valueFromAuthorNode) {\r\n        this.authorUsername = valueFromAuthorNode.get(User.NEO_KEY_USERNAME).asString();\r\n        this.title = valueFromPostNode.get(Post.NEO_KEY_TITLE).asString();\r\n        this.description = valueFromPostNode.get(Post.NEO_KEY_DESC).asString();\r\n        this.thumbnail = valueFromPostNode.get(Post.NEO_KEY_THUMBNAIL).asString();\r\n    }\r\n\r\n    public String getAuthorUsername() {\r\n        return authorUsername;\r\n    }\r\n\r\n    public void setAuthorUsername(String user) {\r\n        this.authorUsername = user;\r\n    }\r\n\r\n    public String getTitle() {\r\n        return title;\r\n    }\r\n\r\n    public void setTitle(String t) {\r\n        this.title = t;\r\n    }\r\n\r\n    public String getDescription() {\r\n        return description;\r\n    }\r\n\r\n    public void setDescription(String des) {\r\n        this.description = des;\r\n    }\r\n\r\n    public String getThumbnail() {\r\n        return this.thumbnail;\r\n    }\r\n\r\n    public void setThumbnail(String t) {\r\n        this.thumbnail = t;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostPreview.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostPreview.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostPreview.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostPreview.java	(date 1642595649173)
+@@ -1,22 +1,36 @@
+ package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
+ 
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
++import org.bson.Document;
+ import org.neo4j.driver.Value;
+ 
++import java.util.Date;
++import java.util.List;
++
+ public class PostPreview {
+ 
++    private String _id;
+     private String authorUsername;
+     private String title;
+     private String description;
+     private String thumbnail;
+ 
+-    public PostPreview(String author, String title, String description, String thumbnail){
++    public PostPreview(String id, String author, String title, String description, String thumbnail){
++        this._id = id;
+         this.authorUsername = author;
+         this.title = title;
+         this.thumbnail = thumbnail;
+         this.description = description;
+     }
+ 
++    public PostPreview(Post post){
++        this._id = post.getId();
++        this.authorUsername = post.getAuthorUsername();
++        this.title = post.getTitle();
++        this.description = post.getDescription();
++        this.thumbnail = post.getThumbnail();
++    }
++
+     /**
+      * We exploit this constructor to parse a Post Preview object from a Neo4j Node
+      * @param valueFromPostNode corresponds to the value gathered from the Post Node in Neo4j
+@@ -29,6 +43,23 @@
+         this.thumbnail = valueFromPostNode.get(Post.NEO_KEY_THUMBNAIL).asString();
+     }
+ 
++    public PostPreview(Document doc){
++        this._id = doc.get(Post.KEY_ID).toString();
++        this.authorUsername = doc.get(Post.KEY_AUTHOR_USERNAME).toString();
++        this.title = doc.get(Post.KEY_TITLE).toString();
++        this.description = doc.get(Post.KEY_DESCRIPTION).toString();
++        this.thumbnail = doc.get(Post.KEY_THUMBNAIL).toString();
++    }
++
++    public Document createDocument(){
++        Document postPreviewDoc = new Document(Post.KEY_TITLE, this.title)
++                .append(Post.KEY_AUTHOR_USERNAME, this.authorUsername)
++                .append(Post.KEY_DESCRIPTION, this.description)
++                .append(Post.KEY_THUMBNAIL, this.thumbnail);
++
++        return postPreviewDoc;
++    }
++
+     public String getAuthorUsername() {
+         return authorUsername;
+     }
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.place;\r\n\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.activity.ActivityService;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManagerFactory;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;\r\n\r\nimport java.util.Arrays;\r\nimport java.util.List;\r\nimport java.util.Map;\r\nimport java.util.logging.Logger;\r\n\r\npublic class PlaceService {\r\n\r\n    public static final String ORDER_CRITERIA_DISTANCE = \"distance\";\r\n    public static final String ORDER_CRITERIA_POPULARITY = \"popularity\";\r\n    public static final List<String> orderByCriterias = Arrays.asList(ORDER_CRITERIA_DISTANCE, ORDER_CRITERIA_POPULARITY);\r\n    public static final String defaultOrderByCriteria = ORDER_CRITERIA_DISTANCE;\r\n    public static final double defaultSearchRadius = 10.0;\r\n    public static final int DEFAULT_MAXIMUM_QUANTITY = 100;\r\n    public static final int LIMIT_MAXIMUM_QUANTITY = 300;\r\n    public static final String noActivityFilterKey = \"any\";\r\n\r\n    public static final int DEFAULT_MAX_HOW_MANY_SUGGESTED = 10;\r\n\r\n    private static final Logger LOG = Logger.getLogger(PlaceService.class.getName());\r\n\r\n    /**\r\n     * return null if it does not exist a place with that id, otherwise returns the associated place\r\n     * @param id the id of the requested place\r\n     * @return associated Place object or null if not found\r\n     */\r\n    public static Place getPlaceFromId(String id){\r\n        PlaceManager um = PlaceManagerFactory.getPlaceManager();\r\n        return um.getPlaceFromId(id);\r\n    }\r\n\r\n    /**\r\n     * returns a list of places that are in the radius, ordered by a certain criteria\r\n     * @param coordinates a Coordinates object representing the center of the zone in which it searches\r\n     * @param radius (in km) the radius of the zone in which to search\r\n     * @param orderBy the criteria for which the results should be ordinated\r\n     * @param activityFilter the activity that the returned Places should fit\r\n     * @return a list of Place object, else null if empty set\r\n     */\r\n    public static List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderBy, String activityFilter) {\r\n        if( ! orderByCriterias.contains(orderBy)){\r\n            orderBy = defaultOrderByCriteria;\r\n        }\r\n        if(activityFilter != noActivityFilterKey){\r\n            if( ! ActivityService.checkIfActivityExists(activityFilter)){\r\n                activityFilter = noActivityFilterKey;\r\n            }\r\n        }\r\n        if(radius <= 0.0){\r\n            radius = defaultSearchRadius;\r\n        }\r\n        // how should we check the correctness of the provided coordinates? We assume that those are always valid\r\n        PlaceManager pm = PlaceManagerFactory.getPlaceManager();\r\n        if(activityFilter == noActivityFilterKey){\r\n            return pm.getPlacesInRadius(coordinates, radius, orderBy);\r\n        }else{\r\n            return pm.getPlacesInRadiusFilteredByFits(coordinates, radius, orderBy, activityFilter);\r\n        }\r\n    }\r\n\r\n    public static List<Place> getPlacesInRadius(Coordinate coordinate, Double radius, String orderBy) {\r\n        return getPlacesInRadius(coordinate, radius, orderBy, noActivityFilterKey);\r\n    }\r\n\r\n    /**\r\n     * returns a list of Places to check out, based on the ones visited by followed users\r\n     * @param user the User that asks for new places to check out\r\n     * @return a list of Places (only a subset of information about each Place)\r\n     */\r\n    public static List<Place> getSuggestedPlaces(User user){\r\n        if(user == null){\r\n            return null;\r\n        }\r\n        int maxHowMany = DEFAULT_MAX_HOW_MANY_SUGGESTED;\r\n        PlaceSocialManager pm = PlaceSocialManagerFactory.getPlaceManager();\r\n        return pm.getSuggestedPlaces(user, maxHowMany);\r\n    }\r\n\r\n    /**\r\n     * return a list of the most popular Place objects ordered by the number of posts and the value of the favourite counter\r\n     * @param activityFilter: the name of the activity that the returned places should fit or \"any\" if are required the absolute most popular places\r\n     * @param maxQuantity: the maximum number of places instances to be returned\r\n     * @return a list Place objects\r\n     */\r\n    public static List<Place> getPopularPlaces(String activityFilter, int maxQuantity) {\r\n        if(activityFilter != noActivityFilterKey){\r\n            if( ! ActivityService.checkIfActivityExists(activityFilter)){\r\n                activityFilter = noActivityFilterKey;\r\n            }\r\n        }\r\n        if(maxQuantity <= 0){\r\n            maxQuantity = DEFAULT_MAXIMUM_QUANTITY;\r\n        }else if(maxQuantity > LIMIT_MAXIMUM_QUANTITY){\r\n            maxQuantity = LIMIT_MAXIMUM_QUANTITY;\r\n        }\r\n        PlaceManager pm = PlaceManagerFactory.getPlaceManager();\r\n        return pm.getPopularPlaces(activityFilter, maxQuantity);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/place/PlaceService.java	(date 1642595649169)
+@@ -33,8 +33,14 @@
+      * @return associated Place object or null if not found
+      */
+     public static Place getPlaceFromId(String id){
+-        PlaceManager um = PlaceManagerFactory.getPlaceManager();
+-        return um.getPlaceFromId(id);
++        Place res;
++        try {
++            PlaceManager um = PlaceManagerFactory.getPlaceManager();
++            res = um.getPlaceFromId(id);
++        }catch (Exception e){
++            res = null;
++        }
++        return res;
+     }
+ 
+     /**
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.post;\r\n\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerFactory;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.social.PostSocialManagerNeo4j;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;\r\n\r\nimport java.util.List;\r\nimport java.util.logging.Level;\r\nimport java.util.logging.Logger;\r\n\r\npublic class PostService {\r\n\r\n    private static final Logger LOGGER = Logger.getLogger(PostService.class.getName());\r\n\r\n    /**\r\n     * return null if it does not exist a post with that id, otherwise returns the associated post\r\n     * @param id the id of the requested post\r\n     * @return associated Post object or null if not found\r\n     */\r\n    public static Post getPostFromId(String id){\r\n        PostManager um = PostManagerFactory.getPostManager();\r\n        return um.getPostFromId(id);\r\n    }\r\n\r\n    /**\r\n     * return the newly created Yt Post or Null if something goes wrong\r\n     * @param newPost the YouTube Post object containing all the info\r\n     * @return YtPost object if the insert is successful or null otherwise\r\n     */\r\n    public static Post createNewPost(Post newPost) throws DatabaseErrorException {\r\n        if(newPost == null){\r\n            return null;\r\n        }\r\n\r\n        PostManager pm = PostManagerFactory.getPostManager();\r\n        Post addedNewPostMongo = pm.storePost(newPost);\r\n        if(addedNewPostMongo == null){\r\n            LOGGER.log(Level.SEVERE, \"Error during insert: Neo4j new favourite place failed!\");\r\n            throw new DatabaseErrorException(\"MongoDB new post insert failed\");\r\n        }\r\n\r\n        PostSocialManager psm = PostSocialManagerFactory.getPostManager();\r\n        boolean insertedNewPostNeo;\r\n        try{\r\n            insertedNewPostNeo = psm.storePost(newPost);\r\n            if(!insertedNewPostNeo){\r\n                //we have to delete the newly inserted post from MongoDB\r\n                LOGGER.log(Level.SEVERE, \"Error during new post insert: Neo4j failed!\");\r\n                pm.deletePost(newPost);\r\n                return null;\r\n            }\r\n        } catch (Exception e){\r\n            LOGGER.log(Level.SEVERE, \"Error during insert: Neo4j new post insert failed!\");\r\n            return null;\r\n        }\r\n\r\n        return newPost;\r\n    }\r\n\r\n    /**\r\n     * return True if posts are successfully deleted, False otherwise\r\n     * @param user is the author of the posts to delete\r\n     * @return True if posts are successfully deleted, else False\r\n     */\r\n    public static boolean deletePostsOfGivenUser(User user){\r\n        PostSocialManager um = PostSocialManagerFactory.getPostManager();\r\n        return um.deleteAllPostsOfGivenUser(user);\r\n    }\r\n\r\n    /**\r\n     * Adds like from a user u to a post p\r\n     * @param user user that likes the post\r\n     * @param post post that received the appreciation\r\n     * @return true if the like was delivered successfully, else false\r\n     */\r\n    //TODO: add endpoint method\r\n    public static boolean likePost(User user, Post post){\r\n        if(user == null || post == null){\r\n            return false;\r\n        }\r\n\r\n        PostManager pm = PostManagerFactory.getPostManager();\r\n        boolean updatedLikesCounterInMongo = pm.updateLikesCounter(post, 1);\r\n        if(!updatedLikesCounterInMongo){\r\n            LOGGER.log(Level.SEVERE, \"Error during like insert: MongoDB update failed!\");\r\n            return false;\r\n        }\r\n\r\n        PostSocialManager psm = PostSocialManagerFactory.getPostManager();\r\n        boolean addedLikesRelationshipNeo = psm.likePost(user, post);\r\n        if(!addedLikesRelationshipNeo){\r\n            //restore the likes counter value\r\n            LOGGER.log(Level.SEVERE, \"Error during like insert: Neo4j relationship insertion failed!\");\r\n            pm.updateLikesCounter(post, -1);\r\n            return false;\r\n        }\r\n\r\n        return true;\r\n    }\r\n\r\n    /**\r\n     * Removes like from a user u to a post p\r\n     * @param user user that unlikes the post\r\n     * @param post post for which we delete the appreciation\r\n     * @return true if the like was deleted successfully, else false\r\n     */\r\n    //TODO: add endpoint method\r\n    public static boolean unlikePost(User user, Post post){\r\n        if(user == null || post == null){\r\n            return false;\r\n        }\r\n\r\n        PostManager pm = PostManagerFactory.getPostManager();\r\n        boolean updatedLikesCounterInMongo = pm.updateLikesCounter(post, -1);\r\n        if(!updatedLikesCounterInMongo){\r\n            LOGGER.log(Level.SEVERE, \"Error during like deletion: MongoDB update failed!\");\r\n            return false;\r\n        }\r\n\r\n        PostSocialManager psm = PostSocialManagerFactory.getPostManager();\r\n        boolean removedLikesRelationshipNeo = psm.unlikePost(user, post);\r\n        if(!removedLikesRelationshipNeo){\r\n            //restore the likes counter value\r\n            LOGGER.log(Level.SEVERE, \"Error during unlike: Neo4j relationship deletion failed!\");\r\n            pm.updateLikesCounter(post, 1);\r\n            return false;\r\n        }\r\n\r\n        return true;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostService.java	(date 1642595649176)
+@@ -13,7 +13,9 @@
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManager;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerFactory;
++import org.springframework.web.multipart.MultipartFile;
+ 
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+@@ -34,29 +36,33 @@
+ 
+     /**
+      * return the newly created Yt Post or Null if something goes wrong
+-     * @param newPost the YouTube Post object containing all the info
++     * @param submittedPost the YouTube Post object containing all the info
+      * @return YtPost object if the insert is successful or null otherwise
+      */
+-    public static Post createNewPost(Post newPost) throws DatabaseErrorException {
+-        if(newPost == null){
++    public static PostSubmission createNewPost(PostSubmission submittedPost, User author, MultipartFile thumb, List<MultipartFile> pics) throws DatabaseErrorException {
++        if(submittedPost == null){
+             return null;
+         }
+ 
+         PostManager pm = PostManagerFactory.getPostManager();
++        //TODO: from MultipartFile to String (FileService class)
++        List<String> picsLinks = new ArrayList<>();
++        Post newPost = new Post(submittedPost, author, "", picsLinks);
+         Post addedNewPostMongo = pm.storePost(newPost);
++
+         if(addedNewPostMongo == null){
+-            LOGGER.log(Level.SEVERE, "Error during insert: Neo4j new favourite place failed!");
++            LOGGER.log(Level.SEVERE, "Error: MongoDB new post insertion failed!");
+             throw new DatabaseErrorException("MongoDB new post insert failed");
+         }
+ 
+         PostSocialManager psm = PostSocialManagerFactory.getPostManager();
+         boolean insertedNewPostNeo;
+         try{
+-            insertedNewPostNeo = psm.storePost(newPost);
++            insertedNewPostNeo = psm.storePost(addedNewPostMongo);
+             if(!insertedNewPostNeo){
+                 //we have to delete the newly inserted post from MongoDB
+                 LOGGER.log(Level.SEVERE, "Error during new post insert: Neo4j failed!");
+-                pm.deletePost(newPost);
++                pm.deletePost(addedNewPostMongo);
+                 return null;
+             }
+         } catch (Exception e){
+@@ -64,7 +70,7 @@
+             return null;
+         }
+ 
+-        return newPost;
++        return submittedPost;
+     }
+ 
+     /**
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.post;\r\n\r\nimport com.google.gson.Gson;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;\r\nimport org.bson.Document;\r\nimport org.neo4j.driver.Value;\r\n\r\nimport javax.validation.constraints.NotNull;\r\nimport java.util.Date;\r\nimport java.util.List;\r\n\r\n\r\npublic class Post {\r\n\r\n    public static final String KEY_POST_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"collectionName\");\r\n    public static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"id\");\r\n    public static final String KEY_AUTHOR_USERNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"authorUsername\");\r\n    public static final String KEY_AUTHOR_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"authorId\");\r\n    public static final String KEY_PLACE_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"placeId\");\r\n    public static final String KEY_PLACE_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"placeName\");\r\n    public static final String KEY_TITLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"title\");\r\n    public static final String KEY_DATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"date\");\r\n    public static final String KEY_POST_DATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"postDate\");\r\n    public static final String KEY_DESCRIPTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"description\");\r\n    public static final String KEY_ACTIVITY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"activity\");\r\n    public static final String KEY_TAGS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"tags\");\r\n    public static final String KEY_THUMBNAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"thumbnail\");\r\n    public static final String KEY_YT_VIDEO_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"videoId\");\r\n    public static final String KEY_PICS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"pics\");\r\n    public static final String KEY_LIKES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, \"likes\");\r\n\r\n    public static final String NEO_POST_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.postEntity);\r\n    public static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, \"id\");\r\n    public static final String NEO_KEY_TITLE = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, \"title\");\r\n    public static final String NEO_KEY_DESC = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, \"desc\");\r\n    public static final String NEO_KEY_THUMBNAIL = PropertyPicker.getNodePropertyKey(PropertyPicker.postEntity, \"thumb\");\r\n\r\n    public static final String NEO_RELATION_AUTHOR = PropertyPicker.getGraphRelationKey(\"author\");\r\n    public static final String NEO_RELATION_LOCATION = PropertyPicker.getGraphRelationKey(\"location\");\r\n\r\n    private String _id;\r\n    private String authorUsername;\r\n    private String authorId;\r\n    private String placeId;\r\n    private String placeName;\r\n    private String title;\r\n    private Date date;\r\n    private Date postDate;\r\n    private String description;\r\n    private String activity;\r\n    private List<String> tags;\r\n    private String videoId;\r\n    private String thumbnail;\r\n    private List<String> pics;\r\n    private int likeCounter;\r\n\r\n    public Post(String id, String author, String authorID, String place_id, String t, Date d, String des, String activities, List<String> tags, String vidId, String thumb, List<String> pics) {\r\n        this._id = id;\r\n        this.authorUsername = author;\r\n        this.authorId = authorID;\r\n        this.placeId = place_id;\r\n        this.title= t;\r\n        this.date = d;\r\n        this.postDate = new Date();\r\n        this.description = des;\r\n        this.activity = activities;\r\n        this.tags = tags;\r\n        this.videoId = vidId;\r\n        this.thumbnail = thumb;\r\n        this.pics = pics;\r\n    }\r\n\r\n    public Post(Document doc){\r\n        this._id = doc.get(KEY_ID).toString();\r\n        this.authorUsername = doc.get(KEY_AUTHOR_USERNAME).toString();\r\n        this.authorId = doc.get(KEY_AUTHOR_ID).toString();\r\n        this.placeId = doc.get(KEY_PLACE_ID).toString();\r\n        this.title = doc.get(KEY_TITLE).toString();\r\n        this.date = (Date) doc.get(KEY_DATE);\r\n        this.postDate = (Date) doc.get(KEY_POST_DATE);\r\n        this.description = doc.get(KEY_DESCRIPTION).toString();\r\n        this.activity = doc.get(KEY_ACTIVITY).toString();\r\n        this.tags = (List<String>) doc.get(KEY_TAGS, List.class);\r\n        this.videoId = doc.get(KEY_YT_VIDEO_ID).toString();\r\n        this.thumbnail = doc.get(KEY_THUMBNAIL).toString();\r\n        this.pics = (List<String>) doc.get(KEY_PICS, List.class);\r\n    }\r\n\r\n    public Document createDocument(){\r\n        Document postDoc = new Document(KEY_TITLE, this.title)\r\n                .append(KEY_AUTHOR_USERNAME, this.authorUsername)\r\n                .append(KEY_DESCRIPTION, this.description)\r\n                .append(KEY_TAGS, this.tags)\r\n                .append(KEY_ACTIVITY, this.activity)\r\n                .append(KEY_POST_DATE, this.postDate)\r\n                .append(KEY_DATE, this.date)\r\n                .append(KEY_THUMBNAIL, this.thumbnail);\r\n\r\n        if (this.authorId != null){\r\n            postDoc.append(KEY_AUTHOR_ID, this.authorId);\r\n        }\r\n        if(this.videoId != null) {\r\n            postDoc.append(KEY_YT_VIDEO_ID, this.videoId);\r\n        }\r\n        if(this.pics != null)\r\n         postDoc.append(KEY_PICS, this.pics);\r\n\r\n        return postDoc;\r\n    }\r\n\r\n    public static Post buildPost(@NotNull Document doc){\r\n        Gson g = new Gson();\r\n        Post p = g.fromJson(doc.toJson(), Post.class);\r\n        return p;\r\n    }\r\n\r\n    public String getId() {\r\n        return _id;\r\n    }\r\n\r\n    public void setId(String id) {\r\n        this._id = id;\r\n    }\r\n\r\n    public String getAuthorId(){ return this.authorId; }\r\n\r\n    public void setAuthorId(String id){ this.authorId=id; }\r\n\r\n    public String getPlaceId(){ return this.placeId; }\r\n\r\n    public void setPlaceId(String id){ this.placeId=id; }\r\n\r\n    public String getAuthorUsername() {\r\n        return authorUsername;\r\n    }\r\n\r\n    public void setAuthorUsername(String user) {\r\n        this.authorUsername = user;\r\n    }\r\n\r\n    public String getTitle() {\r\n        return title;\r\n    }\r\n\r\n    public void setTitle(String t) {\r\n        this.title = t;\r\n    }\r\n\r\n    public Date getDate() {\r\n        return date;\r\n    }\r\n\r\n    public void setDate(Date d) {\r\n        this.date = d;\r\n    }\r\n\r\n    public String getDescription() {\r\n        return description;\r\n    }\r\n\r\n    public void setDescription(String des) {\r\n        this.description = des;\r\n    }\r\n\r\n    public String getActivity() {\r\n        return this.activity;\r\n    }\r\n\r\n    public void setActivity(String act) {\r\n        this.activity = act;\r\n    }\r\n\r\n    public List<String> getTags() {\r\n        return this.tags;\r\n    }\r\n\r\n    public void addTags(String t) {\r\n        this.tags.add(t);\r\n    }\r\n\r\n    public String getVideoId() {\r\n        return this.videoId;\r\n    }\r\n\r\n    public void setVideoId(String id) {\r\n        this.videoId = id;\r\n    }\r\n\r\n    public String getThumbnail() {\r\n        return this.thumbnail;\r\n    }\r\n\r\n    public void setThumbnail(String t) {\r\n        this.thumbnail = t;\r\n    }\r\n\r\n    public String toString() {\r\n\r\n        String ret =\r\n                \"User{\" +\r\n                        \"id=\" + _id +\r\n                        \", title='\" + title + '\\'' +\r\n                        \", author='\" + authorUsername + '\\'' +\r\n                        \", date='\" + date.toString() + '\\'' +\r\n                        \", description='\" + description + '\\'' +\r\n                        '}';\r\n\r\n        return ret;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/Post.java	(date 1642595649171)
+@@ -4,6 +4,7 @@
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+ import org.bson.Document;
+ import org.neo4j.driver.Value;
+ 
+@@ -71,6 +72,21 @@
+         this.thumbnail = thumb;
+         this.pics = pics;
+     }
++
++    public Post(PostSubmission submittedPost, User author, String thumbnail, List<String> pics){
++        this.authorUsername = author.getUsername();
++        this.authorId = author.getId();
++        this.placeId = submittedPost.getPlaceId();
++        this.title= submittedPost.getTitle();
++        this.date = submittedPost.getExperienceDate();
++        this.postDate = new Date();
++        this.description = submittedPost.getDescription();
++        this.activity = submittedPost.getActivity();
++        this.tags = submittedPost.getTags();
++        this.videoId = submittedPost.getYTvideoId();
++        this.thumbnail = thumbnail;
++        this.pics = pics;
++    }
+ 
+     public Post(Document doc){
+         this._id = doc.get(KEY_ID).toString();
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\r\n\t<groupId>it.unipi.dii.inginf.lsmsdb</groupId>\r\n\t<artifactId>mapsproject</artifactId>\r\n\t<version>0.0.1-SNAPSHOT</version>\r\n\t<name>mapsproject</name>\r\n\t<description>Spring Boot + Swagger + OpenAPI 3.0</description>\r\n\t<packaging>jar</packaging>\r\n\r\n\t<parent>\r\n\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t<artifactId>spring-boot-starter-parent</artifactId>\r\n\t\t<version>2.5.6</version>\r\n\t\t<relativePath/> <!-- lookup parent from repository -->\r\n\t</parent>\r\n\r\n\r\n\t<properties>\r\n\t\t<java.version>11</java.version>\r\n\t</properties>\r\n\r\n\t<dependencies>\r\n\r\n\t\t<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->\r\n\t\t<dependency>\r\n\t\t\t<groupId>com.google.code.gson</groupId>\r\n\t\t\t<artifactId>gson</artifactId>\r\n\t\t\t<version>2.8.9</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.security</groupId>\r\n\t\t\t<artifactId>spring-security-crypto</artifactId>\r\n\t\t\t<version>5.5.3</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.mongodb</groupId>\r\n\t\t\t<artifactId>mongodb-driver-sync</artifactId>\r\n\t\t\t<version>4.2.3</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-web</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-test</artifactId>\r\n\t\t\t<scope>test</scope>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springdoc</groupId>\r\n\t\t\t<artifactId>springdoc-openapi-ui</artifactId>\r\n\t\t\t<version>1.5.9</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-security</artifactId>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>io.jsonwebtoken</groupId>\r\n\t\t\t<artifactId>jjwt</artifactId>\r\n\t\t\t<version>0.9.1</version>\r\n\t\t</dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>javax.xml.bind</groupId>\r\n\t\t\t<artifactId>jaxb-api</artifactId>\r\n\t\t\t<version>2.3.0</version>\r\n\t\t</dependency>\r\n\r\n        <dependency>\r\n            <groupId>io.swagger</groupId>\r\n            <artifactId>swagger-annotations</artifactId>\r\n            <version>1.6.0</version>\r\n        </dependency>\r\n\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.neo4j.driver</groupId>\r\n\t\t\t<artifactId>neo4j-java-driver</artifactId>\r\n\t\t\t<version>4.4.2</version>\r\n\t\t</dependency>\r\n\r\n\r\n    </dependencies>\r\n\r\n\t<build>\r\n\t\t<plugins>\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t\t<artifactId>spring-boot-maven-plugin</artifactId>\r\n\t\t\t\t<version>${project.parent.version}</version>\r\n\t\t\t</plugin>\r\n\t\t</plugins>\r\n\t</build>\r\n\r\n</project>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/pom.xml b/pom.xml
+--- a/pom.xml	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/pom.xml	(date 1642595649155)
+@@ -89,6 +89,16 @@
+ 			<version>4.4.2</version>
+ 		</dependency>
+ 
++		<dependency>
++			<groupId>commons-io</groupId>
++			<artifactId>commons-io</artifactId>
++			<version>2.8.0</version>
++		</dependency>
++
++		<dependency>
++			<groupId>org.springframework.boot</groupId>
++			<artifactId>spring-boot-starter-data-mongodb</artifactId>
++		</dependency>
+ 
+     </dependencies>
+ 
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/FileController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/FileController.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/FileController.java
+new file mode 100644
+--- /dev/null	(date 1642595649157)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/controller/FileController.java	(date 1642595649157)
+@@ -0,0 +1,44 @@
++package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
++
++import io.swagger.v3.oas.annotations.security.SecurityRequirement;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.file.FileService;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.file.LoadFile;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.core.io.ByteArrayResource;
++import org.springframework.http.HttpHeaders;
++import org.springframework.http.HttpStatus;
++import org.springframework.http.MediaType;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++import org.springframework.web.multipart.MultipartFile;
++
++import java.io.IOException;
++
++import static org.springframework.web.bind.annotation.RequestMethod.POST;
++
++@RestController
++@RequestMapping("/api")
++@SecurityRequirement(name = "bearerAuth")
++public class FileController {
++
++    private FileService fileService;
++
++    @RequestMapping(path = "/upload", method = POST, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
++    public ResponseEntity<?> upload(@RequestPart("file")MultipartFile file) throws IOException {
++        fileService = new FileService();
++        String imageObjId = fileService.uploadImage(file);
++        if(imageObjId == null)
++            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" unsupported file type\"}");
++        return ResponseEntity.status(HttpStatus.OK).body(imageObjId);
++    }
++
++    /*@GetMapping("/download/{id}")
++    public ResponseEntity<ByteArrayResource> download(@PathVariable String id) throws IOException {
++        LoadFile loadFile = fileService.downloadFile(id);
++
++        return ResponseEntity.ok()
++                .contentType(MediaType.parseMediaType(loadFile.getFileType() ))
++                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + loadFile.getFilename() + "\"")
++                .body(new ByteArrayResource(loadFile.getFile()));
++    }*/
++}
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/LoadFile.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/LoadFile.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/LoadFile.java
+new file mode 100644
+--- /dev/null	(date 1642595649166)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/LoadFile.java	(date 1642595649166)
+@@ -0,0 +1,43 @@
++package it.unipi.dii.inginf.lsmsdb.mapsproject.file;
++
++public class LoadFile {
++    private String filename;
++    private String fileType;
++    private String fileSize;
++    private byte[] file;
++
++    public LoadFile() {
++    }
++
++    public String getFilename() {
++        return filename;
++    }
++
++    public void setFilename(String filename) {
++        this.filename = filename;
++    }
++
++    public String getFileType() {
++        return fileType;
++    }
++
++    public void setFileType(String fileType) {
++        this.fileType = fileType;
++    }
++
++    public String getFileSize() {
++        return fileSize;
++    }
++
++    public void setFileSize(String fileSize) {
++        this.fileSize = fileSize;
++    }
++
++    public byte[] getFile() {
++        return file;
++    }
++
++    public void setFile(byte[] file) {
++        this.file = file;
++    }
++}
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/FileService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/FileService.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/FileService.java
+new file mode 100644
+--- /dev/null	(date 1642595649163)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/file/FileService.java	(date 1642595649163)
+@@ -0,0 +1,85 @@
++package it.unipi.dii.inginf.lsmsdb.mapsproject.file;
++
++import com.mongodb.BasicDBObject;
++import com.mongodb.DBObject;
++import com.mongodb.client.gridfs.GridFSBucket;
++import com.mongodb.client.gridfs.GridFSBuckets;
++import com.mongodb.client.gridfs.model.GridFSFile;
++import com.mongodb.client.gridfs.model.GridFSUploadOptions;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
++import org.apache.commons.io.IOUtils;
++import org.bson.Document;
++import org.bson.types.ObjectId;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.data.mongodb.core.query.Criteria;
++import org.springframework.data.mongodb.core.query.Query;
++import org.springframework.data.mongodb.gridfs.GridFsOperations;
++import org.springframework.data.mongodb.gridfs.GridFsTemplate;
++import org.springframework.stereotype.Service;
++import org.springframework.web.multipart.MultipartFile;
++
++import java.io.File;
++import java.io.FileInputStream;
++import java.io.IOException;
++import java.util.Arrays;
++import java.util.List;
++import java.util.logging.Level;
++import java.util.logging.Logger;
++
++public class FileService {
++
++    private static final Logger LOGGER = Logger.getLogger( FileService.class.getName() );
++
++
++    private GridFSBucket gridFSBucket;
++    private static final String[] allowedTypes = {"image/jpeg", "image/gif", "image/png"};
++
++    public FileService(){
++        gridFSBucket = GridFSBuckets.create(MongoConnection.getDatabase());
++    }
++
++
++    public String uploadImage(MultipartFile upload) throws IOException {
++
++        if(!Arrays.asList(allowedTypes).contains(upload.getContentType())){
++            LOGGER.log(Level.SEVERE, "Error: image file type not supported, please upload [jpeg / png / gif]");
++            return null;
++        }
++
++        //define additional metadata
++        DBObject metadata = new BasicDBObject();
++        metadata.put("fileSize", upload.getSize());
++
++        GridFSUploadOptions options = new GridFSUploadOptions()
++                .chunkSizeBytes(1048576)
++                .metadata(new Document("type", upload.getContentType()));
++
++        //store in database which returns the objectID
++        ObjectId fileId = gridFSBucket.uploadFromStream(upload.getOriginalFilename(), upload.getInputStream(), options);
++
++        //return as a string
++        return fileId.toString();
++    }
++
++    /*public LoadFile downloadImage(String id) throws IOException {
++
++        //search file
++        GridFSFile gridFSFile = template.findOne( new Query(Criteria.where("_id").is(id)) );
++
++        //convert uri to byteArray
++        //save data to LoadFile class
++        LoadFile loadFile = new LoadFile();
++
++        if (gridFSFile != null && gridFSFile.getMetadata() != null) {
++            loadFile.setFilename( gridFSFile.getFilename() );
++
++            loadFile.setFileType( gridFSFile.getMetadata().get("_contentType").toString() );
++
++            loadFile.setFileSize( gridFSFile.getMetadata().get("fileSize").toString() );
++
++            loadFile.setFile( IOUtils.toByteArray(operations.getResource(gridFSFile).getInputStream()) );
++        }
++
++        return loadFile;
++    }*/
++}
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/user/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.user;\r\n\r\nimport com.google.gson.Gson;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;\r\nimport org.bson.Document;\r\n\r\n\r\nimport javax.validation.constraints.NotNull;\r\nimport java.io.Serializable;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\nimport java.util.Date;\r\n\r\npublic class User implements Serializable {\r\n\r\n\tpublic static final String KEY_USER_COLLECTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"collectionName\");\r\n\tpublic static final String KEY_ID = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"id\");\r\n\tpublic static final String KEY_USERNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"username\");\r\n\tpublic static final String KEY_EMAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"email\");\r\n\tpublic static final String KEY_PASSWORD = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"password\");\r\n\tpublic static final String KEY_NAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"name\");\r\n\tpublic static final String KEY_SURNAME = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"surname\");\r\n\tpublic static final String KEY_BIRTHDATE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"birthdate\");\r\n\tpublic static final String KEY_ROLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"roles\");\r\n\tpublic static final String KEY_PROFILE_PIC = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"profilepic\");\r\n\tpublic static final String KEY_PUBLISHED_POSTS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"postsArray\");\r\n\tpublic static final String KEY_FOLLOWERS = PropertyPicker.getCollectionPropertyKey(PropertyPicker.userCollection, \"followers\");\r\n\r\n\tpublic static final String NEO_USER_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.userEntity);\r\n\tpublic static final String NEO_KEY_ID = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, \"id\");\r\n\tpublic static final String NEO_KEY_USERNAME = PropertyPicker.getNodePropertyKey(PropertyPicker.userEntity, \"username\");\r\n\r\n\tpublic static final String NEO_RELATION_VISITED = PropertyPicker.getGraphRelationKey(\"visited\");\r\n\tpublic static final String NEO_RELATION_FOLLOWS = PropertyPicker.getGraphRelationKey(\"follows\");\r\n\tpublic static final String NEO_RELATION_FAVOURITES = PropertyPicker.getGraphRelationKey(\"favourites\");\r\n\tpublic static final String NEO_RELATION_LIKES = PropertyPicker.getGraphRelationKey(\"likes\");\r\n\r\n\tpublic enum Role {USER,MODERATOR,ADMIN}\r\n\r\n\tprotected String _id;\r\n\tprotected String username;\r\n\tprotected String email;\r\n\tprotected String password;\r\n\tprotected String name;\r\n\tprotected String surname;\r\n\tprotected Date birthDate;\r\n\tprotected List<String> roles;\r\n\tprotected Image profilePic;\r\n\tprotected List<String> publishedPostsId;\r\n\tprotected List<String> followedUsersId;\r\n\tprotected List<String> favouritePlacesId;\r\n\tprotected List<String> likedPostsId;\r\n\tprotected int totalPost;\r\n\r\n\t//need default constructor for JSON Parsing\r\n\tpublic User(){\r\n\r\n\t}\r\n\r\n\tpublic User(Document doc){\r\n\t\tthis._id = doc.get(KEY_ID).toString();\r\n\t\tthis.username = doc.get(KEY_USERNAME).toString();\r\n\t\tthis.password = doc.get(KEY_PASSWORD).toString();\r\n\t\tthis.email = doc.get(KEY_EMAIL).toString();\r\n\t\tthis.name = doc.get(KEY_NAME).toString();\r\n\t\tthis.surname = doc.get(KEY_SURNAME).toString();\r\n\t\t//try {\r\n\t\t\tthis.roles = doc.getList(KEY_ROLE, String.class);\r\n\t\t/*}catch (ClassCastException c){\r\n\t\t\t//this happens if it is parsing a document in which the role is a string instead of an array\r\n\t\t\tString role = doc.getString(KEY_ROLE);\r\n\t\t\tList<String> roles = new ArrayList<>();\r\n\t\t\troles.add(role);\r\n\t\t\tthis.roles = roles;\r\n\t\t}*/\r\n\t\tthis.birthDate = (Date) doc.get(KEY_BIRTHDATE);\r\n\t\tthis.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));\r\n\t\t//this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);\r\n\t}\r\n\r\n\tpublic static User buildUser(@NotNull Document doc){\r\n\t\tGson g = new Gson();\r\n\t\tUser u = g.fromJson(doc.toJson(), User.class);\r\n\t\treturn u;\r\n\t}\r\n\r\n\tpublic User(String _id, String nm, String snm, String uname, String psw, String email, List<String> roles) {\r\n\t\tthis._id = _id;\r\n\t\tthis.name = nm;\r\n\t\tthis.surname = snm;\r\n\t\tthis.username = uname;\r\n\t\tthis.password = psw;\r\n\t\tthis.email = email;\r\n\t\tthis.roles = roles;\r\n\t}\r\n\r\n\r\n\tpublic String getId() {\r\n\t\treturn _id;\r\n\t}\r\n\r\n\tpublic String getUsername() {\r\n\t\treturn username;\r\n\t}\r\n\r\n\tpublic void setUsername(String uname) {\r\n\t\tthis.username = uname;\r\n\t}\r\n\r\n\tpublic String getEmail() {\r\n\t\treturn email;\r\n\t}\r\n\r\n\tpublic void setEmail(String email) {\r\n\t\tthis.email = email;\r\n\t}\r\n\r\n\tpublic String getPassword() {\r\n\t\treturn password;\r\n\t}\r\n\r\n\tpublic void setPassword(String psw) {\r\n\t\tthis.password = psw;\r\n\t}\r\n\r\n\tpublic String getName() {\r\n\t\treturn name;\r\n\t}\r\n\r\n\tpublic void setName(String name) {\r\n\t\tthis.name = name;\r\n\t}\r\n\r\n\tpublic String getSurname() {\r\n\t\treturn surname;\r\n\t}\r\n\r\n\tpublic void setSurname(String sname) {\r\n\t\tthis.surname = sname;\r\n\t}\r\n\r\n\tpublic Date getBirthDate() {\r\n\t\treturn birthDate;\r\n\t}\r\n\r\n\tpublic void setBirthDate(Date birthDate) {\r\n\t\tthis.birthDate = birthDate;\r\n\t}\r\n\r\n\tpublic List<String> getUserRole() {\r\n\t\treturn this.roles;\r\n\t}\r\n\r\n\tpublic void setRoles(List<String> roles) {\r\n\t\tthis.roles = roles;\r\n\t}\r\n\r\n\tpublic String getProfilePic() {\r\n\t\treturn profilePic.toString();\r\n\t}\r\n\r\n\tpublic Image profilePicImageObj() {\r\n\t\treturn profilePic;\r\n\t}\r\n\r\n\tpublic void setProfilePic(Image pic) {\r\n\t\tthis.profilePic = pic;\r\n\t}\r\n\r\n\tpublic List<String> getPublishedPostsId(){ return this.publishedPostsId; }\r\n\r\n\t// write methods to retrive: pathProfilePic, followedUsers, favouritePosts, likedPosts, totalPosts\r\n\r\n\t@Override\r\n\tpublic String toString() {\r\n\t\treturn \"User{\" +\r\n\t\t\t\t\"id=\" + _id +\r\n\t\t\t\t\", name='\" + name + '\\'' +\r\n\t\t\t\t\", surname='\" + surname + '\\'' +\r\n\t\t\t\t\", username='\" + username + '\\'' +\r\n\t\t\t\t\", password='\" + password + '\\'' +\r\n\t\t\t\t\", email='\" + email + '\\'' +\r\n\t\t\t\t\", role='\" + roles + '\\'' +\r\n\t\t\t\t'}';\r\n\t}\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/user/User.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/user/User.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/user/User.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/user/User.java	(date 1642595649182)
+@@ -3,6 +3,7 @@
+ import com.google.gson.Gson;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.model.Image;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
+ import org.bson.Document;
+ 
+ 
+@@ -47,11 +48,7 @@
+ 	protected Date birthDate;
+ 	protected List<String> roles;
+ 	protected Image profilePic;
+-	protected List<String> publishedPostsId;
+-	protected List<String> followedUsersId;
+-	protected List<String> favouritePlacesId;
+-	protected List<String> likedPostsId;
+-	protected int totalPost;
++	protected List<PostPreview> publishedPosts;
+ 
+ 	//need default constructor for JSON Parsing
+ 	public User(){
+@@ -65,18 +62,18 @@
+ 		this.email = doc.get(KEY_EMAIL).toString();
+ 		this.name = doc.get(KEY_NAME).toString();
+ 		this.surname = doc.get(KEY_SURNAME).toString();
+-		//try {
++		try {
+ 			this.roles = doc.getList(KEY_ROLE, String.class);
+-		/*}catch (ClassCastException c){
++		}catch (ClassCastException c){
+ 			//this happens if it is parsing a document in which the role is a string instead of an array
+ 			String role = doc.getString(KEY_ROLE);
+ 			List<String> roles = new ArrayList<>();
+ 			roles.add(role);
+ 			this.roles = roles;
+-		}*/
++		}
+ 		this.birthDate = (Date) doc.get(KEY_BIRTHDATE);
+ 		this.profilePic = new Image(doc.getString(KEY_PROFILE_PIC));
+-		//this.publishedPostsId = doc.getList(KEY_PUBLISHED_POSTS, String.class);
++		//this.publishedPosts = doc.getList(KEY_PUBLISHED_POSTS, PostPreview.class);
+ 	}
+ 
+ 	public static User buildUser(@NotNull Document doc){
+@@ -85,14 +82,16 @@
+ 		return u;
+ 	}
+ 
+-	public User(String _id, String nm, String snm, String uname, String psw, String email, List<String> roles) {
++	public User(String _id, String nm, String snm, String uname, String psw, String email, Date bday, List<String> roles, List<PostPreview> posts) {
+ 		this._id = _id;
+ 		this.name = nm;
+ 		this.surname = snm;
+ 		this.username = uname;
+ 		this.password = psw;
+ 		this.email = email;
++		this.birthDate = bday;
+ 		this.roles = roles;
++		this.publishedPosts = posts;
+ 	}
+ 
+ 
+@@ -168,9 +167,8 @@
+ 		this.profilePic = pic;
+ 	}
+ 
+-	public List<String> getPublishedPostsId(){ return this.publishedPostsId; }
++	public List<PostPreview> getPublishedPosts(){ return this.publishedPosts; }
+ 
+-	// write methods to retrive: pathProfilePic, followedUsers, favouritePosts, likedPosts, totalPosts
+ 
+ 	@Override
+ 	public String toString() {
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostSubmission.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostSubmission.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostSubmission.java
+new file mode 100644
+--- /dev/null	(date 1642595649178)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/PostSubmission.java	(date 1642595649178)
+@@ -0,0 +1,58 @@
++package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
++
++import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
++import org.bson.Document;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.web.multipart.MultipartFile;
++
++import java.util.Date;
++import java.util.List;
++
++public class PostSubmission {
++
++
++    private String title;
++    private String placeId;
++    private String authorId;
++    private String authorUsername;
++    private String description;
++    private Date experienceDate;
++    private String activity;
++    private String YTvideoId;
++    private List<String> tags;
++    private MultipartFile thumbnail;
++    private List<MultipartFile> pics;
++
++    public Document createDocument(){
++
++        Document postDoc = new Document(Post.KEY_AUTHOR_USERNAME, authorUsername)
++                .append(Post.KEY_AUTHOR_ID, authorId)
++                .append(Post.KEY_PLACE_ID, placeId)
++                .append(Post.KEY_TITLE,title)
++                .append(Post.KEY_DESCRIPTION, description)
++                .append(Post.KEY_DATE, experienceDate)
++                .append(Post.KEY_ACTIVITY, activity)
++                .append(Post.KEY_TAGS, tags);
++
++        return postDoc;
++    }
++
++    public String getTitle(){ return title; }
++
++    public String getDescription(){ return description; }
++
++    public Date getExperienceDate(){ return experienceDate; }
++
++    public String getActivity(){ return activity; }
++
++    public List<String> getTags(){ return tags; }
++
++    public String getPlaceId(){ return placeId; }
++
++    public String getYTvideoId(){ return YTvideoId; }
++
++    public void setAuthorId(String id){ this.authorId = id; }
++
++    public void setAuthorUsername(String uname){ this.authorUsername = uname; }
++}
+Index: src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information;\r\n\r\nimport com.mongodb.MongoException;\r\nimport com.mongodb.client.MongoCollection;\r\nimport com.mongodb.client.MongoCursor;\r\nimport com.mongodb.client.model.Filters;\r\nimport com.mongodb.client.model.Updates;\r\nimport com.mongodb.client.result.DeleteResult;\r\nimport com.mongodb.client.result.UpdateResult;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;\r\nimport it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;\r\nimport org.bson.Document;\r\nimport org.bson.conversions.Bson;\r\nimport org.bson.types.ObjectId;\r\n\r\nimport java.util.List;\r\nimport java.util.logging.Level;\r\nimport java.util.logging.Logger;\r\n\r\npublic class PostManagerMongoDB implements PostManager {\r\n\r\n    private static final Logger LOGGER = Logger.getLogger(PostManagerMongoDB.class.getName());\r\n\r\n    private MongoCollection postCollection;\r\n\r\n    public PostManagerMongoDB(){\r\n        this.postCollection = MongoConnection.getCollection(MongoConnection.Collections.POSTS.toString());\r\n    }\r\n\r\n    @Override\r\n    public Post storePost(Post newPost) {\r\n        Document postDoc = newPost.createDocument();\r\n\r\n        try{\r\n            postCollection.insertOne(postDoc);\r\n            String id = postDoc.getObjectId(Post.KEY_AUTHOR_ID).toString();\r\n            postDoc.append(Post.KEY_AUTHOR_ID, id);\r\n            return new Post(postDoc);\r\n        } catch(MongoException me){\r\n            return null;\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public boolean deletePost(Post postToDelete) {\r\n        if(postToDelete==null)\r\n            return false;\r\n\r\n        ObjectId objId;\r\n        String postId = postToDelete.getId();\r\n\r\n        try{\r\n            objId = new ObjectId(postId);\r\n        } catch (Exception e){\r\n            LOGGER.log(Level.SEVERE, e.getMessage());\r\n            return false;\r\n        }\r\n\r\n        Bson idFilter = Filters.eq(Post.KEY_ID, objId);\r\n        DeleteResult ret = postCollection.deleteOne(idFilter);\r\n        return ret.wasAcknowledged();\r\n    }\r\n\r\n    @Override\r\n    public boolean deletePostsOfGivenUser(User user) {\r\n        if(user==null)\r\n            return false;\r\n\r\n        ObjectId objId;\r\n        String authorId = user.getId();\r\n\r\n        try{\r\n            objId = new ObjectId(authorId);\r\n        } catch (Exception e){\r\n            LOGGER.log(Level.SEVERE, e.getMessage());\r\n            return false;\r\n        }\r\n\r\n        Bson idFilter = Filters.eq(Post.KEY_AUTHOR_ID, objId);\r\n        DeleteResult ret = postCollection.deleteMany(idFilter);\r\n        return ret.wasAcknowledged();\r\n    }\r\n\r\n\r\n    @Override\r\n    public List<Post> retrieveAllPostsFromUsername(String username) {\r\n        //...\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    public Post getPostFromId(String id) {\r\n        if(id.equals(\"\"))\r\n            return null;\r\n\r\n        ObjectId objId;\r\n\r\n        try{\r\n            objId = new ObjectId(id);\r\n        } catch (Exception e){\r\n            LOGGER.log(Level.SEVERE, e.getMessage());\r\n            return null;\r\n        }\r\n\r\n        Bson idFilter = Filters.eq(Post.KEY_ID, objId);\r\n        MongoCursor<Document> cursor = postCollection.find(idFilter).cursor();\r\n        if(!cursor.hasNext()){\r\n            cursor.close();\r\n            return null;\r\n        }\r\n        else{\r\n            Document postDoc = cursor.next();\r\n            Post ret = new Post(postDoc);\r\n            cursor.close();\r\n            return ret;\r\n        }\r\n    }\r\n\r\n\r\n    @Override\r\n    public boolean updateLikesCounter(Post post, int k) {\r\n        if(post == null || k < -1 || k > 1  || k == 0){\r\n            return false;\r\n        }\r\n        String postId = post.getId();\r\n\r\n        Bson idFilter = Filters.eq(Post.KEY_ID, new ObjectId(postId));\r\n        UpdateResult res = postCollection.updateOne(idFilter, Updates.inc(\"likes\", k));\r\n        return res.wasAcknowledged();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java
+--- a/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/java/it/unipi/dii/inginf/lsmsdb/mapsproject/post/persistence/information/PostManagerMongoDB.java	(date 1642595649180)
+@@ -9,7 +9,10 @@
+ import com.mongodb.client.result.UpdateResult;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
++import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostSubmission;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+ import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerMongoDB;
+ import org.bson.Document;
+@@ -30,19 +33,48 @@
+         this.postCollection = MongoConnection.getCollection(MongoConnection.Collections.POSTS.toString());
+     }
+ 
+-    @Override
+-    public Post storePost(Post newPost) {
++    public Post storePost(Post newPost){
++        Post res=storeInPostCollection(newPost);
++        storeEmbeddedPosts(newPost);
++        return res;
++    }
++
++    private Post storeInPostCollection(Post newPost) {
+         Document postDoc = newPost.createDocument();
+ 
+         try{
+             postCollection.insertOne(postDoc);
+-            String id = postDoc.getObjectId(Post.KEY_AUTHOR_ID).toString();
+-            postDoc.append(Post.KEY_AUTHOR_ID, id);
++            String id = postDoc.getObjectId(Post.KEY_ID).toString();
++            postDoc.append(Post.KEY_ID, id);
+             return new Post(postDoc);
+         } catch(MongoException me){
+             return null;
+         }
+     }
++
++    private PostPreview storeEmbeddedPosts(Post newPost) {
++        String authorId = newPost.getAuthorId();
++        String placeId = newPost.getPlaceId();
++
++        PostPreview newPostPreview = new PostPreview(newPost);
++        Document postPreviewDoc = newPostPreview.createDocument();
++
++        try{
++            Bson userFilter = Filters.eq(User.KEY_ID, authorId);
++            Bson userUpdate = Updates.push(User.KEY_PUBLISHED_POSTS, postPreviewDoc);
++            MongoCollection userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
++            userCollection.updateOne(userFilter, userUpdate);
++
++            Bson placeFilter = Filters.eq(Place.KEY_ID, placeId);
++            Bson placeUpdate = Updates.push(Place.KEY_POSTS_ARRAY, postPreviewDoc);
++            MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
++            placeCollection.updateOne(placeFilter, placeUpdate);
++
++            return newPostPreview;
++        } catch(MongoException me){
++            return null;
++        }
++    }
+ 
+     @Override
+     public boolean deletePost(Post postToDelete) {
+Index: src/main/resources/application.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>jwt.secret=troiaide\r\njwt.get.token.uri=/authenticate\r\nspringdoc.api-docs.path = /api-docs\r\n\r\nlogging.level.org.springframework=ERROR\r\nlogging.level.org.mongodb=warn\r\n\r\npersistence.db.kind.information = mongodb\r\npersistence.db.kind.social = neo4j\r\n\r\ndefaults.user.profilepic =https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Silvio_Berlusconi_1996.jpg/800px-Silvio_Berlusconi_1996.jpg\r\n\r\n\r\n#----------------------MONGO DB----------------------------\r\n\r\npersistence.db.mongo.URI = mongodb+srv://troiAIDE:ib35QT5xACpKhX8@mappitdevelopment.idbjq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority\r\npersistence.db.mongo.dbName = mappit\r\n\r\npersistence.db.mongo.collection.place.collectionName=\"place\"\r\npersistence.db.mongo.collection.place.id = _id\r\npersistence.db.mongo.collection.place.name = name\r\npersistence.db.mongo.collection.place.fits = fits\r\npersistence.db.mongo.collection.place.image = image\r\npersistence.db.mongo.collection.place.osmID = osmID\r\npersistence.db.mongo.collection.place.postsArray = posts\r\npersistence.db.mongo.collection.place.favouritesCounter = favs\r\npersistence.db.mongo.collection.place.loc = loc\r\npersistence.db.mongo.collection.place.coordinates = coordinates\r\npersistence.db.mongo.collection.place.type = type\r\n\r\npersistence.db.mongo.collection.user.collectionName=\"user\"\r\npersistence.db.mongo.collection.user.id = _id\r\npersistence.db.mongo.collection.user.username = username\r\npersistence.db.mongo.collection.user.email = email\r\npersistence.db.mongo.collection.user.password = password\r\npersistence.db.mongo.collection.user.name = name\r\npersistence.db.mongo.collection.user.surname = surname\r\npersistence.db.mongo.collection.user.birthdate = birthDate\r\npersistence.db.mongo.collection.user.roles = roles\r\npersistence.db.mongo.collection.user.profilepic = profilePic\r\npersistence.db.mongo.collection.user.postsArray = posts\r\npersistence.db.mongo.collection.user.followers = followers\r\npersistence.db.mongo.collection.user.ytVideoId = YTVideoId\r\npersistence.db.mongo.collection.user.flickrAccountId = FlickrAccountId\r\n\r\npersistence.db.mongo.collection.post.collectionName=\"post\"\r\npersistence.db.mongo.collection.post.id = _id\r\npersistence.db.mongo.collection.post.authorUsername = authorUsername\r\npersistence.db.mongo.collection.post.authorId = author\r\npersistence.db.mongo.collection.post.placeId = place\r\npersistence.db.mongo.collection.post.placeName= placeName\r\npersistence.db.mongo.collection.post.title = title\r\npersistence.db.mongo.collection.post.date = date\r\npersistence.db.mongo.collection.post.postDate = postDate\r\npersistence.db.mongo.collection.post.description = desc\r\npersistence.db.mongo.collection.post.activity = activity\r\npersistence.db.mongo.collection.post.tags = tags\r\npersistence.db.mongo.collection.post.thumbnail = thumb\r\npersistence.db.mongo.collection.post.videoId = YTVideoId\r\npersistence.db.mongo.collection.post.pics = pics\r\npersistence.db.mongo.collection.post.likes = likes\r\n\r\npersistence.db.mongo.collection.activity.id = _id\r\npersistence.db.mongo.collection.activity.name = name\r\npersistence.db.mongo.collection.activity.category = category\r\npersistence.db.mongo.collection.activity.tags = tags\r\n\r\n#----------------------NEO4J----------------------------\r\n\r\n#persistence.db.neo4j.URI = bolt://172.16.4.47:7687\r\n#persistence.db.neo4j.username = neo4j\r\n#persistence.db.neo4j.password = neo4j\r\n\r\npersistence.db.neo4j.URI = neo4j+s://214761d1.databases.neo4j.io\r\npersistence.db.neo4j.username = neo4j\r\npersistence.db.neo4j.password = 68LtgZJhIrFLby_dDdHMzXFaggaX9BgGxSQlHVpioDc\r\n\r\npersistence.db.neo4j.entity.user.label=User\r\npersistence.db.neo4j.entity.user.id=id\r\npersistence.db.neo4j.entity.user.username=username\r\n\r\npersistence.db.neo4j.entity.post.label=Post\r\npersistence.db.neo4j.entity.post.id=id\r\npersistence.db.neo4j.entity.post.title=title\r\npersistence.db.neo4j.entity.post.desc=description\r\npersistence.db.neo4j.entity.post.thumb=thumbnail\r\n\r\npersistence.db.neo4j.entity.place.label=Place\r\npersistence.db.neo4j.entity.place.id=id\r\npersistence.db.neo4j.entity.place.name=name\r\n\r\npersistence.db.neo4j.relation.author=AUTHOR\r\npersistence.db.neo4j.relation.location=LOCATION\r\npersistence.db.neo4j.relation.visited=VISITED\r\npersistence.db.neo4j.relation.favourites=FAVOURITES\r\npersistence.db.neo4j.relation.follows=FOLLOWS\r\npersistence.db.neo4j.relation.likes=LIKES\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>ISO-8859-1
+===================================================================
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+--- a/src/main/resources/application.properties	(revision c99096b5cf18147b55c2f661ff6bb2f04968db0d)
++++ b/src/main/resources/application.properties	(date 1642595649185)
+@@ -10,6 +10,9 @@
+ 
+ defaults.user.profilepic =https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Silvio_Berlusconi_1996.jpg/800px-Silvio_Berlusconi_1996.jpg
+ 
++spring.servlet.multipart.enabled = true
++spring.servlet.multipart.max-file-size = 200MB
++spring.servlet.multipart.max-request-size = 200MB
+ 
+ #----------------------MONGO DB----------------------------
+ 
