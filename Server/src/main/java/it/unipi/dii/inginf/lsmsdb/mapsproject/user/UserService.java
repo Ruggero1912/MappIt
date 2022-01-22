@@ -124,10 +124,10 @@ public class UserService {
      * return all the Users in database
      * @return User List or null if there are no users
      */
-    public static List<User> getAllUsers(){
+    /*public static List<User> getAllUsers(){
         UserManager um = UserManagerFactory.getUserManager();
         return um.getAllUser();
-    }
+    }*/
 
     /**
      * return null if it does not exist a user with that id, otherwise returns the associated user
@@ -236,26 +236,40 @@ public class UserService {
     /**
      * returns the list of places that the specified user has added to its favourites
      * @param user the user owner of the favourites list
+     * @param howMany is the quantity to be returned
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    public static List<PlacePreview> getFavouritePlaces(User user){
+    public static List<PlacePreview> getFavouritePlaces(User user, int howMany){
         if(user == null){
             return null;
         }
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        return usm.retrieveFavouritePlaces(user);
+        return usm.retrieveFavouritePlaces(user, howMany);
     }
     /**
      * returns the list of places that the specified user has visited
      * @param user the user owner of the favourites list
+     * @param howMany is the quantity to be returned
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    public static List<PlacePreview> getVisitedPlaces(User user){
+    public static List<PlacePreview> getVisitedPlaces(User user, int howMany){
         if(user == null){
             return null;
         }
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        return usm.retrieveVisitedPlaces(user);
+        return usm.retrieveVisitedPlaces(user, howMany);
     }
     /**
      * adds the specified place to the favourite places of the specified user
@@ -490,16 +504,23 @@ public class UserService {
 
     /**
      * @param userId is the id of the user for which we want to gather the followers
+     * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that follow the one specified")
      */
-    public static List<User> getFollowers(String userId) {
+    public static List<User> getFollowers(String userId, int howMany) {
         if(userId.equals("") || userId == null){
             return null;
         }
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
         List<User> followers = new ArrayList<>();
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
         List<String> followersIds;
-        followersIds = usm.retrieveFollowers(userId);
+        followersIds = usm.retrieveFollowers(userId, howMany);
         for(String id : followersIds){
             User follower = UserService.getUserFromId(id);
             followers.add(follower);
@@ -510,16 +531,23 @@ public class UserService {
 
     /**
      * @param userId is the id of the user for which we want to gather the user followed
+     * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that are followed by the one specified")
      */
-    public static List<User> getFollowedUsers(String userId) {
+    public static List<User> getFollowedUsers(String userId, int howMany) {
         if(userId.equals("") || userId == null){
             return null;
         }
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
         List<User> followedUsers = new ArrayList<>();
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
         List<String> followedUsersIds;
-        followedUsersIds = usm.retrieveFollowedUsers(userId);
+        followedUsersIds = usm.retrieveFollowedUsers(userId, howMany);
         for(String id : followedUsersIds){
             User follower = UserService.getUserFromId(id);
             followedUsers.add(follower);
@@ -530,15 +558,22 @@ public class UserService {
 
     /**
      * @param userId is the id of the user for which we want to gather the liked posts
+     * @param howMany is the quantity to be returned
      * notes = "This method return the list of the posts that are received a like by the user specified")
      */
-    public static List<PostPreview> getLikedPosts(String userId) {
+    public static List<PostPreview> getLikedPosts(String userId, int howMany) {
         if(userId.equals("") || userId == null){
             return null;
         }
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
         List<PostPreview> likedPosts;
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        likedPosts = usm.retrieveLikedPosts(userId);
+        likedPosts = usm.retrieveLikedPosts(userId, howMany);
 
         return likedPosts;
     }

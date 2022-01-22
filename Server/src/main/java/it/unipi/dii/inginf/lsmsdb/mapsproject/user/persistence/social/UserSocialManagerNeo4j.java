@@ -78,7 +78,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<PlacePreview> retrieveFavouritePlaces(User user) {
+    public List<PlacePreview> retrieveFavouritePlaces(User user, int howMany) {
         String id = user.getId();
         List<PlacePreview> favouritePlaces;
 
@@ -87,7 +87,8 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             favouritePlaces = session.readTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_FAVOURITES +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as FavouritePlace";
+                params.put( "howMany", howMany );
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_FAVOURITES +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as FavouritePlace LIMIT $howMany";
                 Result result = tx.run(query,params);
                 ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
@@ -109,7 +110,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<PlacePreview> retrieveVisitedPlaces(User user) {
+    public List<PlacePreview> retrieveVisitedPlaces(User user, int howMany) {
         String id = user.getId();
         List<PlacePreview> visitedPlaces;
 
@@ -118,7 +119,8 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             visitedPlaces = session.readTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace";
+                params.put( "howMany", howMany );
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace LIMIT $howMany";
                 Result result = tx.run(query,params);
                 ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
@@ -327,7 +329,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<String> retrieveFollowers(String userId) {
+    public List<String> retrieveFollowers(String userId, int howMany) {
         List<String> followers;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
@@ -335,7 +337,10 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             followers = session.readTransaction((TransactionWork<List<String>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", userId );
-                String query = "MATCH (followers:"+ User.NEO_USER_LABEL +")-[follows:"+ User.NEO_RELATION_FOLLOWS +"]->(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." + User.NEO_KEY_ID +"= $id RETURN followers.id as FollowersIds";
+                params.put( "howMany", howMany );
+                String query = "MATCH (followers:"+ User.NEO_USER_LABEL +")-[follows:"+ User.NEO_RELATION_FOLLOWS +
+                        "]->(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." +
+                        User.NEO_KEY_ID +"= $id RETURN followers.id as FollowersIds LIMIT $howMany";
                 Result result = tx.run(query,params);
                 ArrayList<String> ids = new ArrayList<>();
                 while(result.hasNext())
@@ -354,7 +359,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<String> retrieveFollowedUsers(String userId) {
+    public List<String> retrieveFollowedUsers(String userId, int howMany) {
         List<String> followedUsers;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
@@ -362,7 +367,10 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             followedUsers = session.readTransaction((TransactionWork<List<String>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", userId );
-                String query = "MATCH (followedUser:"+ User.NEO_USER_LABEL +")<-[follows:"+ User.NEO_RELATION_FOLLOWS +"]-(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." + User.NEO_KEY_ID +"= $id RETURN followedUser.id as FollowedUsersIds";
+                params.put( "howMany", howMany );
+                String query = "MATCH (followedUser:"+ User.NEO_USER_LABEL +")<-[follows:"+ User.NEO_RELATION_FOLLOWS +
+                        "]-(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." +
+                        User.NEO_KEY_ID +"= $id RETURN followedUser.id as FollowedUsersIds LIMIT $howMany";
                 Result result = tx.run(query,params);
                 ArrayList<String> ids = new ArrayList<>();
                 while(result.hasNext())
@@ -382,7 +390,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
 
     @Override
-    public List<PostPreview> retrieveLikedPosts(String userId) {
+    public List<PostPreview> retrieveLikedPosts(String userId, int howMany) {
         List<PostPreview> likedPosts;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
@@ -390,7 +398,10 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             likedPosts = session.readTransaction((TransactionWork<List<PostPreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", userId );
-                String query = "MATCH (targetUser:"+ User.NEO_USER_LABEL +" {"+User.NEO_KEY_ID+": $id})-[likes:"+ User.NEO_RELATION_LIKES +"]->(post:"+ Post.NEO_POST_LABEL +")<-[a:"+Post.NEO_RELATION_AUTHOR+"]-(author:"+User.NEO_USER_LABEL+") RETURN post AS likedPost, author.username AS authorUsername, author.id AS authorId";
+                params.put( "howMany", howMany );
+                String query = "MATCH (targetUser:"+ User.NEO_USER_LABEL +" {"+User.NEO_KEY_ID+": $id})-[likes:"+ User.NEO_RELATION_LIKES
+                        +"]->(post:"+ Post.NEO_POST_LABEL +")<-[a:"+Post.NEO_RELATION_AUTHOR+
+                        "]-(author:"+User.NEO_USER_LABEL+") RETURN post AS likedPost, author.username AS authorUsername, author.id AS authorId LIMIT $howMany";
                 Result result = tx.run(query,params);
                 ArrayList<PostPreview> posts = new ArrayList<>();
                 while(result.hasNext())

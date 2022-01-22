@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 
 public class UserManagerMongoDB implements UserManager{
@@ -48,13 +49,14 @@ public class UserManagerMongoDB implements UserManager{
             return null;
     }
 
+    /*
     @Override
     public List<User> getAllUser(){
         List<User> users = new ArrayList<>();
         FindIterable<Document> iterable = userCollection.find();
         iterable.forEach(doc -> users.add(new User(doc)));
         return users;
-    }
+    }*/
 
     @Override
     public boolean checkDuplicateUsername(String username) {
@@ -140,7 +142,7 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public boolean changePassword(String id, String newPassword){
-        if(id == "" || newPassword == "")
+        if(id.equals("") || id==null || newPassword.equals("") || newPassword==null )
             return false;
         String newEncryptedPassword = UserService.passwordEncryption(newPassword);
         Bson idFilter = Filters.eq(User.KEY_ID, new ObjectId(id));

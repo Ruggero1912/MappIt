@@ -32,16 +32,18 @@ public interface UserSocialManager {
     /**
      * returns a List of places marked as Favourite by the given user, else return null
      * @param user object for whom we want to know the favourite places
+     * @param howMany is the quantity to be returned
      * @return the List f the favourite places if any, else return null
      */
-    List<PlacePreview> retrieveFavouritePlaces(User user);
+    List<PlacePreview> retrieveFavouritePlaces(User user, int howMany);
 
     /**
      * returns the list of places that the specified user has visited
      * @param user the user owner of the favourites list
+     * @param howMany is the quantity to be returned
      * @return list of Places or null if the list is empty or if the user param is null
      */
-    List<PlacePreview> retrieveVisitedPlaces(User user);
+    List<PlacePreview> retrieveVisitedPlaces(User user, int howMany);
 
     /**
      * adds the specified place to the favourite places of the specified user
@@ -105,20 +107,23 @@ public interface UserSocialManager {
 
     /**
      * @param userId is the id of the user for which we want to gather the followers
+     * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that follow the one specified")
      */
-    List<String> retrieveFollowers(String userId);
+    List<String> retrieveFollowers(String userId, int howMany);
 
 
     /**
      * @param userId is the id of the user for which we want to gather the user followed
+     * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that are followed by the one specified")
      */
-    List<String> retrieveFollowedUsers(String userId);
+    List<String> retrieveFollowedUsers(String userId, int howMany);
 
     /**
      * @param userId is the id of the user for which we want to gather the liked posts
+     * @param howMany is the quantity to be returned
      * notes = "This method return the list of the posts that are received a like by the user specified")
      */
-    List<PostPreview> retrieveLikedPosts(String userId);
+    List<PostPreview> retrieveLikedPosts(String userId, int howMany);
 }

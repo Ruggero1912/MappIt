@@ -53,7 +53,7 @@ public class UserSocialManagerNeo4jTest {
     @Test
     void GIVEN_retrieve_favourite_places_WHEN_empty_user_is_passed_THEN_return_empty_list() {
         User usr = mock(User.class);
-        List<PlacePreview> places = user.retrieveFavouritePlaces(usr);
+        List<PlacePreview> places = user.retrieveFavouritePlaces(usr, 3);
         places.isEmpty();
     }
 
@@ -61,7 +61,7 @@ public class UserSocialManagerNeo4jTest {
     @Test
     void GIVEN_retrieve_visited_places_WHEN_empty_user_is_passed_THEN_return_empty_list() {
         User usr = mock(User.class);
-        List<PlacePreview> places = (user.retrieveVisitedPlaces(usr));
+        List<PlacePreview> places = (user.retrieveVisitedPlaces(usr, 3));
         places.isEmpty();
     }
 
