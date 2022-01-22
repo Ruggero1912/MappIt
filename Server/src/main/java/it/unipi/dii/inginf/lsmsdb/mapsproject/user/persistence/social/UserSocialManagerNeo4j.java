@@ -1,19 +1,14 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.DeleteResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.exceptions.DatabaseException;
 import org.neo4j.driver.exceptions.Neo4jException;
 
 import java.time.LocalDateTime;
@@ -21,13 +16,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.neo4j.driver.Values.parameters;
 
 public class UserSocialManagerNeo4j implements UserSocialManager{
 
     private static final Logger LOGGER = Logger.getLogger(UserSocialManagerNeo4j.class.getName());
-
-    private static final ArrayList<String> allowedRelationshipKinds = new ArrayList<>(Arrays.asList("favourite", "visited"));
 
     public UserSocialManagerNeo4j(){
     }
@@ -80,28 +72,30 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during deleting user from id: "+e.getMessage());
             return false;
         }
     }
 
     @Override
-    public List<Place> retrieveFavouritePlaces(User user) {
+    public List<PlacePreview> retrieveFavouritePlaces(User user, int howMany) {
         String id = user.getId();
-        List<Place> favouritePlaces;
+        List<PlacePreview> favouritePlaces;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            favouritePlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
+            favouritePlaces = session.readTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_FAVOURITES +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as FavouritePlace";
+                params.put( "howMany", howMany );
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_FAVOURITES +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as FavouritePlace LIMIT $howMany";
                 Result result = tx.run(query,params);
-                ArrayList<Place> places = new ArrayList<>();
+                ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value place=r.get("FavouritePlace");
-                    Place p = new Place(place);
+                    PlacePreview p = new PlacePreview(place);
                     places.add(p);
                 }
                 return places;
@@ -116,23 +110,24 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<Place> retrieveVisitedPlaces(User user) {
+    public List<PlacePreview> retrieveVisitedPlaces(User user, int howMany) {
         String id = user.getId();
-        List<Place> visitedPlaces;
+        List<PlacePreview> visitedPlaces;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            visitedPlaces = session.readTransaction((TransactionWork<List<Place>>) tx -> {
+            visitedPlaces = session.readTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace";
+                params.put( "howMany", howMany );
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace LIMIT $howMany";
                 Result result = tx.run(query,params);
-                ArrayList<Place> places = new ArrayList<>();
+                ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value place=r.get("VisitedPlace");
-                    Place p = new Place(place);
+                    PlacePreview p = new PlacePreview(place);
                     places.add(p);
                 }
                 return places;
@@ -140,7 +135,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
 
             return visitedPlaces;
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve visited places of a user: "+e.getMessage());
             return null;
         }
     }
@@ -163,6 +158,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during storing favourite place of a user: "+e.getMessage());
             return false;
         }
     }
@@ -183,6 +179,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during deleting favourite place of a user: "+e.getMessage());
             return false;
         }
     }
@@ -205,6 +202,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during storing visited place of a user: "+e.getMessage());
             return false;
         }
     }
@@ -228,6 +226,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         } catch ( Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during adding follower of a user: "+e.getMessage());
             return false;
         }
     }
@@ -247,6 +246,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during deleting follower of a user: "+e.getMessage());
             return false;
         }
     }
@@ -283,7 +283,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return suggestedFollowersIds;
             });
         } catch (Neo4jException ne){
-            System.out.println(ne.getMessage());
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve suggested followers ids: "+ne.getMessage());
             return null;
         }
     }
@@ -323,7 +323,102 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return suggestedPosts;
             });
         } catch (Neo4jException ne){
-            System.out.println(ne.getMessage());
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve suggested posts: "+ne.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> retrieveFollowers(String userId, int howMany) {
+        List<String> followers;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            followers = session.readTransaction((TransactionWork<List<String>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", userId );
+                params.put( "howMany", howMany );
+                String query = "MATCH (followers:"+ User.NEO_USER_LABEL +")-[follows:"+ User.NEO_RELATION_FOLLOWS +
+                        "]->(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." +
+                        User.NEO_KEY_ID +"= $id RETURN followers.id as FollowersIds LIMIT $howMany";
+                Result result = tx.run(query,params);
+                ArrayList<String> ids = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    ids.add(r.get("FollowersIds").asString());
+                }
+                return ids;
+            });
+
+            return followers;
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve followers of a user: "+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> retrieveFollowedUsers(String userId, int howMany) {
+        List<String> followedUsers;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            followedUsers = session.readTransaction((TransactionWork<List<String>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", userId );
+                params.put( "howMany", howMany );
+                String query = "MATCH (followedUser:"+ User.NEO_USER_LABEL +")<-[follows:"+ User.NEO_RELATION_FOLLOWS +
+                        "]-(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." +
+                        User.NEO_KEY_ID +"= $id RETURN followedUser.id as FollowedUsersIds LIMIT $howMany";
+                Result result = tx.run(query,params);
+                ArrayList<String> ids = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    ids.add(r.get("FollowedUsersIds").asString());
+                }
+                return ids;
+            });
+
+            return followedUsers;
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve followed users: "+e.getMessage());
+            return null;
+        }
+    }
+
+
+    @Override
+    public List<PostPreview> retrieveLikedPosts(String userId, int howMany) {
+        List<PostPreview> likedPosts;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            likedPosts = session.readTransaction((TransactionWork<List<PostPreview>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", userId );
+                params.put( "howMany", howMany );
+                String query = "MATCH (targetUser:"+ User.NEO_USER_LABEL +" {"+User.NEO_KEY_ID+": $id})-[likes:"+ User.NEO_RELATION_LIKES
+                        +"]->(post:"+ Post.NEO_POST_LABEL +")<-[a:"+Post.NEO_RELATION_AUTHOR+
+                        "]-(author:"+User.NEO_USER_LABEL+") RETURN post AS likedPost, author.username AS authorUsername, author.id AS authorId LIMIT $howMany";
+                Result result = tx.run(query,params);
+                ArrayList<PostPreview> posts = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    Value postValue = r.get("likedPost");
+                    Value authorId = r.get("authorId");
+                    Value authorUsername = r.get("authorUsername");
+                    PostPreview postPreview = new PostPreview(postValue, authorId, authorUsername);
+                    posts.add(postPreview);
+                }
+                return posts;
+            });
+
+            return likedPosts;
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve liked posts of the specified user: "+e.getMessage());
             return null;
         }
     }
