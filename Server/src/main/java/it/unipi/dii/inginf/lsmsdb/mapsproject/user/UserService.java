@@ -542,4 +542,19 @@ public class UserService {
 
         return likedPosts;
     }
+
+    public static List<User> findUsersFromUsername(String username, int howMany) {
+        if(username.equals("") || username == null){
+            return null;
+        }
+
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
+        UserManager um = UserManagerFactory.getUserManager();
+        return um.retrieveUsersFromUsername(username, howMany);
+    }
 }

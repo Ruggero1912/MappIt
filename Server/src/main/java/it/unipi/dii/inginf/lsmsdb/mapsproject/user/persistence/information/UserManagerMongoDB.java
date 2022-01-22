@@ -188,4 +188,28 @@ public class UserManagerMongoDB implements UserManager{
 
         return results;
     }
+
+    @Override
+    public List<User> retrieveUsersFromUsername(String usernameSuffix, int howMany) {
+        if(usernameSuffix.equals("") || usernameSuffix==null)
+            return null;
+
+        List<User> matchingUsers = new ArrayList<>();
+        Pattern regex = Pattern.compile(usernameSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.eq(User.KEY_USERNAME, regex);
+        MongoCursor<Document> cursor = userCollection.find(suffixFilter).limit(howMany).cursor();
+        if(!cursor.hasNext()){
+            cursor.close();
+            return null;
+        }
+        else{
+            while(cursor.hasNext()){
+                Document userDoc = cursor.next();
+                User user = new User(userDoc);
+                matchingUsers.add(user);
+            }
+            cursor.close();
+            return matchingUsers;
+        }
+    }
 }

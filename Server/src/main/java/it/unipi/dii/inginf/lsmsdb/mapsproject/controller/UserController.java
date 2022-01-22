@@ -413,4 +413,26 @@ public class UserController {
 
 		return result;
 	}
+
+	/**
+	 * @param username is the username suffix from which the method will search
+	 * @param maxQuantity is the quantity of users to be returned
+	 * notes = "This method retrieve users that has an username which is equal or that contains the one given")
+	 */
+	@GetMapping(value = "/user/find", produces = "application/json")
+	public ResponseEntity<?> findUsers(@RequestParam(defaultValue = "username") String username, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+		ResponseEntity<?> result;
+		try{
+			List<User> usersMatching = UserService.findUsersFromUsername(username, maxQuantity);
+			result = ResponseEntity.ok(usersMatching);
+			if(usersMatching==null) {
+				LOGGER.log(Level.WARNING, "Error: could not find any users with the specified username");
+				result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find any users with the specified username\"}");
+			}
+		}catch (Exception e){
+			LOGGER.log(Level.WARNING, "Error: could not find user with that username, an exception has occurred: " + e);
+			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find user with that username, and exception has occurred\"}");
+		}
+		return result;
+	}
 }

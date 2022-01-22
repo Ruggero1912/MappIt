@@ -19,7 +19,7 @@ public interface UserManager {
      * return all the Users in database
      * @return User List or null if there are no users
      */
-    List<User> getAllUser();
+    //List<User> getAllUser();
 
     /**
      * return true if the User with given username already exists, else return false
@@ -79,4 +79,12 @@ public interface UserManager {
      * @return a list of Document containing the user's aggregate values
      */
     List<Document> retrieveMostActiveUsers(String activityFilter, int maxQuantity);
+
+
+    /**
+     * @param username is the username suffix from which the method will search
+     * @param howMany is the quantity of users to be returned
+     * notes = "This method retrieve users that has an username which is equal or that contains the one given")
+     */
+    List<User> retrieveUsersFromUsername(String username, int howMany);
 }
