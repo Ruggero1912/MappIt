@@ -173,7 +173,7 @@ public class PostController {
             List<Post> popularPosts = PostService.getPopularPosts(fromDate, toDate, activityFilter, maxQuantity);
             result = ResponseEntity.status(HttpStatus.OK).body(popularPosts);
         }catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the aggregated value about most most popular posts "+e.getMessage());
             result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting popular posts\"}");
         }
 

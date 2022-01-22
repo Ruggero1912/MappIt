@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
@@ -25,17 +26,19 @@ public class UserController {
 
 	private static final Logger LOGGER = Logger.getLogger( UserController.class.getName() );
 
+
 	/**
 	 * return all the Users in the database
 	 * //@ApiOperation(value = "Get information of every users",
 	 * notes = "This method retrieve information about all the users")
 	 */
+	/*
 	@GetMapping(value = "/user/all", produces = "application/json")
 	public List<User> getUsers() {
 		// here we should check if the current User can access to this information
 		// we need to access to the object of the current user
 		return UserService.getAllUsers();
-	}
+	}*/
 
 	/**
 	 * //@ApiOperation(value = "Get information of the current user",
@@ -140,8 +143,6 @@ public class UserController {
 	@PostMapping(value = "/user/follow/{id}", produces = "application/json")
 	public ResponseEntity<?> followUser(@PathVariable (value = "id") String userToFollowId, @RequestBody(required = false) LocalDateTime localDateTime) {
 		ResponseEntity<?> result;
-
-
 
 		// the time of the visit will be considered now if the localDateTime parameter is null
 		if(localDateTime == null){
@@ -267,7 +268,7 @@ public class UserController {
 			List<Document> aggregatedValues = UserService.mostActiveUsersByActivity(activityFilter, maxQuantity);
 			result = ResponseEntity.status(HttpStatus.OK).body(aggregatedValues);
 		}catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the aggregated value about most active users "+e.getMessage());
 			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting the aggregated value about most active users\"}");
 		}
 

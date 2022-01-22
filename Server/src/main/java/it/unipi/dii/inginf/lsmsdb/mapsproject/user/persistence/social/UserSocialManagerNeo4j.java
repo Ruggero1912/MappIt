@@ -1,19 +1,14 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social;
 
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.DeleteResult;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.exceptions.DatabaseException;
 import org.neo4j.driver.exceptions.Neo4jException;
 
 import java.time.LocalDateTime;
@@ -21,13 +16,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.neo4j.driver.Values.parameters;
 
 public class UserSocialManagerNeo4j implements UserSocialManager{
 
     private static final Logger LOGGER = Logger.getLogger(UserSocialManagerNeo4j.class.getName());
-
-    private static final ArrayList<String> allowedRelationshipKinds = new ArrayList<>(Arrays.asList("favourite", "visited"));
 
     public UserSocialManagerNeo4j(){
     }
@@ -80,6 +72,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during deleting user from id: "+e.getMessage());
             return false;
         }
     }
@@ -163,6 +156,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during storing favourite place of a user: "+e.getMessage());
             return false;
         }
     }
@@ -183,6 +177,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during deleting favourite place of a user: "+e.getMessage());
             return false;
         }
     }
@@ -205,6 +200,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during storing visited place of a user: "+e.getMessage());
             return false;
         }
     }
@@ -228,6 +224,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         } catch ( Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during adding follower of a user: "+e.getMessage());
             return false;
         }
     }
@@ -247,6 +244,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return true;
             });
         }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during deleting follower of a user: "+e.getMessage());
             return false;
         }
     }
@@ -283,7 +281,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return suggestedFollowersIds;
             });
         } catch (Neo4jException ne){
-            System.out.println(ne.getMessage());
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve suggested followers ids: "+ne.getMessage());
             return null;
         }
     }
@@ -323,7 +321,7 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 return suggestedPosts;
             });
         } catch (Neo4jException ne){
-            System.out.println(ne.getMessage());
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve suggested posts: "+ne.getMessage());
             return null;
         }
     }
