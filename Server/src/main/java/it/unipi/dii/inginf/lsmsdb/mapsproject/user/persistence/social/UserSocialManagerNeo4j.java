@@ -327,4 +327,90 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
             return null;
         }
     }
+
+    @Override
+    public List<String> retrieveFollowers(String userId) {
+        List<String> followers;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            followers = session.readTransaction((TransactionWork<List<String>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", userId );
+                String query = "MATCH (followers:"+ User.NEO_USER_LABEL +")-[follows:"+ User.NEO_RELATION_FOLLOWS +"]->(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." + User.NEO_KEY_ID +"= $id RETURN followers.id as FollowersIds";
+                Result result = tx.run(query,params);
+                ArrayList<String> ids = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    ids.add(r.get("FollowersIds").asString());
+                }
+                return ids;
+            });
+
+            return followers;
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve followers of a user: "+e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<String> retrieveFollowedUsers(String userId) {
+        List<String> followedUsers;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            followedUsers = session.readTransaction((TransactionWork<List<String>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", userId );
+                String query = "MATCH (followedUser:"+ User.NEO_USER_LABEL +")<-[follows:"+ User.NEO_RELATION_FOLLOWS +"]-(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." + User.NEO_KEY_ID +"= $id RETURN followedUser.id as FollowedUsersIds";
+                Result result = tx.run(query,params);
+                ArrayList<String> ids = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    ids.add(r.get("FollowedUsersIds").asString());
+                }
+                return ids;
+            });
+
+            return followedUsers;
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve followed users: "+e.getMessage());
+            return null;
+        }
+    }
+
+
+    @Override
+    public List<PostPreview> retrieveLikedPosts(String userId) {
+        List<PostPreview> likedPosts;
+
+        try ( Session session = Neo4jConnection.getDriver().session() )
+        {
+            likedPosts = session.readTransaction((TransactionWork<List<PostPreview>>) tx -> {
+                Map<String,Object> params = new HashMap<>();
+                params.put( "id", userId );
+                String query = "MATCH (targetUser:"+ User.NEO_USER_LABEL +" {"+User.NEO_KEY_ID+": $id})-[likes:"+ User.NEO_RELATION_LIKES +"]->(post:"+ Post.NEO_POST_LABEL +")<-[a:"+Post.NEO_RELATION_AUTHOR+"]-(author:"+User.NEO_USER_LABEL+") RETURN post AS likedPost, author.username AS authorUsername, author.id AS authorId";
+                Result result = tx.run(query,params);
+                ArrayList<PostPreview> posts = new ArrayList<>();
+                while(result.hasNext())
+                {
+                    Record r = result.next();
+                    Value postValue = r.get("likedPost");
+                    Value authorId = r.get("authorId");
+                    Value authorUsername = r.get("authorUsername");
+                    PostPreview postPreview = new PostPreview(postValue, authorId, authorUsername);
+                    posts.add(postPreview);
+                }
+                return posts;
+            });
+
+            return likedPosts;
+        }catch (Exception e){
+            LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve liked posts of the specified user: "+e.getMessage());
+            return null;
+        }
+    }
 }

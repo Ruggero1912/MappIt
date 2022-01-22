@@ -100,4 +100,24 @@ public interface UserSocialManager {
      * @return a list of PostPreview
      */
     List<PostPreview> getSuggestedPosts(User user, int howMany);
+
+
+    /**
+     * @param userId is the id of the user for which we want to gather the followers
+     * notes = "This method return the list of the users that follow the one specified")
+     */
+    List<String> retrieveFollowers(String userId);
+
+
+    /**
+     * @param userId is the id of the user for which we want to gather the user followed
+     * notes = "This method return the list of the users that are followed by the one specified")
+     */
+    List<String> retrieveFollowedUsers(String userId);
+
+    /**
+     * @param userId is the id of the user for which we want to gather the liked posts
+     * notes = "This method return the list of the posts that are received a like by the user specified")
+     */
+    List<PostPreview> retrieveLikedPosts(String userId);
 }

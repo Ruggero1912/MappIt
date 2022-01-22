@@ -486,4 +486,59 @@ public class UserService {
         UserManager um = UserManagerFactory.getUserManager();
         return um.retrieveMostActiveUsers(activityFilter, maxQuantity);
     }
+
+    /**
+     * @param userId is the id of the user for which we want to gather the followers
+     * notes = "This method return the list of the users that follow the one specified")
+     */
+    public static List<User> getFollowers(String userId) {
+        if(userId.equals("") || userId == null){
+            return null;
+        }
+        List<User> followers = new ArrayList<>();
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        List<String> followersIds;
+        followersIds = usm.retrieveFollowers(userId);
+        for(String id : followersIds){
+            User follower = UserService.getUserFromId(id);
+            followers.add(follower);
+        }
+
+        return followers;
+    }
+
+    /**
+     * @param userId is the id of the user for which we want to gather the user followed
+     * notes = "This method return the list of the users that are followed by the one specified")
+     */
+    public static List<User> getFollowedUsers(String userId) {
+        if(userId.equals("") || userId == null){
+            return null;
+        }
+        List<User> followedUsers = new ArrayList<>();
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        List<String> followedUsersIds;
+        followedUsersIds = usm.retrieveFollowedUsers(userId);
+        for(String id : followedUsersIds){
+            User follower = UserService.getUserFromId(id);
+            followedUsers.add(follower);
+        }
+
+        return followedUsers;
+    }
+
+    /**
+     * @param userId is the id of the user for which we want to gather the liked posts
+     * notes = "This method return the list of the posts that are received a like by the user specified")
+     */
+    public static List<PostPreview> getLikedPosts(String userId) {
+        if(userId.equals("") || userId == null){
+            return null;
+        }
+        List<PostPreview> likedPosts;
+        UserSocialManager usm = UserSocialManagerFactory.getUserManager();
+        likedPosts = usm.retrieveLikedPosts(userId);
+
+        return likedPosts;
+    }
 }
