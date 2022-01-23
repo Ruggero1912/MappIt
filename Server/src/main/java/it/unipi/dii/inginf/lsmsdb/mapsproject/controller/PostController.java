@@ -148,10 +148,12 @@ public class PostController {
     // most popular posts for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/post/most-popular", produces = "application/json")
-    public ResponseEntity<?> popularPosts(@RequestParam(name = "from Date", required = false, defaultValue = "1-Jan-2021") String fromDateString, @RequestParam(name = "to Date", required = false, defaultValue = "today") String toDateString,
+    public ResponseEntity<?> popularPosts(@RequestParam(name = "from Date", required = false, defaultValue = "2021-01-01") String fromDateString, @RequestParam(name = "to Date", required = false, defaultValue = "today") String toDateString,
                                           @RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
         Date fromDate, toDate;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
 
         //handle toDate value empty
         if(toDateString==null || toDateString.equals("today")){
@@ -159,20 +161,20 @@ public class PostController {
         }
         //otherwise we need to cast from String value to Date obj
         else{
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+
             try {
-                toDate = formatter.parse(fromDateString);
+                toDate = formatter.parse(toDateString);
             } catch (ParseException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect toDate format, please specify dd-MMM-yyy (1-Jan-2021)\"}");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect toDate format, please specify YYYY-MM-DD (2021-01-01)\"}");
             }
         }
         //fromDate value empty is handled by default value inside @RequestParam,
         //we just need to cast it from String to Date obj
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
         try {
             fromDate = formatter.parse(fromDateString);
         } catch (ParseException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect fromDate format, please specify dd-MMM-yyy (1-Jan-2021)\"}");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect fromDate format, please specify YYYY-MM-DD (2021-01-01)\"}");
         }
 
         try {

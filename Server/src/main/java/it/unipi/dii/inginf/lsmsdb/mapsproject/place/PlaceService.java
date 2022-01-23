@@ -1,10 +1,12 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.activity.ActivityService;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.UndefinedActivityException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information.PlaceManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManagerFactory;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
 import java.util.Arrays;
@@ -13,6 +15,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class PlaceService {
+
+    private static final Logger LOGGER = Logger.getLogger(PlaceService.class.getName());
 
     public static final String ORDER_CRITERIA_DISTANCE = "distance";
     public static final String ORDER_CRITERIA_POPULARITY = "popularity";
@@ -96,10 +100,12 @@ public class PlaceService {
      * @param maxQuantity: the maximum number of places instances to be returned
      * @return a list Place objects
      */
-    public static List<Place> getPopularPlaces(String activityFilter, int maxQuantity) {
+    public static List<Place> getPopularPlaces(String activityFilter, int maxQuantity) throws UndefinedActivityException {
         if(!activityFilter.equals(noActivityFilterKey)){
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
-                activityFilter = noActivityFilterKey;
+                LOGGER.info("The specified activity '" + activityFilter + "' is not recognised");
+                throw new UndefinedActivityException("the specified activity '" + "' was not recognised");
+                //activityFilter = noActivityFilterKey;
             }
         }
         if(maxQuantity <= 0){

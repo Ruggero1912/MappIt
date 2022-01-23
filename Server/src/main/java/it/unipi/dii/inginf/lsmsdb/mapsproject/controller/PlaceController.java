@@ -3,6 +3,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.UndefinedActivityException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Coordinate;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
@@ -88,7 +89,10 @@ public class PlaceController {
         try {
             List<Place> popularPlaces = PlaceService.getPopularPlaces(activityFilter, maxQuantity);
             result = ResponseEntity.status(HttpStatus.OK).body(popularPlaces);
-        }catch (Exception e) {
+        }catch(UndefinedActivityException u){
+            result = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\" : \"The specified activity '" + activityFilter + "' was not recognised!\"}");
+        }
+        catch (Exception e) {
             e.printStackTrace();
             result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting popular places\"}");
         }
