@@ -2,8 +2,11 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
@@ -475,6 +478,103 @@ public class UserController {
 			LOGGER.log(Level.WARNING, "Error: could not parse post list, an exception has occurred: " + e);
 			result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not parse post list\" " +
 					"\"Reason\" : \""+e.getMessage()+"\"}");
+		}
+
+		return result;
+	}
+
+	// add to favourite a place (wants the id of the place)
+	@ApiOperation(value = "adds the specified place to the favourite places of the currently logged in user")
+	@PostMapping(value = "user/places/{placeId}/favourites", produces = "application/json")
+	public ResponseEntity<?> addNewPlaceToFavourites(@PathVariable(name="placeId") String placeId) {
+		ResponseEntity<?> result;
+
+		try {
+			//should retrieve the place object (and check if it exists)
+			Place place = PlaceService.getPlaceFromId(placeId);
+			if (place == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified place does not exist\"}");
+			}
+			//retrieve the current user
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User u = userSpring.getApplicationUser();
+			UserService.addPlaceToFavourites(u, place);
+			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly added "+place.getName()+" to the visited place\"}");
+		}catch (DatabaseErrorException e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in querying Databases\"}");
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
+		}
+
+		return result;
+	}
+
+	// remove from favourite a place (wants the id of the place)
+	@ApiOperation(value = "removes the specified place to the favourite places of the currently logged in user")
+	@DeleteMapping(value = "user/places/{placeId}/favourites", produces = "application/json")
+	public ResponseEntity<?> removePlaceFromFavourites(@PathVariable(name="placeId") String placeId) {
+		ResponseEntity<?> result;
+
+		try {
+			//should retrieve the place object (and check if it exists)
+			Place place = PlaceService.getPlaceFromId(placeId);
+			if (place == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified place does not exist\"}");
+			}
+			//retrieve the current user
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User u = userSpring.getApplicationUser();
+			UserService.removePlaceFromFavourites(u, place);
+			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" "+place.getName()+" correctly removed from visited place\"}");
+		}catch (DatabaseErrorException e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in querying Databases\"}");
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
+		}
+
+		return result;
+	}
+
+	// add to visited a place (wants the id of the place)
+	@ApiOperation(value = "adds the specified place to the visited places of the currently logged in user")
+	@PostMapping(value = "user/places/{placeId}/visit", produces = "application/json")
+	public ResponseEntity<?> addNewPlaceToVisited(@PathVariable(name="placeId") String placeId, @RequestBody(required = false) LocalDateTime localDateTime) {
+		ResponseEntity<?> result;
+
+		if(localDateTime == null){
+			// the time of the visit will be considered now
+			localDateTime = LocalDateTime.now();
+		}
+		try {
+			//should retrieve the place object (and check if it exists)
+			Place place = PlaceService.getPlaceFromId(placeId);
+			if (place == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified place does not exist\"}");
+			}
+			//retrieve the current user
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User u = userSpring.getApplicationUser();
+			UserService.addPlaceToVisited(u, place, localDateTime);
+			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly added the visited place\"}");
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
+		}
+
+		return result;
+	}
+
+	// suggested places for the current user
+	@ApiOperation(value = "returns a list of suggested places for the current user")
+	@GetMapping(value = "user/places/suggested", produces = "application/json")
+	public ResponseEntity<?> suggestedPlaces() {
+		ResponseEntity<?> result;
+		try {
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			List<Place> suggestedPlaces = PlaceService.getSuggestedPlaces(currentUser);
+			result = ResponseEntity.status(HttpStatus.OK).body(suggestedPlaces);
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested places\"}");
 		}
 
 		return result;
