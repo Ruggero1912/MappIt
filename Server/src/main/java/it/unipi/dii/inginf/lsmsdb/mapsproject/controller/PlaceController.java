@@ -73,6 +73,8 @@ public class PlaceController {
             }
 
             result = ResponseEntity.status(HttpStatus.OK).body(nearbyPlaces);
+        }catch(UndefinedActivityException u){
+            result = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\" : \"The specified activity '" + activityFilter + "' was not recognised!\"}");
         }catch (Exception e) {
             result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting nearby places\"}");
         }

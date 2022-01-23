@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.io.FileNotFoundException;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "MapsProject", version = "1.0", description = "Simple API for Mappit"))
+@OpenAPIDefinition(info = @Info(title = "MapsProject", version = "1.0", description = "APIs for Mappit"))
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
 
 public class MapsApplication {

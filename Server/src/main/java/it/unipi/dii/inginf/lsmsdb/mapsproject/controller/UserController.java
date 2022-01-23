@@ -148,7 +148,7 @@ public class UserController {
 	 * //@ApiOperation(value = "Make a user follow another user",
 	 * notes = "This method makes and user follow another user")
 	 */
-	@PostMapping(value = "/user/follow/{id}", produces = "application/json")
+	@PostMapping(value = "/user/follower/{id}", produces = "application/json")
 	public ResponseEntity<?> followUser(@PathVariable (value = "id") String userToFollowId, @RequestBody(required = false) LocalDateTime localDateTime) {
 		ResponseEntity<?> result;
 
@@ -188,7 +188,7 @@ public class UserController {
 	 * //@ApiOperation(value = "Make a user unfollow another user",
 	 * notes = "This method makes and user unfollow another user")
 	 */
-	@DeleteMapping(value = "/user/follow/{id}", produces = "application/json")
+	@DeleteMapping(value = "/user/follower/{id}", produces = "application/json")
 	public ResponseEntity<?> unfollowUser(@PathVariable (value = "id") String userToUnfollowId) {
 		ResponseEntity<?> result;
 
@@ -221,7 +221,7 @@ public class UserController {
 
 	// suggested followers for the current user
 	@ApiOperation(value = "returns a list of suggested followers for the current user")
-	@GetMapping(value = "/user/follow/suggestions", produces = "application/json")
+	@GetMapping(value = "/user/followers/suggestions", produces = "application/json")
 	public ResponseEntity<?> suggestedFollowers() {
 		ResponseEntity<?> result;
 		try {
@@ -267,7 +267,7 @@ public class UserController {
 
 	// most active users in therms of posts written, given an activity
 	@ApiOperation(value = "returns an aggregated result containing list of users by activity and their # of posts")
-	@GetMapping(value = "/user/most-active", produces = "application/json")
+	@GetMapping(value = "/users/most-active", produces = "application/json")
 	public ResponseEntity<?> mostActiveUsers(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
 		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User currentUser = userSpring.getApplicationUser();
@@ -351,7 +351,7 @@ public class UserController {
 	// places that you visited
 	// places visited by a given user
 	@ApiOperation(value = "returns the list of visited places for the specified user or for the current if no userId is specified")
-	@GetMapping(value = "/places/visited", produces = "application/json")
+	@GetMapping(value = "/user/places/visited", produces = "application/json")
 	public ResponseEntity<?> visitedPlaces(@RequestParam( required = false, defaultValue = "current") String userId, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 		User u;
@@ -376,7 +376,7 @@ public class UserController {
 	// your favourite places
 	// places that are favourites of a given user (it should receive the id of the user)
 	@ApiOperation(value = "returns the list of favourite places for the specified user or for the current if no userId is specified")
-	@GetMapping(value = "/places/favourites", produces = "application/json")
+	@GetMapping(value = "/user/places/favourites", produces = "application/json")
 	public ResponseEntity<?> favouritePlaces(@RequestParam( required = false, defaultValue = "current") String userId, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 		User u;
@@ -433,7 +433,7 @@ public class UserController {
 	 * @param maxQuantity is the quantity of users to be returned
 	 * notes = "This method retrieve users that has an username which is equal or that contains the one given")
 	 */
-	@GetMapping(value = "/user/find", produces = "application/json")
+	@GetMapping(value = "/users/find", produces = "application/json")
 	public ResponseEntity<?> findUsers(@RequestParam(defaultValue = "username") String username, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 		try{
@@ -451,7 +451,7 @@ public class UserController {
 	}
 
 	@ApiOperation(value = "returns the list of posts of the specified user or for the current if no userId is specified")
-	@GetMapping(value = "/post/list", produces = "application/json")
+	@GetMapping(value = "user/posts/published", produces = "application/json")
 	public ResponseEntity<?> getPostsFromUser(@RequestParam( defaultValue = "current") String userId) {
 		ResponseEntity<?> result;
 		User u;
