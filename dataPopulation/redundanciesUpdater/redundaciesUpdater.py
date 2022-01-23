@@ -1,3 +1,5 @@
+from posts.postFactory import PostFactory
+from posts.Post import Post
 from places.placeFactory import PlaceFactory
 from users.userFactory import UserFactory
 from utilities.utils import Utils
@@ -9,6 +11,8 @@ from neo4j import (
     READ_ACCESS
 )
 
+import pymongo
+
 from datetime import datetime
 
 class RedundanciesUpdater:
@@ -16,6 +20,11 @@ class RedundanciesUpdater:
     LOGGER  = Utils.start_logger("RedundaciesUpdater")
 
     DELETED_USERS_MINIMUM_THRESHOLD = Utils.load_config_integer("DELETED_USERS_MINIMUM_THRESHOLD")
+
+    CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
+    DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
+    POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
+    PLACES_COLLECTION_NAME      = Utils.load_config("COLLECTION_NAME_PLACES")
 
     neo_driver = NeoConnectionManager.get_static_driver()
 
@@ -158,4 +167,76 @@ class RedundanciesUpdater:
             places_docs_updated += modified_counter
         Utils.temporary_log()
         print(f"'__update_favourites_counters': Updated {places_docs_updated} places documents")
+        return places_docs_updated
+
+    def __update_likes_counters(self):
+        modified_posts_docs = self.__update_likes_counters_in_post_documents()
+        if modified_posts_docs > 0:
+            self.__update_total_likes_counters_in_place_documents()
+        pass
+
+    def __update_likes_counters_in_post_documents(self):
+        """
+        updates the likes counters of all the users of the platform:
+        - retrieves the number of likes of each :Post node and sets the obtained value in the Mongo Collection Post.likes
+        """
+        query = f"""
+            MATCH (p:{NeoConnectionManager.NEO4J_POST_LABEL})
+            WITH p as posts
+            MATCH (posts)<-[l:{NeoConnectionManager.NEO4J_RELATION_USER_LIKES_POST}]-()
+            RETURN posts, COUNT(l) AS numLikes
+            """
+        session = RedundanciesUpdater.neo_driver.session(default_access_mode=READ_ACCESS)
+        ret = session.run(query)
+        #result_summary = ret.consume()
+        results = ret.data()
+        session.close()
+        posts_docs_updated = 0
+        for row in results:
+            post_infos = row['posts']
+            likes_num = row['numLikes']
+            if not isinstance(likes_num, int):
+                print(f"[x] likes_num attribute is not int! type: {type(likes_num)} | content: {likes_num}")
+                exit()
+            if not isinstance(post_infos, dict):
+                print(f"[x] ['posts'] attribute is not dict! type: {type(post_infos)} | content: {post_infos}")
+                exit()
+            post_id         = post_infos.get("id")
+            #post_title     = post_infos.get("title")
+            #here it should call a method that updates likesCounter of each post
+            modified_counter = PostFactory.set_likes_counter(post_id, likes_num)
+            if(modified_counter == 1):
+                Utils.temporary_log(f"PostFactory.set_likes_counter for the post {post_id} has modified {modified_counter} rows")
+            posts_docs_updated += modified_counter
+        Utils.temporary_log()
+        print(f"'__update_likes_counters_in_post_documents': Updated {posts_docs_updated} Post documents")
+        return posts_docs_updated
+
+    def __update_total_likes_counters_in_place_documents(self):
+        """
+        counts the total likes attribute of each place in the collection Place
+        - it starts from the collection Post and in it groups by place_id, then project the place_id and { $sum : "$likes"} as "totalLikes"
+        - for each row of the result set, updates the Place collection with the new value calculated for "totalLikes"
+        :returns the number of modified Place documents 
+        """
+        database = pymongo.MongoClient(RedundanciesUpdater.CONNECTION_STRING)[RedundanciesUpdater.DATABASE_NAME]
+        posts_collection = database.get_collection(RedundanciesUpdater.POSTS_COLLECTION_NAME)
+        pipeline =  [{
+                        '$group': {
+                            '_id': f'${Post.KEY_PLACE}', 
+                            'likes': {
+                                '$sum': f'${Post.KEY_LIKES_COUNTER}'
+                            }
+                        }
+                    }]
+        cur = posts_collection.aggregate(pipeline=pipeline)
+        places_docs_updated = 0
+        for place in list(cur):
+            place_id          = place['_id']
+            place_total_likes = place['likes']
+            modified_rows = PlaceFactory.set_total_likes_counter(place_id, place_total_likes)
+            Utils.temporary_log(f"PlaceFactory.set_total_likes_counter for the place {place_id} has modified {modified_rows} rows")
+            places_docs_updated += modified_rows
+        Utils.temporary_log()
+        print(f"'__update_total_likes_counters_in_place_documents': Updated {places_docs_updated} Place documents")
         return places_docs_updated

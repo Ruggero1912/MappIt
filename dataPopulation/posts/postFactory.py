@@ -52,6 +52,20 @@ class PostFactory:
         PlaceFactory.increment_aggregated_likes_counter(place_id)     
         return ret.modified_count
 
+    def set_likes_counter(post_id : str, value : int):
+        """
+        sets the likes counter attribute to the given value
+        - :param num should be a positive number
+        - :returns the modified_count 
+        """
+        if(value < 0):
+            PostFactory.LOGGER.warning(f"[x] 'set_likes_counter': received a negative number for the likesCounter! num: {value} ")
+            return 0
+        if(value == 0):
+            PostFactory.LOGGER.debug(f"[-] 'set_likes_counter': received 0 as likesCounter for the post_id: {post_id} ")
+        ret = PostFactory.POSTS_COLLECTION.update_one(filter={Post.KEY_ID : ObjectId(str(post_id))}, update={"$set":{Post.KEY_LIKES_COUNTER : value}})
+        return ret.modified_count
+
     def get_random_ids(how_many : int = 10) -> list :
         """
         returns a list of random post_ids
