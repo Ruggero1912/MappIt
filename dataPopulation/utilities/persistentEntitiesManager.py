@@ -185,8 +185,8 @@ class PersistentEntitiesManager:
         """
         session = PersistentEntitiesManager.neo_driver.session(default_access_mode=WRITE_ACCESS)
         ret = session.run(f"MATCH (p:{PersistentEntitiesManager.NEO4J_PLACE_LABEL} WHERE p.name=$place_name AND p.id<>$place_id) DETACH DELETE p", {"place_name":place_name, "place_id":place_id})
-        session.close()
         result_summary = ret.consume()
+        session.close()
         return result_summary.counters.nodes_deleted
 
     def delete_places_duplicate_nodes():

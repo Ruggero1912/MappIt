@@ -178,8 +178,8 @@ class FlickrPostFactory:
                     CREATE (a)-[:"""+FlickrPostFactory.NEO4J_RELATION_POST_PLACE+"""]->(p)
                 """
         ret = session.run(query, {"id": str(post_id), "title": title, "description": desc, "thumbnail" : thumbnail})
-        session.close()
         result_summary = ret.consume()
+        session.close()
         UserFactory.user_visited_place(str(author_id), str(place_id), datetime_visit=Utils.convert_date_to_datetime(date_visit))
         return result_summary
 

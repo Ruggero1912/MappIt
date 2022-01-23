@@ -48,6 +48,10 @@ class NeoConnectionManager:
             print("[+] closing neo_driver connection...")
             self.neo_driver.close()
 
+    def close_static_neo_driver():
+        neo_driver = NeoConnectionManager.get_static_driver()
+        if isinstance(neo_driver, Neo4jDriver):
+            neo_driver.close()
 
 neo_connection_obj = NeoConnectionManager()
 NeoConnectionManager.set_static_obj(neo_connection_obj)

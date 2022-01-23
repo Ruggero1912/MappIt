@@ -4,6 +4,7 @@ from textwrap import *
 
 from YTposts.YTPostFactory import YTPostFactory
 from FlickrPosts.FlickrPostFactory import FlickrPostFactory
+from utilities.neoConnectionManager import NeoConnectionManager
 from places.osmPlaceFactory import OsmPlaceFactory
 from places.placeFactory import PlaceFactory
 from places.place import Place
@@ -94,6 +95,8 @@ class CommandPrompt:
         if not hasattr(self, "thread"): return
         if isinstance(self.thread, Thread):
             self.run = False
+            print("Going to close the static neo_driver instance...")
+            NeoConnectionManager.close_static_neo_driver()
             del self.thread
             print("CommandPrompt terminated. press ENTER to quit")
 
