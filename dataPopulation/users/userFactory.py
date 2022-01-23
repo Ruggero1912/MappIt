@@ -233,7 +233,7 @@ class UserFactory:
 
         newvalues = { "$set": { UserFactory.USER_YT_CHANNEL_ID_KEY : channel_id } }
 
-        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : user_id}, update=newvalues)
+        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : ObjectId(user_id)}, update=newvalues)
 
         if ret.modified_count == 1:
             return True
