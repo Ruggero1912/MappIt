@@ -52,7 +52,7 @@ class RedundanciesUpdater:
             places_doc_updated  = self.__update_favourites_counters()
 
         if update_likes:
-            posts_doc_updated   = -1    #TODO: update_likes_counter
+            posts_doc_updated   = self.__update_likes_counters()
 
         end_time = datetime.now()
 
