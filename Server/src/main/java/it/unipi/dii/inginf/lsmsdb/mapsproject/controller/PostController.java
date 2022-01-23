@@ -147,7 +147,7 @@ public class PostController {
 
     // most popular posts for given category
     @ApiOperation(value = "returns a list of popular places")
-    @GetMapping(value = "/post/most-popular", produces = "application/json")
+    @GetMapping(value = "/posts/most-popular", produces = "application/json")
     public ResponseEntity<?> popularPosts(@RequestParam(name = "from Date", required = false, defaultValue = "2021-01-01") String fromDateString, @RequestParam(name = "to Date", required = false, defaultValue = "today") String toDateString,
                                           @RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
@@ -191,7 +191,7 @@ public class PostController {
 
     // most popular posts for given category
     @ApiOperation(value = "returns an aggregated result containing list of year-activity-number of posts")
-    @GetMapping(value = "/post/per-year", produces = "application/json")
+    @GetMapping(value = "/posts/per-year", produces = "application/json")
     public ResponseEntity<?> postsPerYearAndActivity(@RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
         UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User currentUser = userSpring.getApplicationUser();

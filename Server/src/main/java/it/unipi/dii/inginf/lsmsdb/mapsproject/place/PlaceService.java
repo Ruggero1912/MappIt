@@ -55,13 +55,15 @@ public class PlaceService {
      * @param activityFilter the activity that the returned Places should fit
      * @return a list of Place object, else null if empty set
      */
-    public static List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderBy, String activityFilter) {
+    public static List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderBy, String activityFilter) throws UndefinedActivityException {
         if( ! orderByCriterias.contains(orderBy)){
             orderBy = defaultOrderByCriteria;
         }
         if(!activityFilter.equals(noActivityFilterKey)){
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
-                activityFilter = noActivityFilterKey;
+                LOGGER.info("The specified activity '" + activityFilter + "' is not recognised");
+                throw new UndefinedActivityException("the specified activity '" +activityFilter+ "' was not recognised");
+                //activityFilter = noActivityFilterKey;
             }
         }
         if(radius <= 0.0){
@@ -76,7 +78,7 @@ public class PlaceService {
         }
     }
 
-    public static List<Place> getPlacesInRadius(Coordinate coordinate, Double radius, String orderBy) {
+    public static List<Place> getPlacesInRadius(Coordinate coordinate, Double radius, String orderBy) throws UndefinedActivityException {
         return getPlacesInRadius(coordinate, radius, orderBy, noActivityFilterKey);
     }
 
@@ -104,7 +106,7 @@ public class PlaceService {
         if(!activityFilter.equals(noActivityFilterKey)){
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
                 LOGGER.info("The specified activity '" + activityFilter + "' is not recognised");
-                throw new UndefinedActivityException("the specified activity '" + "' was not recognised");
+                throw new UndefinedActivityException("the specified activity '" +activityFilter+ "' was not recognised");
                 //activityFilter = noActivityFilterKey;
             }
         }

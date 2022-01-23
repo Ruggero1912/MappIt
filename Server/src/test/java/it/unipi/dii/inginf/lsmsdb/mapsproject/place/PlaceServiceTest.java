@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.place;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.UndefinedActivityException;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,12 @@ public class PlaceServiceTest {
         Coordinate coord = new Coordinate(43.6949891,10.3944083 );
         Double radius = 10.0;
         String orderBy = PlaceService.defaultOrderByCriteria;
-        List<Place> places = PlaceService.getPlacesInRadius(coord, radius, orderBy);
+        List<Place> places = null;
+        try {
+            places = PlaceService.getPlacesInRadius(coord, radius, orderBy);
+        } catch (UndefinedActivityException e) {
+            e.printStackTrace();
+        }
         for(Place p : places){
             System.out.println(p.toString());
         }
