@@ -1,5 +1,6 @@
 from platform import node
 from neo4j import (
+    READ_ACCESS,
     GraphDatabase,
     WRITE_ACCESS,
 )
@@ -204,3 +205,81 @@ class PersistentEntitiesManager:
             if nodes_deleted > 0:
                 print(f"[+] Deleted {nodes_deleted} duplicate nodes for the place {place_name} (id : {place_id})")
         print(f"[+] places iteration concluded. Deleted {deleted} places in total")
+
+    def find_spare_places_nodes():
+        """
+        returns a list of places that are present in Neo4j but not in MongoDB
+        """
+        neo_spare_nodes = []
+
+        places_dicts = PlaceFactory.load_places(0)
+        places_ids = []
+        for place_dict in places_dicts:
+            places_ids.append(str(place_dict["_id"]))
+        session = PersistentEntitiesManager.neo_driver.session(default_access_mode=READ_ACCESS)
+        ret = session.run(f"MATCH (p:{PersistentEntitiesManager.NEO4J_PLACE_LABEL}) RETURN p")
+        places_nodes = ret.data()
+        session.close()
+        for place_row in places_nodes:
+            place_node = place_row['p']
+            assert isinstance(place_node, dict)
+            if 'id' not in place_node:
+                print("Did not found the key 'id' in the Places keys")
+                print(place_node.keys())
+                exit()
+            neo_place_id = place_node['id']
+            if neo_place_id not in places_ids:
+                neo_spare_nodes.append(neo_place_id)
+                print(f"[!] The Neo4j Place node '{neo_place_id}' was not found in MongoDB")
+        print()
+        print(f"Found {len(neo_spare_nodes)} nodes that are present in Neo4j but not in Mongo")
+
+        print(f"the length of mongo places_ids array is {len(places_ids)} | the len of nodes array in Neo is {len(places_nodes)}")
+        return neo_spare_nodes
+
+    def find_spare_posts_nodes():
+        """
+        returns a list of posts that are present in Neo4j but not in MongoDB
+        - also the list of ids of posts that are present in Mongo but not in Neo4j
+        """
+        neo_spare_nodes = []
+        mongo_spare_nodes = []
+
+        posts_dicts = PersistentEntitiesManager.MONGO_DATABASE[PersistentEntitiesManager.POSTS_COLLECTION_NAME].find()
+        posts_ids = []
+        for post_dict in list(posts_dicts):
+            posts_ids.append(str(post_dict["_id"]))
+        session = PersistentEntitiesManager.neo_driver.session(default_access_mode=READ_ACCESS)
+        ret = session.run(f"MATCH (p:{PersistentEntitiesManager.NEO4J_POST_LABEL}) RETURN p")
+        posts_nodes = ret.data()
+        session.close()
+
+        neo_posts_ids = []
+
+        for post_row in posts_nodes:
+            post_node = post_row['p']
+            assert isinstance(post_node, dict)
+            if 'id' not in post_node:
+                print("Did not found the key 'id' in the Posts keys")
+                print(post_node.keys())
+                exit()
+            neo_post_id = post_node['id']
+            neo_posts_ids.append(neo_post_id)
+            if neo_post_id not in posts_ids:
+                neo_spare_nodes.append(neo_post_id)
+                print(f"[!] The Neo4j Post node '{neo_post_id}' was not found in MongoDB")
+        
+        print()
+        print(f"Found {len(neo_spare_nodes)} nodes that are present in Neo4j but not in Mongo")
+
+        for mongo_post_id in posts_ids:
+            if mongo_post_id not in neo_posts_ids:
+                mongo_spare_nodes.append(mongo_post_id)
+                print(f"[!] The Mongo Post node '{mongo_post_id}' was not found in Neo4j")
+
+        print()
+        print(f"Found {len(mongo_spare_nodes)} nodes that are present in MongoDB but not in Neo4j")
+
+        print(f"the length of mongo posts_ids array is {len(posts_ids)} | the len of nodes array in Neo is {len(posts_nodes)}")
+        
+        return neo_spare_nodes, mongo_spare_nodes
