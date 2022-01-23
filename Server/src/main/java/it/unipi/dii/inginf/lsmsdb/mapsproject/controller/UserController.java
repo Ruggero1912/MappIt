@@ -229,8 +229,8 @@ public class UserController {
 			User currentUser = userSpring.getApplicationUser();
 			List<User> suggestedFollowers = UserService.getSuggestedFollowers(currentUser);
 
-			if(suggestedFollowers.size()==0 || suggestedFollowers==null)
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"No suggestion about new users to follow\"}");
+			if(suggestedFollowers==null || suggestedFollowers.size()==0)
+				return ResponseEntity.status(HttpStatus.OK).body("{\"Message\" : \"No suggestion about new users to follow\"}");
 			else
 				result = ResponseEntity.status(HttpStatus.OK).body(suggestedFollowers);
 		}catch (Exception e) {
@@ -244,18 +244,20 @@ public class UserController {
 	// suggested followers for the current user
 	@ApiOperation(value = "returns a list of suggested posts for the current user")
 	@GetMapping(value = "/user/post/suggestions", produces = "application/json")
-	public ResponseEntity<?> suggestedPosts(@RequestParam(required = false) Integer howMany) {
+	public ResponseEntity<?> suggestedPosts(@RequestParam(required = false, defaultValue = "0") int howMany) {
 		ResponseEntity<?> result;
 		try {
 			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			User currentUser = userSpring.getApplicationUser();
 			List<PostPreview> suggestedPosts = UserService.getSuggestedPosts(currentUser, howMany);
 
-			if(suggestedPosts.size()==0 || suggestedPosts==null)
-				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"No suggestion about new posts to check out\"}");
+			if(suggestedPosts==null || suggestedPosts.size()==0)
+				return ResponseEntity.status(HttpStatus.OK).body("{\"Message\" : \"No suggestion about new posts to check out\"}");
 			else
 				result = ResponseEntity.status(HttpStatus.OK).body(suggestedPosts);
 		}catch (Exception e) {
+			LOGGER.warning("An exception occurred during the handling of the request '/user/post/suggestions'");
+			e.printStackTrace();
 			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested posts\"}");
 		}
 

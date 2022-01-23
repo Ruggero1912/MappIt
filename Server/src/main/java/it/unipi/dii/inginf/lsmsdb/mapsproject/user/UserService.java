@@ -465,11 +465,12 @@ public class UserService {
      * @param howMany is quantity of posts to show
      * @return a list of PostPreview
      */
-    public static List<PostPreview> getSuggestedPosts(User user, Integer howMany){
+    public static List<PostPreview> getSuggestedPosts(User user, int howMany){
         if(user == null){
+            LOGGER.info("'getSuggestedPosts': An empty user obj was given ");
             return null;
         }
-        howMany = (howMany<0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
+        howMany = (howMany<=0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
         UserSocialManager um = UserSocialManagerFactory.getUserManager();
         List<PostPreview> suggestedPosts = um.getSuggestedPosts(user, howMany);
 
