@@ -495,7 +495,7 @@ class CommandPrompt:
                         how_many_posts_from_yt += len(yt_posts)
             
             if generate_flickr:
-                flickr_places = PlaceFactory.load_places_for_flickr_search(how_many_places, place_country_code)
+                flickr_places = PlaceFactory.load_places_for_flickr_search(how_many_places)
                 for place in flickr_places:
                     assert isinstance(place, dict)
                     place_id = str(place[PlaceFactory.PLACE_ID_KEY])
