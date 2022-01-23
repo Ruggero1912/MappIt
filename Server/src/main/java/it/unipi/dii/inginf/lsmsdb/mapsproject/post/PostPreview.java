@@ -2,12 +2,9 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
-import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.bson.Document;
 import org.neo4j.driver.Value;
 
-import java.util.Date;
-import java.util.List;
 
 public class PostPreview {
 
@@ -16,6 +13,8 @@ public class PostPreview {
     public static final String KEY_TITLE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "title");
     public static final String KEY_DESCRIPTION = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "description");
     public static final String KEY_THUMBNAIL = PropertyPicker.getCollectionPropertyKey(PropertyPicker.postCollection, "thumbnail");
+
+    private static final int POST_PREVIEW_DESCRIPTION_MAX_LENGTH = 75;
 
     private String _id;
     private String authorUsername;
@@ -28,14 +27,14 @@ public class PostPreview {
         this.authorUsername = author;
         this.title = title;
         this.thumbnail = thumbnail;
-        this.description = description;
+        this.description = (description.length() > POST_PREVIEW_DESCRIPTION_MAX_LENGTH) ? description.substring(0,POST_PREVIEW_DESCRIPTION_MAX_LENGTH) : description;
     }
 
     public PostPreview(Post post){
         this._id = post.getId();
         this.authorUsername = post.getAuthorUsername();
         this.title = post.getTitle();
-        this.description = post.getDescription();
+        this.description = (post.getDescription().length() > POST_PREVIEW_DESCRIPTION_MAX_LENGTH) ? post.getDescription().substring(0,POST_PREVIEW_DESCRIPTION_MAX_LENGTH) : post.getDescription();
         this.thumbnail = post.getThumbnail();
     }
 
@@ -65,7 +64,8 @@ public class PostPreview {
         }
         this.authorUsername = doc.get(Post.KEY_AUTHOR_USERNAME).toString();
         this.title = doc.get(Post.KEY_TITLE).toString();
-        this.description = doc.get(Post.KEY_DESCRIPTION).toString();
+        String entireDescription = doc.get(Post.KEY_DESCRIPTION).toString();
+        this.description = (entireDescription.length() > POST_PREVIEW_DESCRIPTION_MAX_LENGTH) ? entireDescription.substring(0,POST_PREVIEW_DESCRIPTION_MAX_LENGTH) : entireDescription;
         this.thumbnail = doc.get(Post.KEY_THUMBNAIL).toString();
     }
 

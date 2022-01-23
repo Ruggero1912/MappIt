@@ -31,8 +31,8 @@ public class PlaceController {
     private static final Logger LOGGER = Logger.getLogger( PlaceController.class.getName() );
 
     @ApiOperation(value = "Get information of a specific place", notes = "This method retrieve information of a specific place, given its _id")
-    @GetMapping(value = "/place/{id}", produces = "application/json")
-    public ResponseEntity<?> getPlaceById(@PathVariable(value = "id") String placeId) {
+    @GetMapping(value = "/place/{placeId}", produces = "application/json")
+    public ResponseEntity<?> getPlaceById(@PathVariable(value = "placeId") String placeId) {
         ResponseEntity<?> result;
 
         try{
@@ -118,46 +118,61 @@ public class PlaceController {
     }
 
     // add to favourite a place (wants the id of the place)
-    // remove from favourite a place (wants the id of the place)
-    @ApiOperation(value = "adds/removes the specified place to the favourite places of the currently logged in user")
-    @PostMapping(value = "/place/{id}/favourites/{action}", produces = "application/json")
-    public ResponseEntity<?> handleFavourites(@PathVariable(name="id") String placeId, @PathVariable(name = "action") String action) {
+    @ApiOperation(value = "adds the specified place to the favourite places of the currently logged in user")
+    @PostMapping(value = "/place/{placeId}/favourites", produces = "application/json")
+    public ResponseEntity<?> addNewPlaceToFavourites(@PathVariable(name="placeId") String placeId) {
         ResponseEntity<?> result;
 
-        //should retrieve the place object (and check if it exists)
-        Place place = PlaceService.getPlaceFromId(placeId);
-        if(place == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified place does not exist\"}");
-        }
-        //retrieve the current user
-        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User u = userSpring.getApplicationUser();
-
-        List<String> actions = new ArrayList<String>();
-        actions.add("add");
-        actions.add("remove");
-        if( ! actions.contains(action)){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"action not allowed\"}");
-        }
-
         try {
-            if (action == "add")
-                UserService.addPlaceToFavourites(u, place);
-            else if (action == "remove")
-                UserService.removePlaceFromFavourites(u, place);
-            result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly updated the favourites\"}");
+            //should retrieve the place object (and check if it exists)
+            Place place = PlaceService.getPlaceFromId(placeId);
+            if (place == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified place does not exist\"}");
+            }
+            //retrieve the current user
+            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User u = userSpring.getApplicationUser();
+            UserService.addPlaceToFavourites(u, place);
+            result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly added "+place.getName()+" to the visited place\"}");
         }catch (DatabaseErrorException e) {
             result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in querying Databases\"}");
         }catch (Exception e) {
-            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in updating favourites\"}");
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
         }
 
         return result;
     }
+
+    // remove from favourite a place (wants the id of the place)
+    @ApiOperation(value = "removes the specified place to the favourite places of the currently logged in user")
+    @DeleteMapping(value = "/place/{placeId}/favourites", produces = "application/json")
+    public ResponseEntity<?> removePlaceFromFavourites(@PathVariable(name="placeId") String placeId) {
+        ResponseEntity<?> result;
+
+        try {
+            //should retrieve the place object (and check if it exists)
+            Place place = PlaceService.getPlaceFromId(placeId);
+            if (place == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified place does not exist\"}");
+            }
+            //retrieve the current user
+            UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User u = userSpring.getApplicationUser();
+            UserService.removePlaceFromFavourites(u, place);
+            result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" "+place.getName()+" correctly removed from visited place\"}");
+        }catch (DatabaseErrorException e) {
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in querying Databases\"}");
+        }catch (Exception e) {
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
+        }
+
+        return result;
+    }
+
     // add to visited a place (wants the id of the place)
     @ApiOperation(value = "adds the specified place to the visited places of the currently logged in user")
-    @PostMapping(value = "/place/{id}/visit", produces = "application/json")
-    public ResponseEntity<?> handleVisited(@PathVariable(name="id") String placeId, @RequestBody(required = false) LocalDateTime localDateTime) {
+    @PostMapping(value = "/place/{placeId}/visit", produces = "application/json")
+    public ResponseEntity<?> addNewPlaceToVisited(@PathVariable(name="placeId") String placeId, @RequestBody(required = false) LocalDateTime localDateTime) {
         ResponseEntity<?> result;
 
         if(localDateTime == null){
