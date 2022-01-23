@@ -70,8 +70,8 @@ class PlaceFactory:
         place_id = place_obj.get_id()
         place_name = place_obj.get_name()
         ret = session.run(f"MERGE (a:{PlaceFactory.NEO4J_PLACE_LABEL} {{id: $id, name: $name}})", {"id": place_id, "name": place_name})
-        session.close()
         result_summary = ret.consume()
+        session.close()
         return result_summary.counters.nodes_created
 
     def is_place_already_present(place_obj : Place):
@@ -165,6 +165,19 @@ class PlaceFactory:
         ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={PlaceFactory.PLACE_ID_KEY : ObjectId(str(place_id))}, update={"$inc":{PlaceFactory.PLACE_TOTAL_LIKES_COUNTER_KEY : num}})
         return ret.modified_count
 
+    def set_total_likes_counter(place_id : str, value : int):
+        """
+        sets the total likes counter attribute to the given value
+        - :param num should be a positive number
+        - :returns the modified_count 
+        """
+        if(value < 0):
+            PlaceFactory.LOGGER.warning(f"[x] 'set_total_likes_counter': received a negative number for the likesCounter! num: {value} ")
+            return 0
+        if(value == 0):
+            PlaceFactory.LOGGER.debug(f"[-] 'set_total_likes_counter': received 0 as likesCounter for the place_id: {place_id} ")
+        ret = PlaceFactory.PLACES_COLLECTION.update_one(filter={Place.KEY_ID : ObjectId(str(place_id))}, update={"$set":{Place.KEY_TOTAL_LIKES_COUNTER : value}})
+        return ret.modified_count
 
     def get_random_ids(how_many : int = 10) -> list :
         """

@@ -221,8 +221,8 @@ class UserFactory:
     def store_in_neo(user_id, username):
         session = UserFactory.neo_driver.session(default_access_mode=WRITE_ACCESS)
         ret = session.run("MERGE (a:"+UserFactory.NEO4J_USER_LABEL+" {id: $id, username: $username})", {"id": str(user_id), "username": username})
-        session.close()
         result_summary = ret.consume()
+        session.close()
         return result_summary
 
     def bind_user_to_channel(user_id, channel_id):
@@ -233,7 +233,7 @@ class UserFactory:
 
         newvalues = { "$set": { UserFactory.USER_YT_CHANNEL_ID_KEY : channel_id } }
 
-        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : user_id}, update=newvalues)
+        ret = UserFactory.USERS_COLLECTION.update_one(filter={UserFactory.USER_ID_KEY : ObjectId(user_id)}, update=newvalues)
 
         if ret.modified_count == 1:
             return True
@@ -314,8 +314,8 @@ class UserFactory:
                     CREATE (u)-[:"""+UserFactory.NEO4J_RELATION_USER_VISITED_PLACE+""" {datetime: $datetime}]->(p)
                 """
         ret = session.run(query, {"datetime" : datetime_visit})
-        session.close()
         result_summary = ret.consume()
+        session.close()
         return result_summary
 
     def user_follows_user(follower_id : str, followed_id : str, datetime_follow : datetime = datetime.now()):
