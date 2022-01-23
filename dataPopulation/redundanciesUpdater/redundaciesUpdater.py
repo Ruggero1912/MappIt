@@ -32,6 +32,10 @@ class RedundanciesUpdater:
         places_doc_updated  = 0
         posts_doc_updated   = 0
 
+        start_time = datetime.now()
+
+        print(f"RedundanciesUpdater.run started at: {start_time}")
+
         if update_followers:
             users_doc_updated   = self.__update_followers_counters()
 
@@ -41,7 +45,11 @@ class RedundanciesUpdater:
         if update_likes:
             posts_doc_updated   = -1    #TODO: update_likes_counter
 
-        print(f"{{RedundanciesUpdater::ResultSummary}}: updated {users_doc_updated} user docs, {places_doc_updated} places docs, {posts_doc_updated}")
+        end_time = datetime.now()
+
+        elapsed_time = (end_time - start_time).total_seconds()
+
+        print(f"{{RedundanciesUpdater::ResultSummary}}: updated {users_doc_updated} user docs, {places_doc_updated} places docs and {posts_doc_updated} posts docs | elapsed time in seconds : {elapsed_time}")
 
         self.__update_last_run()
         return True
@@ -88,13 +96,13 @@ class RedundanciesUpdater:
         session.close()
         users_docs_updated = 0
         for row in results:
-            user_infos = row['users']['properties']
+            user_infos = row['users']
             followers_num = row['numFollowers']
             if not isinstance(followers_num, int):
                 print(f"[x] numFollowers attribute is not int! type: {type(followers_num)} | content: {followers_num}")
                 exit()
             if not isinstance(user_infos, dict):
-                print(f"[x] ['users']['properties'] attribute is not dict! type: {type(user_infos)} | content: {user_infos}")
+                print(f"[x] ['users'] attribute is not dict! type: {type(user_infos)} | content: {user_infos}")
                 exit()
             user_id         = user_infos.get("id")
             user_username   = user_infos.get("username")
@@ -125,13 +133,21 @@ class RedundanciesUpdater:
         session.close()
         places_docs_updated = 0
         for row in results:
-            place_infos = row['places']['properties']
+            
+
+            #if 'properties' not in row['places'].keys():
+            #    print("the key 'properties' was not found in 'row['places'].keys()' | available keys:") 
+            #    for key in row['places'].keys():
+            #        print(key)
+            #    exit()
+            # NOTE: the row['label'] dict contains directly the attributes of the node
+            place_infos = row['places']
             favourites_num = row['numFavourites']
             if not isinstance(favourites_num, int):
                 print(f"[x] numFavourites attribute is not int! type: {type(favourites_num)} | content: {favourites_num}")
                 exit()
             if not isinstance(place_infos, dict):
-                print(f"[x] ['places']['properties'] attribute is not dict! type: {type(place_infos)} | content: {place_infos}")
+                print(f"[x] ['places'] attribute is not dict! type: {type(place_infos)} | content: {place_infos}")
                 exit()
             place_id         = place_infos.get("id")
             place_name       = place_infos.get("name")

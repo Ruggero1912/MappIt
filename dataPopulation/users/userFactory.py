@@ -60,13 +60,20 @@ class UserFactory:
         if a user associated with that channel_id does not exists, 
         create a user starting from the given channel_name and returns the User object
         """
+        if(channel_id == "" or type(channel_id) != str):
+            UserFactory.LOGGER.warning(f"get_author_obj_from_YTchannel({channel_id}, {channel_name}, {post_country_code}) the given channel_id '{channel_id}' is not valid!")
+            exit()
         associated_user = UserFactory.find_user_by_YT_channel_id(channel_id)
         if associated_user is None:
+            Utils.temporary_log()
+            Utils.temporary_log(f"[-] did not found a user associated to the YTchannelID '{channel_id}' | creating it...")
             #if there is no user associated with that channel, we have to create it
             new_user = UserFactory.create_user_by_username(username=channel_name, country_code = post_country_code)
             new_user_id = new_user.get_id()
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_channel(user_id=new_user_id, channel_id=channel_id)
+            if UserFactory.GENERATE_SOCIAL_RELATIONS:
+                UserFactory.generate_social_relations_for_the_user(new_user_id)
             return new_user #new_user_id
         else:
             return associated_user #associated_user[UserFactory.USER_ID_KEY]
@@ -95,9 +102,21 @@ class UserFactory:
             new_user_id = new_user.get_id()
             #we have to bind the channel id to the newly created user
             UserFactory.bind_user_to_Flickr_account(user_id=new_user_id, flickr_account_id=flickr_account_id)
+            if UserFactory.GENERATE_SOCIAL_RELATIONS:
+                UserFactory.generate_social_relations_for_the_user(new_user_id)
             return new_user #new_user_id
         else:
             return associated_user #associated_user[UserFactory.USER_ID_KEY]
+
+    def find_user_by_username(username : str) -> User:
+        """
+        returns the associated user to a given username if exists, else None
+        """
+        user_dict = UserFactory.USERS_COLLECTION.find_one(filter={User.KEY_USERNAME : username})
+        if user_dict is not None:
+            return User.parse_from_dict(user_dict)
+        else:
+            return None
 
     def find_user_by_user_id(user_id : str) -> dict:
         """
@@ -117,6 +136,15 @@ class UserFactory:
         if generate_social_relations is None:
             generate_social_relations = UserFactory.GENERATE_SOCIAL_RELATIONS
         user = User()
+        username = user.get_username()
+        check = False
+        while not check:
+            if(UserFactory.find_user_by_username(username)):
+                user.change_username(random = True)
+                username = user.get_username()
+            else:
+                #the case in which a user with the given id was not found
+                check = True
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
         user_id = db_ret.inserted_id
         user.set_id(str(user_id))
@@ -140,15 +168,20 @@ class UserFactory:
 
         user = User(username=username, name=name, surname=surname, country_code=country_code)
         #here it should store it in the database
+        check = False
+        while not check:
+            if(UserFactory.find_user_by_username(username)):
+                user.change_username()
+                username = user.get_username()
+            else:
+                #the case in which a user with the given id was not found
+                check = True
         db_ret = UserFactory.USERS_COLLECTION.insert_one(user.get_dict())
         user_id = db_ret.inserted_id
 
         user.set_id(str(user_id))
 
         UserFactory.store_in_neo_usingObj(user)
-
-        if UserFactory.GENERATE_SOCIAL_RELATIONS:
-            UserFactory.generate_social_relations_for_the_user(user_id)
 
         #it should return the associated User obj
         return user
@@ -205,6 +238,7 @@ class UserFactory:
         if ret.modified_count == 1:
             return True
         elif ret.modified_count == 0:
+            UserFactory.LOGGER.warning(f"'bind_user_to_channel': the user {user_id} has not been bound to the YouTube channelID {channel_id}")
             return None
         else:
             #never happens

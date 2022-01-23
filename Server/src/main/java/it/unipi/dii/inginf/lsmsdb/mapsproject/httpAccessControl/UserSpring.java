@@ -23,11 +23,11 @@ public class UserSpring implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();
+        Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>(this.applicationUser.getUserRole().size());
 
         // add user's authorities
         for (String userRole : this.applicationUser.getUserRole()) {
-            setAuths.add(new SimpleGrantedAuthority(userRole));
+            setAuths.add(new SimpleGrantedAuthority("ROLE_" + userRole));
         }
 
         List<GrantedAuthority> Result = new ArrayList<GrantedAuthority>(setAuths);

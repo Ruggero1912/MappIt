@@ -117,13 +117,43 @@ public class PostController {
         return result;
     }
 
+    @DeleteMapping(value={"/posts/author/{author-id}"})
+    public ResponseEntity<?> deletePostsOfGivenUser(@PathVariable(value = "author-id") String userId){
+        ResponseEntity<?> result;
+        //TODO: check the privileges of the currently logged in user: only an admin can delete the posts of someone else
+        try{
+            User user = UserService.getUserFromId(userId);
+            if(user != null) {
+                boolean ret = PostService.deletePostsOfGivenUser(user);
+                if(ret == true) {
+                    result = ResponseEntity.ok("Posts of the user '" + userId + "' successfully deleted");
+                    LOGGER.log(Level.INFO, "Posts of the user '" + userId + "' successfully deleted");
+                }
+                else{
+                    result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: could not delete the posts of the specified user (id=" + userId + ")");
+                    LOGGER.log(Level.WARNING, "Error: could not delete Posts of given user " + userId );
+                }
+            } else {
+                result = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: could not find the specified user (id=" + userId + ")");
+            }
+        }
+        catch (Exception e){
+            result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: could not delete the posts of the specified user (id=" + userId + ")");
+            LOGGER.log(Level.WARNING, "Error: could not delete Posts of given user " + userId + ", an exception has occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     // most popular posts for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/post/most-popular", produces = "application/json")
-    public ResponseEntity<?> popularPosts(@RequestParam(name = "from Date", required = false, defaultValue = "1-Jan-2021") String fromDateString, @RequestParam(name = "to Date", required = false, defaultValue = "today") String toDateString,
+    public ResponseEntity<?> popularPosts(@RequestParam(name = "from Date", required = false, defaultValue = "2021-01-01") String fromDateString, @RequestParam(name = "to Date", required = false, defaultValue = "today") String toDateString,
                                           @RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
         Date fromDate, toDate;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-DD");
 
         //handle toDate value empty
         if(toDateString==null || toDateString.equals("today")){
@@ -131,20 +161,20 @@ public class PostController {
         }
         //otherwise we need to cast from String value to Date obj
         else{
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+
             try {
-                toDate = formatter.parse(fromDateString);
+                toDate = formatter.parse(toDateString);
             } catch (ParseException e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect toDate format, please specify dd-MMM-yyy (1-Jan-2021)\"}");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect toDate format, please specify YYYY-MM-DD (2021-01-01)\"}");
             }
         }
         //fromDate value empty is handled by default value inside @RequestParam,
         //we just need to cast it from String to Date obj
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
         try {
             fromDate = formatter.parse(fromDateString);
         } catch (ParseException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect fromDate format, please specify dd-MMM-yyy (1-Jan-2021)\"}");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" incorrect fromDate format, please specify YYYY-MM-DD (2021-01-01)\"}");
         }
 
         try {

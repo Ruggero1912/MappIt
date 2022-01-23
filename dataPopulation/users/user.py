@@ -12,6 +12,8 @@ def start():
 
 class User:
 
+    LOGGER              = Utils.start_logger("User")
+
     BEGIN               = start()
 
     DEFAULT_COUNTRY_CODE = Utils.load_config("DEFAULT_COUNTRY_CODE")
@@ -98,4 +100,17 @@ class User:
 
     def get_username(self):
         return getattr(self, User.KEY_USERNAME, None)
+
+    def change_username(self, new_username : str = None, random : bool = False):
+        current_uname = self.get_username()
+        if(current_uname == ""):
+            User.LOGGER.warning("'change_username' received a call on a currently empy user.username")
+            return False
+        elif(new_username is not None and type(new_username) == str):
+            setattr(self, User.KEY_USERNAME, new_username)
+        elif(random):
+            setattr(self, User.KEY_USERNAME    ,  User.fake.user_name() )
+        else:
+            setattr(self, User.KEY_USERNAME, current_uname + "1")
+        return True
         

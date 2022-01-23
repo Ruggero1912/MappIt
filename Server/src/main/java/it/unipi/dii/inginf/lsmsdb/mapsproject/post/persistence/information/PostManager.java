@@ -32,11 +32,11 @@ public interface PostManager {
     boolean deletePostsOfGivenUser(User user);
 
     /**
-     * return all the posts associated to the given username if exists, else return Null
-     * @param username A string containing the given username from the user
+     * return all the posts associated to the given user if exists, else return Null
+     * @param user A User object containing the user author of the returned posts
      * @return List of posts or null if not found
      */
-    List<Post> retrieveAllPostsFromUsername(String username);
+    List<Post> retrieveAllPostsFromUser(User user);
 
     /**
      * return null if it does not exist a post with that id, otherwise returns the associated post

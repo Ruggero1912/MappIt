@@ -40,7 +40,12 @@ public class PlaceServiceTest {
     @Test
     void GIVEN_get_popular_places_WHEN_correct_parameters_are_passed_THEN_return_list_of_popular_places(){
         User u = UserService.getUserFromId("61d3428101336eeafcb438e5");
-        List<Place> places = PlaceService.getPopularPlaces("generic", 10);
+        List<Place> places = null;
+        try {
+            places = PlaceService.getPopularPlaces("generic", 10);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         for(Place p : places){
             System.out.println(p.toString());
         }

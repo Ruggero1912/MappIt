@@ -161,25 +161,26 @@ public class PostManagerMongoDB implements PostManager {
             return false;
         boolean deletedFromPostCollection = false;
         boolean deletedEmbeddedDocs = deleteEmbeddedPostsOfGivenUser(user);
-        if(deletedEmbeddedDocs)
+        if(deletedEmbeddedDocs) {
             deletedFromPostCollection = deletePostsOfGivenUserInPostCollection(user);
+            if(deletedFromPostCollection == false){
+                LOGGER.severe("[!] deletedFromPostCollection is False, the posts of the user '" + user.getId() + "' were not eliminated from post collection");
+            }
+        }else{
+            LOGGER.severe("[!] deletedEmbeddedDocs is False, the posts of the user '" + user.getId() + "' were not eliminated!");
+            return false;
+        }
         return (deletedEmbeddedDocs && deletedFromPostCollection);
     }
     private boolean deletePostsOfGivenUserInPostCollection(User user) {
-        if(user==null)
-            return false;
-
-        ObjectId objId;
-
-        try{
-            objId = new ObjectId(user.getId());
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, e.getMessage());
+        if(user==null) {
+            LOGGER.warning("'deletePostsOfGivenUserInPostCollection': received an empty user obj");
             return false;
         }
 
-        Bson idFilter = Filters.eq(Post.KEY_AUTHOR_ID, objId);
-        DeleteResult ret = postCollection.deleteMany(idFilter);
+        Bson authorIdFilter = Filters.eq(Post.KEY_AUTHOR_ID, user.getId());
+        DeleteResult ret = postCollection.deleteMany(authorIdFilter);
+        LOGGER.info("Deleted " + ret.getDeletedCount() + " documents from Post collection for the user " + user.getId() );
         return ret.wasAcknowledged();
     }
 
@@ -191,31 +192,64 @@ public class PostManagerMongoDB implements PostManager {
             LOGGER.log(Level.SEVERE, e.getMessage());
             return false;
         }
-        try{
-            Bson userFilter = Filters.eq(User.KEY_ID, authorObjId);
 
+        List<Post> usersPosts = retrieveAllPostsFromUser(user);
+
+        if(usersPosts.isEmpty()){
+            LOGGER.info("The specified user '" + user.getId() + "' has no published posts. Skipping...");
+            return true;
+        }
+
+        //we obtain the ids of the places in which the given user has done a post
+        List<ObjectId> placesIds = new ArrayList<>();
+        for(Post post : usersPosts){
+            if( ! ObjectId.isValid(post.getId())){
+                LOGGER.warning("deleteEmbeddedPostsOfGivenUser: the place id '" + post.getPlaceId() + "' of the post '" + post.getId() + "' of the given user " + user.getId() + " is not a valid ObjectId");
+                return false;
+            }
+            ObjectId placeId = new ObjectId(post.getPlaceId());
+            //avoid duplicates
+            if( ! placesIds.contains(placeId)) {
+                placesIds.add(placeId);
+            }
+        }
+
+        try{
+            Bson placesIdsFilter = Filters.in(Place.KEY_ID, placesIds);
+            Bson placeUpdater = Updates.pull(Place.KEY_POSTS_ARRAY, new Document(PostPreview.KEY_AUTHOR_USERNAME, user.getUsername()));
+            MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
+            placeCollection.updateMany(placesIdsFilter, placeUpdater);
+
+            Bson userFilter = Filters.eq(User.KEY_ID, authorObjId);
             //Bson userUpdate = Updates.pull(User.KEY_PUBLISHED_POSTS, new Document(Post.KEY_AUTHOR_ID, authorObjId));
             // equivalent to dropping the attribute...
             Bson userUpdate = Updates.unset(User.KEY_PUBLISHED_POSTS);
             MongoCollection userCollection = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
             userCollection.updateMany(userFilter, userUpdate);
 
-            //TODO: not so optimized query:
-            //Bson placeFilter = Filters.eq(Place.KEY_POSTS_ARRAY + "." +);
-            Bson placeUpdate = Updates.pull(Place.KEY_POSTS_ARRAY, new Document(Post.KEY_AUTHOR_ID, authorObjId));
-            MongoCollection placeCollection = MongoConnection.getCollection(MongoConnection.Collections.PLACES.toString());
-            placeCollection.updateMany(new BasicDBObject(), placeUpdate);
             return true;
         } catch(MongoException me){
+            LOGGER.severe("'deleteEmbeddedPostsOfGivenUser': MongoException catched!");
+            me.printStackTrace();
             return false;
         }
     }
 
 
     @Override
-    public List<Post> retrieveAllPostsFromUsername(String username) {
-        //...
-        return null;
+    public List<Post> retrieveAllPostsFromUser(User user) {
+        if(user == null){
+            LOGGER.warning("'retrieveAllPostsFromUser': received empty user object");
+            return null;
+        }
+        List<Post> postsOfGivenUser = new ArrayList<>();
+        Bson authorFilter = Filters.eq(Post.KEY_AUTHOR_ID, user.getId());
+        MongoCursor<Document> cur = postCollection.find(authorFilter).cursor();
+        while(cur.hasNext()){
+            Post post = new Post(cur.next());
+            postsOfGivenUser.add(post);
+        }
+        return postsOfGivenUser;
     }
 
     @Override

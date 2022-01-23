@@ -26,6 +26,8 @@ class Post:
     DEFAULT_COUNTRY_CODE= Utils.load_config("DEFAULT_COUNTRY_CODE")
     MAX_YEARS_BETWEEN_EXP_AND_POST = int( os.getenv("MAX_YEARS_BETWEEN_EXP_AND_POST") )   #MAXIMUM INTERVAL BETWEEN POST DATE AND EXPERIENCE DATE
 
+    EMBEDDED_DOC_ATTRIBUTE_SIZE_LIMIT = Utils.load_config_integer("EMBEDDED_DOC_ATTRIBUTE_SIZE_LIMIT")
+
     fake                = Utils.fake
 
     KEY_ID              = os.getenv("POST_ID_KEY")
@@ -45,6 +47,8 @@ class Post:
     KEY_COUNTRY_CODE   = os.getenv("POST_COUNTRY_CODE_KEY")
 
     DICT_IGNORED_ATTRIBUTES = []
+
+    TRUNCABLE_ATTRIBUTES = [KEY_DESC, KEY_TITLE]
 
 ##########################################
 ########   POST PREVIEW SETUP  ###########
@@ -194,5 +198,10 @@ class Post:
     def get_post_preview_dict(self) -> dict:
         ret_dict = {}
         for key in Post.POST_PREVIEW_FIELDS:
-            ret_dict[key] = getattr(self, key)
+            post_preview_attr = getattr(self, key)
+            if type(post_preview_attr) == str and key in Post.TRUNCABLE_ATTRIBUTES:
+                #useful to limit the size of embedded posts docs on truncable attributes
+                if(len(post_preview_attr) > Post.EMBEDDED_DOC_ATTRIBUTE_SIZE_LIMIT):
+                    post_preview_attr = post_preview_attr[:Post.EMBEDDED_DOC_ATTRIBUTE_SIZE_LIMIT] + "..."
+            ret_dict[key] = post_preview_attr
         return ret_dict
