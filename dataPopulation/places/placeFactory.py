@@ -70,8 +70,8 @@ class PlaceFactory:
         place_id = place_obj.get_id()
         place_name = place_obj.get_name()
         ret = session.run(f"MERGE (a:{PlaceFactory.NEO4J_PLACE_LABEL} {{id: $id, name: $name}})", {"id": place_id, "name": place_name})
-        session.close()
         result_summary = ret.consume()
+        session.close()
         return result_summary.counters.nodes_created
 
     def is_place_already_present(place_obj : Place):
