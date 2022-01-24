@@ -2,6 +2,7 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.information;
 
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Coordinate;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 
 import java.util.List;
 
@@ -50,4 +51,12 @@ public interface PlaceManager {
      * @return true if increment has been successful, false otherwise
      */
     boolean updateFavouriteCounter(String placeId, int k);
+
+
+    /**
+     * @param placeName is the place name suffix from which the method will search
+     * @param howMany is the quantity of places to be returned
+     * notes = "This method retrieve places that has an name which is equal or that contains the one given")
+     */
+    List<Place> retrievePlacesFromName(String placeName, int howMany);
 }

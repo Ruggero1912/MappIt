@@ -212,4 +212,27 @@ public class PostController {
 
         return result;
     }
+
+
+    /**
+     * @param postTitle is the title suffix of the post from which the method will search
+     * @param maxQuantity is the quantity of posts to be returned
+     * notes = "This method retrieve posts that has a title which is equal or that contains the one given")
+     */
+    @GetMapping(value = "/posts/find", produces = "application/json")
+    public ResponseEntity<?> findPosts(@RequestParam(defaultValue = "postTitle") String postTitle, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
+        ResponseEntity<?> result;
+        try{
+            List<Post> postsMatching = PostService.findPostsFromTitle(postTitle, maxQuantity);
+            result = ResponseEntity.ok(postsMatching);
+            if(postsMatching==null) {
+                LOGGER.log(Level.WARNING, "Error: could not find any posts with the specified title");
+                result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find any posts with the specified title\"}");
+            }
+        }catch (Exception e){
+            LOGGER.log(Level.WARNING, "Error: could not find posts with that title, an exception has occurred: " + e);
+            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find posts with that title, and exception has occurred\"}");
+        }
+        return result;
+    }
 }

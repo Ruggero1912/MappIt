@@ -8,6 +8,8 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSoci
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.persistence.social.PlaceSocialManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManager;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.information.UserManagerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -117,5 +119,20 @@ public class PlaceService {
         }
         PlaceManager pm = PlaceManagerFactory.getPlaceManager();
         return pm.getPopularPlaces(activityFilter, maxQuantity);
+    }
+
+    public static List<Place> findPlacesFromName(String placeName, int howMany) {
+        if(placeName.equals("") || placeName == null){
+            return null;
+        }
+
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
+        PlaceManager pm = PlaceManagerFactory.getPlaceManager();
+        return pm.retrievePlacesFromName(placeName, howMany);
     }
 }

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 
 public class PostManagerMongoDB implements PostManager {
@@ -364,5 +365,29 @@ public class PostManagerMongoDB implements PostManager {
         }
 
         return results;
+    }
+
+    @Override
+    public List<Post> retrievePlacesFromName(String postTitleSuffix, int howMany) {
+        if(postTitleSuffix.equals("") || postTitleSuffix==null)
+            return null;
+
+        List<Post> matchingPosts = new ArrayList<>();
+        Pattern regex = Pattern.compile(postTitleSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.eq(Post.KEY_TITLE, regex);
+        MongoCursor<Document> cursor = postCollection.find(suffixFilter).limit(howMany).cursor();
+        if(!cursor.hasNext()){
+            cursor.close();
+            return null;
+        }
+        else{
+            while(cursor.hasNext()){
+                Document postDoc = cursor.next();
+                Post post = new Post(postDoc);
+                matchingPosts.add(post);
+            }
+            cursor.close();
+            return matchingPosts;
+        }
     }
 }

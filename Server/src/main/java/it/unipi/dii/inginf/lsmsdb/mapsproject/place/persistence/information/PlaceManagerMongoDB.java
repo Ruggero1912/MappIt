@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import static com.mongodb.client.model.Updates.set;
 
@@ -188,5 +189,29 @@ public class PlaceManagerMongoDB implements PlaceManager{
         Bson idFilter = Filters.eq(Place.KEY_ID, new ObjectId(placeId));
         UpdateResult res = placeCollection.updateOne(idFilter, Updates.inc(Place.KEY_FAVOURITES, k));
         return res.wasAcknowledged();
+    }
+
+    @Override
+    public List<Place> retrievePlacesFromName(String placeNameSuffix, int howMany) {
+        if(placeNameSuffix.equals("") || placeNameSuffix==null)
+            return null;
+
+        List<Place> matchingPlaces = new ArrayList<>();
+        Pattern regex = Pattern.compile(placeNameSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.eq(Place.KEY_NAME, regex);
+        MongoCursor<Document> cursor = placeCollection.find(suffixFilter).limit(howMany).cursor();
+        if(!cursor.hasNext()){
+            cursor.close();
+            return null;
+        }
+        else{
+            while(cursor.hasNext()){
+                Document placeDoc = cursor.next();
+                Place place = new Place(placeDoc);
+                matchingPlaces.add(place);
+            }
+            cursor.close();
+            return matchingPlaces;
+        }
     }
 }

@@ -69,4 +69,11 @@ public interface PostManager {
      * @return a List of Document containing the aggregated values in json format
      */
     List<Document> getPostsPerYearAndActivity(int maxQuantity);
+
+    /**
+     * @param postTitle is the title suffix of the post from which the method will search
+     * @param howMany is the quantity of posts to be returned
+     * notes = "This method retrieve posts that has a title which is equal or that contains the one given")
+     */
+    List<Post> retrievePlacesFromName(String postTitle, int howMany);
 }

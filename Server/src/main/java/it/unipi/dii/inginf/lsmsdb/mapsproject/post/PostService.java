@@ -257,4 +257,19 @@ public class PostService {
         PostManager pm = PostManagerFactory.getPostManager();
         return pm.getPostsPerYearAndActivity(maxQuantity);
     }
+
+    public static List<Post> findPostsFromTitle(String postTitle, int howMany) {
+        if(postTitle.equals("") || postTitle == null){
+            return null;
+        }
+
+        if(howMany <= 0){
+            howMany = DEFAULT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
+            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }
+
+        PostManager pm = PostManagerFactory.getPostManager();
+        return pm.retrievePlacesFromName(postTitle, howMany);
+    }
 }

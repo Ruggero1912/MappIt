@@ -101,4 +101,27 @@ public class PlaceController {
 
         return result;
     }
+
+
+    /**
+     * @param placeName is the place name suffix from which the method will search
+     * @param maxQuantity is the quantity of places to be returned
+     * notes = "This method retrieve places that has a name which is equal or that contains the one given")
+     */
+    @GetMapping(value = "/places/find", produces = "application/json")
+    public ResponseEntity<?> findPlaces(@RequestParam(defaultValue = "placeName") String placeName, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
+        ResponseEntity<?> result;
+        try{
+            List<Place> placesMatching = PlaceService.findPlacesFromName(placeName, maxQuantity);
+            result = ResponseEntity.ok(placesMatching);
+            if(placesMatching==null) {
+                LOGGER.log(Level.WARNING, "Error: could not find any places with the specified name");
+                result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find any places with the specified name\"}");
+            }
+        }catch (Exception e){
+            LOGGER.log(Level.WARNING, "Error: could not find places with that name, an exception has occurred: " + e);
+            result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"Could not find places with that name, and exception has occurred\"}");
+        }
+        return result;
+    }
 }
