@@ -1,12 +1,15 @@
 from neo4j import (
     GraphDatabase,
     WRITE_ACCESS,
+    READ_ACCESS,
     Neo4jDriver
 )
 
 from utilities.utils import Utils
 
 class NeoConnectionManager:
+
+    LOGGER  = Utils.start_logger("NeoConnectionManager")
 
     NEO4J_URI                   = Utils.load_config("NEO4J_CONNECTION_STRING")
     NEO4J_DB_NAME               = Utils.load_config("NEO4J_DATABASE_NAME")
@@ -34,6 +37,25 @@ class NeoConnectionManager:
         else:
             NeoConnectionManager.obj = obj
             return True
+
+    def session(self, default_access_mode=READ_ACCESS, counter = 0):
+        """
+        returns a Neo4j session object
+        - catches the defunct reading exception
+        - in this case tries to open a new connection
+        - it does until counter is less than a MAX_TRIES
+        """
+        MAX_TRIES = 2
+        session = None
+        try:
+            session = self.get_driver().session(default_access_mode=default_access_mode)
+        except:
+            if counter < MAX_TRIES:
+                session = self.session(default_access_mode, counter=counter+1)
+            else:
+                NeoConnectionManager.LOGGER.critical(f"Could not start neo4j session! Done {counter+1} tries...")
+        finally:
+            return session
 
     def get_static_obj() -> 'NeoConnectionManager':
         return getattr(NeoConnectionManager, 'obj', None)
