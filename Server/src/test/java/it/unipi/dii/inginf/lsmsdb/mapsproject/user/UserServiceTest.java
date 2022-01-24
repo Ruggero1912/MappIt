@@ -19,7 +19,7 @@ public class UserServiceTest {
     private static final String EMPTY_USERNAME = "";
     private static final String TOO_SHORT_PASSWORD = "abc";
 
-    @DisplayName("Test UserService.login")
+    /*@DisplayName("Test UserService.login")
     @Test
     void GIVEN_login_WHEN_empty_or_invalid_username_or_password_are_passed_THEN_return_null(){
         Assertions.assertAll(
@@ -85,5 +85,5 @@ public class UserServiceTest {
                 () -> assertFalse(UserService.updatePassword(EMPTY_USERNAME, EMPTY_PASSWORD)),
                 () -> assertFalse(UserService.updatePassword(DEFAULT_USERNAME, TOO_SHORT_PASSWORD))
         );
-    }
+    }*/
 }

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 
 public class PostManagerMongoDBTest {
-    @DisplayName("Test PostService.deletePost standard behaviour")
+    /*@DisplayName("Test PostService.deletePost standard behaviour")
     @Test
     void GIVEN_postId_WHEN_standard_parameters_are_passed_THEN_deletes_post(){
 
@@ -50,7 +50,7 @@ public class PostManagerMongoDBTest {
         } catch(Exception e){
             e.printStackTrace();
         }
-    }
+    }*/
 
     @DisplayName("Test PostManagerMongoDB.getPostsPerYearAndActivity standard behaviour")
     @Test

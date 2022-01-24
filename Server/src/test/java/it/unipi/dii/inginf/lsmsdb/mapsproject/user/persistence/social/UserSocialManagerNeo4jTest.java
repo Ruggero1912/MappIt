@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 public class UserSocialManagerNeo4jTest {
 
     UserSocialManagerNeo4j user;
-
+/*
     @BeforeEach
     void init(){
         user = new UserSocialManagerNeo4j();
@@ -144,5 +144,5 @@ public class UserSocialManagerNeo4jTest {
 
         boolean res = UserService.unfollowUser(u1,u2);
         Assertions.assertTrue(res);
-    }
+    }*/
 }

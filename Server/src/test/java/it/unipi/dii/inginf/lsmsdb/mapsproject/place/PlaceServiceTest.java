@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class PlaceServiceTest {
 
 
-    @DisplayName("Test PlaceService.getPlacesInRadius")
+    /*@DisplayName("Test PlaceService.getPlacesInRadius")
     @Test
     void GIVEN_getPlacesInRadius_WHEN_correct_parameters_are_passed_THEN_return_list_of_places(){
         Coordinate coord = new Coordinate(43.6949891,10.3944083 );
@@ -48,12 +48,12 @@ public class PlaceServiceTest {
         User u = UserService.getUserFromId("61d3428101336eeafcb438e5");
         List<Place> places = null;
         try {
-            places = PlaceService.getPopularPlaces("generic", 10);
+            places = PlaceService.getPopularPlaces("trekking", 10);
         }catch(Exception e){
             e.printStackTrace();
         }
         for(Place p : places){
-            System.out.println(p.toString());
+            //System.out.println(p.toString());
         }
-    }
+    }*/
 }

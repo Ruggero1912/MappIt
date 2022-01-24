@@ -19,7 +19,7 @@ public class UserManagerMongoDBTest {
 
         UserManagerMongoDB user;
 
-        @BeforeEach
+        /*@BeforeEach
         void init(){
             user = new UserManagerMongoDB();
         }
@@ -100,9 +100,9 @@ public class UserManagerMongoDBTest {
 
             try {
                 UserManagerMongoDB um = new UserManagerMongoDB();
-                um.retrieveMostActiveUsers("skiing",15);
+                um.retrieveMostActiveUsers("skiing",1);
             } catch(Exception e){
                 e.printStackTrace();
             }
-        }
+        }*/
 }
