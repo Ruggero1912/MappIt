@@ -22,7 +22,7 @@ public class Place {
     public static final String KEY_POSTS_ARRAY = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "postsArray");
     public static final String KEY_FAVOURITES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "favouritesCounter");
     public static final String KEY_COORDINATES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "coordinates");
-    public static final String KEY_TYPE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "type");
+    public static final String KEY_TOTAL_LIKES = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "totalLikes");
     public static final String KEY_COUNTRY_CODE = PropertyPicker.getCollectionPropertyKey(PropertyPicker.placeCollection, "countryCode");
 
     public static final String NEO_PLACE_LABEL = PropertyPicker.getNodeLabel(PropertyPicker.placeEntity);
@@ -38,6 +38,7 @@ public class Place {
     private Image image;
     private String osmId;
     private int favouritesCounter;
+    private int totalLikesCounter;
     private String countryCode;
 
     public Place(String id, String placeName) {
@@ -72,6 +73,7 @@ public class Place {
         this.coordinates = new Coordinate(lat, lon);
         this.osmId = doc.getString(KEY_OSMID);
         this.favouritesCounter = doc.getInteger(KEY_FAVOURITES, 0);
+        this.totalLikesCounter = doc.getInteger(KEY_TOTAL_LIKES, 0);
         this.image = new Image(doc.getString(KEY_IMAGE));
         this.countryCode = doc.getString(KEY_COUNTRY_CODE);
     }
@@ -135,6 +137,10 @@ public class Place {
 
     public List<PostPreview> getPosts(){
         return posts;
+    }
+
+    public int getTotalLikesCounter() {
+        return totalLikesCounter;
     }
 
     @Override

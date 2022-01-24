@@ -159,7 +159,7 @@ public class PlaceManagerMongoDB implements PlaceManager{
         if(criteria.equals(PlaceService.ORDER_CRITERIA_POPULARITY)){
             //NOTE: to determine which Place is popular maybe we could also return the Places
             //      whose post received the greatest number of interactions
-            return Sorts.descending(Place.KEY_FAVOURITES);
+            return Sorts.descending(Place.KEY_TOTAL_LIKES, Place.KEY_FAVOURITES);
         }
         return null;
     }
