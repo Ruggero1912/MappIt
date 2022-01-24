@@ -46,6 +46,13 @@ public class UserController {
 	@PostMapping(value = "/user/register")
 	public ResponseEntity<?> registerNewUser(@RequestBody RegistrationUser newRegistrationUser) {
 
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
+		if(currentUser != null){
+			LOGGER.log(Level.WARNING, "You can not register, as you are already logged in");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"You can not register, as you are already logged in\"}");
+		}
+
 		// checks on username and password duplicates are done inside UserService.register()
 		User insertedUser;
 
@@ -70,6 +77,13 @@ public class UserController {
 
 	@PostMapping(value = "/user/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
+
+		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
+		if(currentUser != null){
+			LOGGER.log(Level.WARNING, "You are already logged in");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"You are already logged in\"}");
+		}
 
 		String username = authenticationRequest.getUsername();
 		String password = authenticationRequest.getPassword();
