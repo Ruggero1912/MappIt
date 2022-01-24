@@ -89,13 +89,13 @@ public class PlaceService {
      * @param user the User that asks for new places to check out
      * @return a list of Places (only a subset of information about each Place)
      */
-    public static List<Place> getSuggestedPlaces(User user){
+    public static List<PlacePreview> getSuggestedPlaces(User user, int howMany){
         if(user == null){
             return null;
         }
-        int maxHowMany = DEFAULT_MAX_HOW_MANY_SUGGESTED;
+        howMany = (howMany<=0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
         PlaceSocialManager pm = PlaceSocialManagerFactory.getPlaceManager();
-        return pm.getSuggestedPlaces(user, maxHowMany);
+        return pm.getSuggestedPlaces(user, howMany);
     }
 
     /**

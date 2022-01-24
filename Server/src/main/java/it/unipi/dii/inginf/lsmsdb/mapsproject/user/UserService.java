@@ -436,13 +436,13 @@ public class UserService {
      * @param user the User that asks for new users to start following
      * @return a list of User
      */
-    public static List<User> getSuggestedFollowers(User user){
+    public static List<User> getSuggestedFollowers(User user, int howMany){
         if(user == null){
             return null;
         }
-        int maxHowMany = DEFAULT_MAX_HOW_MANY_SUGGESTED;
+        howMany = (howMany<=0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
         UserSocialManager um = UserSocialManagerFactory.getUserManager();
-        List<String> suggestedFollowersIds = um.getSuggestedFollowersIds(user, maxHowMany);
+        List<String> suggestedFollowersIds = um.getSuggestedFollowersIds(user, howMany);
 
         if(suggestedFollowersIds.size()==0){
             LOGGER.log(Level.INFO, "No suggestion about users to follow");

@@ -4,6 +4,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseConstraintViolation;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
@@ -23,13 +24,13 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
 
 
     @Override
-    public List<Place> getSuggestedPlaces(User user, int maxHowMany) {
+    public List<PlacePreview> getSuggestedPlaces(User user, int maxHowMany) {
         //returns a list of Places to check out, based on the ones visited by followed users
 
         Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
 
         try (Session session = neo4jConnection.getDriver().session()) {
-            return session.writeTransaction((TransactionWork<List<Place>>) tx -> {
+            return session.writeTransaction((TransactionWork<List<PlacePreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "USER_ID", user.getId() );
                 params.put("HOW_MANY", maxHowMany);
@@ -51,11 +52,11 @@ public final class PlaceSocialManagerNeo4j implements PlaceSocialManager{
                         "RETURN pl",
                         "LIMIT $HOW_MANY");
                 Result res = tx.run( query, params);
-                List<Place> places = new ArrayList<>();
+                List<PlacePreview> places = new ArrayList<>();
                 while(res.hasNext()){
                     Record r = res.next();
                     Value v = r.get("pl");
-                    Place p = new Place(v);
+                    PlacePreview p = new PlacePreview(v);
                     places.add(p);
                 }
                 return places;

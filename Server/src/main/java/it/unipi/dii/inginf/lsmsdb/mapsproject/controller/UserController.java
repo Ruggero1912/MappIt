@@ -18,7 +18,9 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,9 +80,8 @@ public class UserController {
 	@PostMapping(value = "/user/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
 
-		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User currentUser = userSpring.getApplicationUser();
-		if(currentUser != null){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth != null && !(auth instanceof AnonymousAuthenticationToken)){
 			LOGGER.log(Level.WARNING, "You are already logged in");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"You are already logged in\"}");
 		}
@@ -296,12 +297,12 @@ public class UserController {
 	// suggested followers for the current user
 	@ApiOperation(value = "returns a list of suggested followers for the current user")
 	@GetMapping(value = "/user/followers/suggested", produces = "application/json")
-	public ResponseEntity<?> suggestedFollowers() {
+	public ResponseEntity<?> suggestedFollowers(@RequestParam(required = false, defaultValue = "10") int howMany) {
 		ResponseEntity<?> result;
 		try {
 			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			User currentUser = userSpring.getApplicationUser();
-			List<User> suggestedFollowers = UserService.getSuggestedFollowers(currentUser);
+			List<User> suggestedFollowers = UserService.getSuggestedFollowers(currentUser, howMany);
 
 			if(suggestedFollowers==null || suggestedFollowers.size()==0)
 				return ResponseEntity.status(HttpStatus.OK).body("{\"Message\" : \"No suggestion about new users to follow\"}");
@@ -318,7 +319,7 @@ public class UserController {
 	// suggested followers for the current user
 	@ApiOperation(value = "returns a list of suggested posts for the current user")
 	@GetMapping(value = "/user/post/suggested", produces = "application/json")
-	public ResponseEntity<?> suggestedPosts(@RequestParam(required = false, defaultValue = "0") int howMany) {
+	public ResponseEntity<?> suggestedPosts(@RequestParam(required = false, defaultValue = "10") int howMany) {
 		ResponseEntity<?> result;
 		try {
 			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -339,10 +340,28 @@ public class UserController {
 	}
 
 
+	// suggested places for the current user
+	@ApiOperation(value = "returns a list of suggested places for the current user")
+	@GetMapping(value = "user/places/suggested", produces = "application/json")
+	public ResponseEntity<?> suggestedPlaces(@RequestParam(required = false, defaultValue = "10") int howMany) {
+		ResponseEntity<?> result;
+		try {
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User currentUser = userSpring.getApplicationUser();
+			List<PlacePreview> suggestedPlaces = PlaceService.getSuggestedPlaces(currentUser, howMany);
+			result = ResponseEntity.status(HttpStatus.OK).body(suggestedPlaces);
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested places\"}");
+		}
+
+		return result;
+	}
+
+
 	// most active users in therms of posts written, given an activity
 	@ApiOperation(value = "returns an aggregated result containing list of users by activity and their # of posts")
 	@GetMapping(value = "/users/most-active", produces = "application/json")
-	public ResponseEntity<?> mostActiveUsers(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> mostActiveUsers(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User currentUser = userSpring.getApplicationUser();
 		if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
@@ -369,7 +388,7 @@ public class UserController {
 	 * notes = "This method return the list of the users that follow the one specified")
 	 */
 	@GetMapping(value = "/user/{id}/followers", produces = "application/json")
-	public ResponseEntity<?> getFollowers(@PathVariable(value = "id") String userId, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> getFollowers(@PathVariable(value = "id") String userId, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 
 		if(userId.equals("current") || userId.equals("") || userId == null){
@@ -398,7 +417,7 @@ public class UserController {
 	 * notes = "This method return the list of the users that are followed by the one specified")
 	 */
 	@GetMapping(value = "/user/{id}/followed", produces = "application/json")
-	public ResponseEntity<?> getFollowed(@PathVariable(value = "id") String userId,@RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> getFollowed(@PathVariable(value = "id") String userId,@RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 
 		if(userId.equals("current") || userId.equals("") || userId == null){
@@ -426,7 +445,7 @@ public class UserController {
 	// places visited by a given user
 	@ApiOperation(value = "returns the list of visited places for the specified user or for the current if no userId is specified")
 	@GetMapping(value = "/user/places/visited", produces = "application/json")
-	public ResponseEntity<?> visitedPlaces(@RequestParam( required = false, defaultValue = "current") String userId, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> visitedPlaces(@RequestParam( required = false, defaultValue = "current") String userId, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 		User u;
 
@@ -451,7 +470,7 @@ public class UserController {
 	// places that are favourites of a given user (it should receive the id of the user)
 	@ApiOperation(value = "returns the list of favourite places for the specified user or for the current if no userId is specified")
 	@GetMapping(value = "/user/places/favourites", produces = "application/json")
-	public ResponseEntity<?> favouritePlaces(@RequestParam( required = false, defaultValue = "current") String userId, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> favouritePlaces(@RequestParam( required = false, defaultValue = "current") String userId, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 		User u;
 
@@ -478,7 +497,7 @@ public class UserController {
 	 * notes = "This method return the list of the posts that are received a like by the user specified")
 	 */
 	@GetMapping(value = "/user/{id}/posts/liked", produces = "application/json")
-	public ResponseEntity<?> likedPosts(@PathVariable(value = "id") String userId, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> likedPosts(@PathVariable(value = "id") String userId, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 
 		if(userId.equals("current") || userId.equals("") || userId == null){
@@ -508,7 +527,7 @@ public class UserController {
 	 * notes = "This method retrieve users that has an username which is equal or that contains the one given")
 	 */
 	@GetMapping(value = "/users/find", produces = "application/json")
-	public ResponseEntity<?> findUsers(@RequestParam(defaultValue = "username") String username, @RequestParam(defaultValue = "3", name = "limit") int maxQuantity) {
+	public ResponseEntity<?> findUsers(@RequestParam(defaultValue = "username") String username, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
 		ResponseEntity<?> result;
 		try{
 			List<User> usersMatching = UserService.findUsersFromUsername(username, maxQuantity);
@@ -629,23 +648,6 @@ public class UserController {
 			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly added the visited place\"}");
 		}catch (Exception e) {
 			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
-		}
-
-		return result;
-	}
-
-	// suggested places for the current user
-	@ApiOperation(value = "returns a list of suggested places for the current user")
-	@GetMapping(value = "user/places/suggested", produces = "application/json")
-	public ResponseEntity<?> suggestedPlaces() {
-		ResponseEntity<?> result;
-		try {
-			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-			User currentUser = userSpring.getApplicationUser();
-			List<Place> suggestedPlaces = PlaceService.getSuggestedPlaces(currentUser);
-			result = ResponseEntity.status(HttpStatus.OK).body(suggestedPlaces);
-		}catch (Exception e) {
-			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in getting suggested places\"}");
 		}
 
 		return result;
