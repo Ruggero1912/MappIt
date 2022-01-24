@@ -3,26 +3,34 @@ package it.unipi.dii.inginf.lsmsdb.mapsproject.controller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.exceptions.DatabaseErrorException;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.JwtTokenUtil;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.httpAccessControl.UserSpring;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.JwtRequest;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.model.JwtResponse;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @RequestMapping("/api")
 @RestController
+@CrossOrigin
 @SecurityRequirement(name = "bearerAuth")
 
 public class UserController {
@@ -31,18 +39,67 @@ public class UserController {
 	private static final String ADMIN_ROLE="ADMIN";
 
 
-	/**
-	 * return all the Users in the database
-	 * //@ApiOperation(value = "Get information of every users",
-	 * notes = "This method retrieve information about all the users")
-	 */
-	/*
-	@GetMapping(value = "/user/all", produces = "application/json")
-	public List<User> getUsers() {
-		// here we should check if the current User can access to this information
-		// we need to access to the object of the current user
-		return UserService.getAllUsers();
-	}*/
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+
+
+	@PostMapping(value = "/user/register")
+	public ResponseEntity<?> registerNewUser(@RequestBody RegistrationUser newRegistrationUser) {
+
+		// checks on username and password duplicates are done inside UserService.register()
+		User insertedUser;
+
+		try{
+			insertedUser = UserService.register(newRegistrationUser);
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Registration not completed:" + e.getMessage());
+		}
+
+		//TODO: decide if combining some controllers
+		//TODO: update the controller properly
+
+		if(insertedUser != null) {
+			insertedUser.setPassword("");
+			return ResponseEntity.ok(insertedUser);
+		} else {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Username or Email already taken");
+		}
+	}
+
+
+	@PostMapping(value = "/user/login")
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
+
+		String username = authenticationRequest.getUsername();
+		String password = authenticationRequest.getPassword();
+
+		User u = UserService.login(username, password);
+		if(u == null)
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{\"Error\" : \"wrong credentials!\"}");
+
+		final String token = jwtTokenUtil.generateToken(u);
+		final Date expires = jwtTokenUtil.getExpirationDateFromToken(token);
+		final String id = u.getId();
+
+		LOGGER.log(Level.INFO, "login request accepted for the user: " + u.toString());
+
+		/*
+		 * UsernamePasswordAuthenticationToken is a class that implements Authentication and that lets you
+		 * store the principal object (in this case, the current logged in User instance) and the credentials used to login
+		 * NOTE: TODO: maybe it is better to store in this object the password as already hashed for security purposes...
+		 *      it is unuseful to store the password in the authentication token, so we use null as second parameter
+		 */
+		//UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, null);
+		//the call to setAuthentication stores in the session the authentication information for the current user
+		//SecurityContextHolder.getContext().setAuthentication(upat);
+
+		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, "STATIC");
+		SecurityContextHolder.getContext().setAuthentication(upat);
+
+
+		return ResponseEntity.ok(new JwtResponse(token, expires, id));
+	}
 
 	/**
 	 * //@ApiOperation(value = "Get information of the current user",
@@ -224,7 +281,7 @@ public class UserController {
 
 	// suggested followers for the current user
 	@ApiOperation(value = "returns a list of suggested followers for the current user")
-	@GetMapping(value = "/user/followers/suggestions", produces = "application/json")
+	@GetMapping(value = "/user/followers/suggested", produces = "application/json")
 	public ResponseEntity<?> suggestedFollowers() {
 		ResponseEntity<?> result;
 		try {
@@ -246,7 +303,7 @@ public class UserController {
 
 	// suggested followers for the current user
 	@ApiOperation(value = "returns a list of suggested posts for the current user")
-	@GetMapping(value = "/user/post/suggestions", produces = "application/json")
+	@GetMapping(value = "/user/post/suggested", produces = "application/json")
 	public ResponseEntity<?> suggestedPosts(@RequestParam(required = false, defaultValue = "0") int howMany) {
 		ResponseEntity<?> result;
 		try {
