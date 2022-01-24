@@ -49,7 +49,8 @@ class NeoConnectionManager:
         session = None
         try:
             session = self.get_driver().session(default_access_mode=default_access_mode)
-        except:
+        except Exception as e:
+            NeoConnectionManager.LOGGER.info(f"An exception was caugth during the access to neo4j session | counter={counter} | exception: {e}")
             if counter < MAX_TRIES:
                 session = self.session(default_access_mode, counter=counter+1)
             else:

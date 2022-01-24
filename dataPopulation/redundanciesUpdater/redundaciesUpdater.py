@@ -26,7 +26,7 @@ class RedundanciesUpdater:
     POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
     PLACES_COLLECTION_NAME      = Utils.load_config("COLLECTION_NAME_PLACES")
 
-    neo_driver = NeoConnectionManager.get_static_driver()
+    neo_driver = NeoConnectionManager.get_static_obj()
 
     def run(self, update_followers = True, update_favourites = True, update_likes = True):
         """

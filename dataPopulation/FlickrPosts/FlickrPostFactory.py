@@ -34,7 +34,7 @@ class FlickrPostFactory:
     NEO4J_RELATION_POST_PLACE = Utils.load_config("NEO4J_RELATION_POST_PLACE")
     NEO4J_RELATION_POST_USER = Utils.load_config("NEO4J_RELATION_POST_USER")
 
-    neo_driver          = NeoConnectionManager.get_static_driver() #GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
+    neo_driver = NeoConnectionManager.get_static_obj() #GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     POSTS_COLLECTION                = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
     FLICKR_DETAILS_COLLECTION       = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][FLICKR_DETAILS_COLLECTION_NAME]

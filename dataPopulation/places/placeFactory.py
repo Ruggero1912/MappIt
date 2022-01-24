@@ -37,7 +37,7 @@ class PlaceFactory:
     NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
 
-    neo_driver          = NeoConnectionManager.get_static_driver()
+    neo_driver = NeoConnectionManager.get_static_obj()
     #GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
     def load_place_by_id(place_id):
