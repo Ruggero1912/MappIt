@@ -8,3 +8,5 @@ python-dateutil
 gTTS
 playsound==1.2.2
 overpy
+requests
+json
