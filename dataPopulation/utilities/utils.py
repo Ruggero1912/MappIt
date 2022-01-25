@@ -1,5 +1,4 @@
 from typing import Tuple
-import pymongo
 import json
 from faker import Faker
 import logging
@@ -15,13 +14,26 @@ def begin():
     load_dotenv(find_dotenv())   #By default loads .env configuration variables from current directory, searching in the file ".env"
     return True
 
+def is_production():
+    value = os.getenv("PRODUCTION_ENVIRONMENT")
+    if value.lower() in ["t", "true", "1", "on", "yes", "y"]:
+        return True
+    else:
+        return False
+
+def prod_attributes() -> list:
+    value = os.getenv("PRODUCTION_DIFFERENCES")
+    list_prods = json.loads(value)
+    assert isinstance(list_prods, list)
+    return list_prods
+
 class Utils:
 
     BEGUN                   = begin()
 
-    CONNECTION_STRING       = os.getenv("MONGO_CONNECTION_STRING")
-    DATABASE_NAME           = os.getenv("MONGO_DATABASE_NAME")
-    COLLECTION_NAME_PLACES  = os.getenv("COLLECTION_NAME_PLACES")
+    __IS_PRODUCTION = is_production()
+
+    __PRODUCTION_DIFFERENT_ATTRIBUTES = prod_attributes()
 
     FAKER_LOCALIZATION      = os.getenv("FAKER_LOCALIZATION")
 
@@ -33,6 +45,8 @@ class Utils:
     ACTIVITES_JSON_FILE_PATH = "../documentation/activities.json"
 
     def load_config(config_key : str) -> str :
+        if Utils.__IS_PRODUCTION and config_key in Utils.__PRODUCTION_DIFFERENT_ATTRIBUTES:
+            config_key = f"PRODUCTION_{config_key}"
         return os.getenv(config_key)
 
     def load_config_boolean(config_key : str) -> bool :
@@ -54,7 +68,7 @@ class Utils:
 
     def load_config_json(config_key : str):
         """
-        trys to parse a json object from the given config key
+        tries to parse a json object from the given config key
         """
         return json.loads(Utils.load_config(config_key))
 
@@ -88,19 +102,6 @@ class Utils:
         converts a date object to a datetime object and returns it
         """
         return datetime(date.year, date.month, date.day)
-
-    @DeprecationWarning
-    def load_places_list_from_mongo() -> list:
-        """
-        WARNING: THIS METHOD IS DEPRECATED!
-        """
-        myclient = pymongo.MongoClient(Utils.CONNECTION_STRING)
-        mydb = myclient[Utils.DATABASE_NAME]
-        mycol = mydb[Utils.COLLECTION_NAME_PLACES]
-        
-        cur = mycol.find()
-        
-        return list(cur)
 
     def load_coordinates(place : dict) -> Tuple:
         """
@@ -143,6 +144,9 @@ class Utils:
         """
         - use the parameter lang to specify a different language for the input text (default en) (for italian use it)
         """
+        import sys
+        if os.name == "posix" or Utils.load_config_boolean("TTS_DISABLED"):
+            return
         from gtts import gTTS
         import playsound
         tts_obj = gTTS(text=text, lang=lang)
@@ -152,6 +156,8 @@ class Utils:
 
         from threading import Thread
         complete_path = f'{os.getcwd()}\\{file_name}'
+        if sys.platform in ["linux"] or os.name == "posix":
+            complete_path = f'{os.getcwd()}/{file_name}'
         def thread_run():
             try:
                 playsound.playsound(complete_path)

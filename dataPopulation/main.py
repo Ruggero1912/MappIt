@@ -1,6 +1,7 @@
 from YTposts.YTPostFactory import YTPostFactory
 from FlickrPosts.FlickrPostFactory import FlickrPostFactory
 from users.userFactory import UserFactory
+from places.placeFactory import PlaceFactory
 from utilities.utils import *
 from utilities.persistentEntitiesManager import PersistentEntitiesManager
 
@@ -24,7 +25,7 @@ def reset_posts_and_users():
 
 
 def main(limit : int = 10):
-    places = Utils.load_places_list_from_mongo()
+    places = PlaceFactory.load_places(how_many=0)
 
     counter = 0
 
