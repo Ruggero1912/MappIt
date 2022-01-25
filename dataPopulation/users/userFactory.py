@@ -14,6 +14,7 @@ from neo4j import (
 from users.user import User
 from utilities.utils import Utils
 from utilities.neoConnectionManager import NeoConnectionManager
+from utilities.mongoConnectionManager import MongoConnectionManager
 from posts.postFactory import PostFactory
 from posts.Post import Post
 from places.placeFactory import PlaceFactory
@@ -28,14 +29,8 @@ class UserFactory:
 
     SOCIAL_RELATIONS_HOW_MANY_SEED = Utils.load_config_integer("SOCIAL_RELATIONS_HOW_MANY_SEED")
 
-    CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
-    DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
     USERS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_USERS")
 
-    NEO4J_URI                   = Utils.load_config("NEO4J_CONNECTION_STRING")
-    NEO4J_DB_NAME               = Utils.load_config("NEO4J_DATABASE_NAME")
-    NEO4J_DB_USER               = Utils.load_config("NEO4J_DATABASE_USER")
-    NEO4J_DB_PWD                = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_USER_LABEL            = Utils.load_config("NEO4J_USER_LABEL")
     NEO4J_PLACE_LABEL           = Utils.load_config("NEO4J_PLACE_LABEL")
     NEO4J_POST_LABEL            = Utils.load_config("NEO4J_POST_LABEL")
@@ -52,7 +47,7 @@ class UserFactory:
 
     USER_FLICKR_ACCOUNT_ID_KEY  = Utils.load_config("USER_FLICKR_ACCOUNT_ID_KEY")
 
-    USERS_COLLECTION        = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][USERS_COLLECTION_NAME]
+    USERS_COLLECTION        = MongoConnectionManager.get_database()[USERS_COLLECTION_NAME]
 
     def get_author_obj_from_YTchannel(channel_id, channel_name, post_country_code) -> User:
         """

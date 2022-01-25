@@ -23,8 +23,10 @@ class NeoConnectionManager:
     NEO4J_RELATION_USER_LIKES_POST = Utils.load_config("NEO4J_RELATION_USER_LIKES_POST")
     NEO4J_RELATION_USER_FAVOURITES_PLACE = Utils.load_config("NEO4J_RELATION_USER_FAVOURITES_PLACE")
 
+    NEO4J_MAX_CONNECTION_LIFETIME = Utils.load_config_integer("NEO4J_MAX_CONNECTION_LIFETIME")
+
     def __init__(self) -> None:
-        self.neo_driver = GraphDatabase.driver(NeoConnectionManager.NEO4J_URI, auth=(NeoConnectionManager.NEO4J_DB_USER, NeoConnectionManager.NEO4J_DB_PWD))
+        self.neo_driver = GraphDatabase.driver(NeoConnectionManager.NEO4J_URI, auth=(NeoConnectionManager.NEO4J_DB_USER, NeoConnectionManager.NEO4J_DB_PWD), max_connection_lifetime=NeoConnectionManager.NEO4J_MAX_CONNECTION_LIFETIME)
 
     def get_driver(self) -> Neo4jDriver:
         if self:
