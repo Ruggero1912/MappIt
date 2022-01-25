@@ -26,7 +26,7 @@ public class Neo4jConnection implements AutoCloseable{
         return driver;
     }
 
-    /*public void neo4jFirstTest(final String message )
+    public void neo4jFirstTest(final String message )
     {
         try ( Session session = driver.session() )
         {
@@ -40,7 +40,7 @@ public class Neo4jConnection implements AutoCloseable{
             } );
             System.out.println( greeting );
         }
-    }*/
+    }
 
     @Override
     public void close() throws Exception {
