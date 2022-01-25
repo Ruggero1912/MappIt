@@ -55,7 +55,8 @@ public class PlaceController {
     public ResponseEntity<?> nearbyPlaces(@RequestParam Double lat, @RequestParam Double lon,
                                     @RequestParam( defaultValue = "10.0") Double radius,
                                     @RequestParam( defaultValue = "any") String activityFilter,
-                                    @RequestParam( defaultValue = "distance") String orderBy) {
+                                    @RequestParam( defaultValue = "distance") String orderBy,
+                                    @RequestParam(defaultValue = "0", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
         List<Place> nearbyPlaces;
 
@@ -67,9 +68,9 @@ public class PlaceController {
 
             // the orderBy String content is checked by PlaceService
             if (activityFilter == "any") {
-                nearbyPlaces = PlaceService.getPlacesInRadius(coordinates, radius, orderBy);
+                nearbyPlaces = PlaceService.getPlacesInRadius(coordinates, radius, orderBy, maxQuantity);
             } else {
-                nearbyPlaces = PlaceService.getPlacesInRadius(coordinates, radius, orderBy, activityFilter);
+                nearbyPlaces = PlaceService.getPlacesInRadius(coordinates, radius, orderBy, activityFilter, maxQuantity);
             }
 
             result = ResponseEntity.status(HttpStatus.OK).body(nearbyPlaces);

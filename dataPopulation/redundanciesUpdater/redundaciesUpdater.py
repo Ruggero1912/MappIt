@@ -1,3 +1,4 @@
+from utilities.mongoConnectionManager import MongoConnectionManager
 from posts.postFactory import PostFactory
 from posts.Post import Post
 from places.placeFactory import PlaceFactory
@@ -11,8 +12,6 @@ from neo4j import (
     READ_ACCESS
 )
 
-import pymongo
-
 from datetime import datetime
 
 class RedundanciesUpdater:
@@ -21,10 +20,10 @@ class RedundanciesUpdater:
 
     DELETED_USERS_MINIMUM_THRESHOLD = Utils.load_config_integer("DELETED_USERS_MINIMUM_THRESHOLD")
 
-    CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
-    DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
     POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
     PLACES_COLLECTION_NAME      = Utils.load_config("COLLECTION_NAME_PLACES")
+
+    DATABASE = MongoConnectionManager.get_database()
 
     neo_driver = NeoConnectionManager.get_static_obj()
 
@@ -219,8 +218,7 @@ class RedundanciesUpdater:
         - for each row of the result set, updates the Place collection with the new value calculated for "totalLikes"
         :returns the number of modified Place documents 
         """
-        database = pymongo.MongoClient(RedundanciesUpdater.CONNECTION_STRING)[RedundanciesUpdater.DATABASE_NAME]
-        posts_collection = database.get_collection(RedundanciesUpdater.POSTS_COLLECTION_NAME)
+        posts_collection = RedundanciesUpdater.DATABASE.get_collection(RedundanciesUpdater.POSTS_COLLECTION_NAME)
         pipeline =  [{
                         '$group': {
                             '_id': f'${Post.KEY_PLACE}', 

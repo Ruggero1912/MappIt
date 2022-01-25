@@ -2,7 +2,7 @@ from queue import Empty
 import overpy
 import requests
 import datetime
-import geojson
+import json
 
 from places.placeFactory import PlaceFactory
 from places.place import Place
@@ -141,7 +141,7 @@ class OsmPlaceFactory(PlaceFactory):
         data = response.text
         if save_into:
             with open(save_into, "w", encoding="utf-8") as file:
-                geojson.dump(response.json(), file)
+                json.dump(response.json(), file)
         return data
 
     def __search(area : str, include_historic_values : list = [], include_relations : bool = False, use_overpy : bool = True):

@@ -1,7 +1,6 @@
 overpy
-geojson
 requests
-shapely
 pymongo
 pymongo[srv]
 python-dotenv
+json
