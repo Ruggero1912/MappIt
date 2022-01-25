@@ -57,7 +57,7 @@ public class PlaceService {
      * @param activityFilter the activity that the returned Places should fit
      * @return a list of Place object, else null if empty set
      */
-    public static List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderBy, String activityFilter) throws UndefinedActivityException {
+    public static List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderBy, String activityFilter, int howMany) throws UndefinedActivityException {
         if( ! orderByCriterias.contains(orderBy)){
             orderBy = defaultOrderByCriteria;
         }
@@ -65,23 +65,21 @@ public class PlaceService {
             if( ! ActivityService.checkIfActivityExists(activityFilter)){
                 LOGGER.info("The specified activity '" + activityFilter + "' is not recognised");
                 throw new UndefinedActivityException("the specified activity '" +activityFilter+ "' was not recognised");
-                //activityFilter = noActivityFilterKey;
             }
         }
         if(radius <= 0.0){
             radius = defaultSearchRadius;
         }
-        // how should we check the correctness of the provided coordinates? We assume that those are always valid
         PlaceManager pm = PlaceManagerFactory.getPlaceManager();
         if(activityFilter.equals(noActivityFilterKey)){
-            return pm.getPlacesInRadius(coordinates, radius, orderBy);
+            return pm.getPlacesInRadius(coordinates, radius, orderBy, howMany);
         }else{
-            return pm.getPlacesInRadiusFilteredByFits(coordinates, radius, orderBy, activityFilter);
+            return pm.getPlacesInRadiusFilteredByFits(coordinates, radius, orderBy, activityFilter, howMany);
         }
     }
 
-    public static List<Place> getPlacesInRadius(Coordinate coordinate, Double radius, String orderBy) throws UndefinedActivityException {
-        return getPlacesInRadius(coordinate, radius, orderBy, noActivityFilterKey);
+    public static List<Place> getPlacesInRadius(Coordinate coordinate, Double radius, String orderBy, int howMany) throws UndefinedActivityException {
+        return getPlacesInRadius(coordinate, radius, orderBy, noActivityFilterKey, howMany);
     }
 
     /**

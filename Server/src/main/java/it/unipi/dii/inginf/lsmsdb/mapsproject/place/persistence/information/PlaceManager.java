@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface PlaceManager {
 
-    public static final int DEFAULT_MAXIMUM_QUANTITY = 100;
 
     /**
      * return null if it does not exist a place with that id, otherwise returns the associated place
@@ -22,9 +21,10 @@ public interface PlaceManager {
      * @param coordinates a Coordinates object representing the center of the zone in which it searches
      * @param radius (in km) the radius of the zone in which to search
      * @param orderByCriteria the criteria for which the results should be ordinated
+     * @param howMany is the quantity of places to be returned
      * @return a list of Place object, else null if empty set
      */
-    List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderByCriteria);
+    List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderByCriteria, int howMany);
 
     /**
      * returns a list of places that are in the radius, ordered by a certain criteria
@@ -32,9 +32,10 @@ public interface PlaceManager {
      * @param radius (in km) the radius of the zone in which to search
      * @param orderByCriteria the criteria for which the results should be ordinated
      * @param activityFilter the activity that the returned Places should fit
+     * @param howMany is the quantity of places to be returned
      * @return a list of Place object, else null if empty set
      */
-    List<Place> getPlacesInRadiusFilteredByFits(Coordinate coordinates, Double radius, String orderByCriteria, String activityFilter);
+    List<Place> getPlacesInRadiusFilteredByFits(Coordinate coordinates, Double radius, String orderByCriteria, String activityFilter, int howMany);
 
     /**
      * returns a list of places from all over the world ordered by popularity
