@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection;
 
+import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -26,7 +27,7 @@ public class MongoConnection {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private MongoConnection(){
+    public MongoConnection(){
         //LOGGER.log(Level.FINEST, "using {0} as MongoURI", new Object[]{MongoURI});
         mongoClient = MongoClients.create((MongoURI));
         database = mongoClient.getDatabase(DatabaseName);

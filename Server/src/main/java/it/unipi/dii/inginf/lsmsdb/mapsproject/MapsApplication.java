@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
+import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.MongoConnection;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.persistence.connection.Neo4jConnection;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.persistence.social.UserSocialManagerNeo4j;
 import org.springframework.boot.SpringApplication;
@@ -65,6 +67,10 @@ public class MapsApplication {
 		FlickrPost inserted_post = PostService.createNewFlickrPost(newPost);
 		System.out.println(inserted_post);
 		*/
+
+		//Neo4jConnection conn = new Neo4jConnection();
+		//conn.neo4jFirstTest("prova");
+
 
 	}
 }
