@@ -31,6 +31,8 @@ public class PlaceManagerMongoDB implements PlaceManager{
 
     private static final Logger LOGGER = Logger.getLogger(PlaceManagerMongoDB.class.getName());
 
+    public static final int DEFAULT_MAXIMUM_QUANTITY = 50;
+
     private MongoCollection placeCollection;
 
     public PlaceManagerMongoDB(){
@@ -165,15 +167,15 @@ public class PlaceManagerMongoDB implements PlaceManager{
     }
 
     @Override
-    public List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderByCriteria) {
-        return this.queryPlaceCollection(nearFilterRadiusInKm(coordinates, radius), orderBy(orderByCriteria));
+    public List<Place> getPlacesInRadius(Coordinate coordinates, Double radius, String orderByCriteria, int howMany) {
+        return this.queryPlaceCollection(nearFilterRadiusInKm(coordinates, radius), orderBy(orderByCriteria), howMany);
     }
 
     @Override
-    public List<Place> getPlacesInRadiusFilteredByFits(Coordinate coordinates, Double radius, String orderByCriteria, String activityName) {
+    public List<Place> getPlacesInRadiusFilteredByFits(Coordinate coordinates, Double radius, String orderByCriteria, String activityName, int howMany) {
         Bson radiusFilter = nearFilterRadiusInKm(coordinates, radius);
         Bson activityFilter = ActivityFilter(activityName);
-        return this.queryPlaceCollection(Filters.and(radiusFilter, activityFilter), orderBy(orderByCriteria));
+        return this.queryPlaceCollection(Filters.and(radiusFilter, activityFilter), orderBy(orderByCriteria), howMany);
     }
 
     @Override

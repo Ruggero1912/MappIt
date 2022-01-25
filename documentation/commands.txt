@@ -1,0 +1,41 @@
+COMMAND SEQUENCE:
+
+1) connect to vpn
+
+
+
+
+[172.16.4.45 - Mongo instance + Neo4j server - Priority 1]
+
+1) ssh into vm1:
+ssh root@172.16.4.45
+password: mappit
+
+2)  start mongod instance: 
+mongod --replSet lsmdb --dbpath ~/data --port 27020 --bind_ip localhost,172.16.4.45 --oplogSize 200 --fork --logpath /var/log/mongodb/mongod.log
+
+
+
+
+
+[172.16.4.46 - Mongo instance + Java server - Priority 5]
+
+1) ssh into vm2:
+ssh root@172.16.4.46
+password: mappit
+
+2)  start mongod instance: 
+mongod --replSet lsmdb --dbpath ~/data --port 27020 --bind_ip localhost,172.16.4.46 --oplogSize 200 --fork --logpath /var/log/mongodb/mongod.log
+
+
+
+
+
+[172.16.4.47 - Mongo instance + Python scripts scheluded - Priority 10]
+
+1) ssh into vm3:
+ssh root@172.16.4.47
+password: mappit
+
+2)  start mongod instance: 
+mongod --replSet lsmdb --dbpath ~/data --port 27020 --bind_ip localhost,172.16.4.47 --oplogSize 200 --fork --logpath /var/log/mongodb/mongod.log
