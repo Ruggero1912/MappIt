@@ -8,6 +8,7 @@ import pymongo
 
 from utilities.utils import Utils
 from utilities.neoConnectionManager import NeoConnectionManager
+from utilities.mongoConnectionManager import MongoConnectionManager
 from places.placeFactory import PlaceFactory
 from users.user import User
 
@@ -25,8 +26,6 @@ class PersistentEntitiesManager:
                             ENTITY_POSTS
                         ]
 
-    CONNECTION_STRING           = Utils.load_config("MONGO_CONNECTION_STRING")
-    DATABASE_NAME               = Utils.load_config("MONGO_DATABASE_NAME")
     POSTS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_POSTS")
     PLACES_COLLECTION_NAME      = Utils.load_config("COLLECTION_NAME_PLACES")
     USERS_COLLECTION_NAME       = Utils.load_config("COLLECTION_NAME_USERS")
@@ -36,12 +35,8 @@ class PersistentEntitiesManager:
                                 USERS_COLLECTION_NAME
                             ]
     
-    MONGO_DATABASE      = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME]
+    MONGO_DATABASE      = MongoConnectionManager.get_database()
 
-    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
-    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
-    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
-    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_POST_LABEL    = Utils.load_config("NEO4J_POST_LABEL")
     NEO4J_USER_LABEL    = Utils.load_config("NEO4J_USER_LABEL")
     NEO4J_PLACE_LABEL   = Utils.load_config("NEO4J_PLACE_LABEL")

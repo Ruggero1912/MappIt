@@ -6,7 +6,7 @@ from neo4j import (
     WRITE_ACCESS,
 )
 from utilities.neoConnectionManager import NeoConnectionManager
-
+from utilities.mongoConnectionManager import MongoConnectionManager
 from utilities.utils import Utils
 from posts.Post import Post
 from places.place import Place
@@ -15,11 +15,9 @@ class PlaceFactory:
 
     LOGGER          = Utils.start_logger("PlaceFactory")
 
-    CONNECTION_STRING               = Utils.load_config("MONGO_CONNECTION_STRING")
-    DATABASE_NAME                   = Utils.load_config("MONGO_DATABASE_NAME")
     PLACE_COLLECTION_NAME           = Utils.load_config("COLLECTION_NAME_PLACES")
     
-    PLACES_COLLECTION               = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][PLACE_COLLECTION_NAME]
+    PLACES_COLLECTION               = MongoConnectionManager.get_database()[PLACE_COLLECTION_NAME]
 
     PLACE_ID_KEY                    = Utils.load_config("PLACE_ID_KEY")
     PLACE_NAME_KEY                  = Utils.load_config("PLACE_NAME_KEY")
@@ -31,10 +29,6 @@ class PlaceFactory:
     PLACE_LAST_FLICKR_SEARCH_KEY    = Utils.load_config("PLACE_LAST_FLICKR_SEARCH_KEY")
     PLACE_TOTAL_LIKES_COUNTER_KEY   = Utils.load_config("PLACE_TOTAL_LIKES_COUNTER_KEY")
 
-    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
-    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
-    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
-    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
 
     neo_driver = NeoConnectionManager.get_static_obj()

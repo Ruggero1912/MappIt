@@ -10,6 +10,7 @@ from neo4j import (
 
 from utilities.utils import Utils
 from utilities.neoConnectionManager import NeoConnectionManager
+from utilities.mongoConnectionManager import MongoConnectionManager
 from FlickrPosts.FlickrClient import FlickrClient
 from FlickrPosts.FlickrPost import FlickrPost
 from places.placeFactory import PlaceFactory
@@ -19,15 +20,9 @@ class FlickrPostFactory:
     LOGGER                          = Utils.start_logger("FlickrPostFactory")
 
 
-    CONNECTION_STRING               = Utils.load_config("MONGO_CONNECTION_STRING")
-    DATABASE_NAME                   = Utils.load_config("MONGO_DATABASE_NAME")
     POSTS_COLLECTION_NAME           = Utils.load_config("COLLECTION_NAME_POSTS")
     FLICKR_DETAILS_COLLECTION_NAME  = Utils.load_config("COLLECTION_NAME_FLICKR_DETAILS")
 
-    NEO4J_URI           = Utils.load_config("NEO4J_CONNECTION_STRING")
-    NEO4J_DB_NAME       = Utils.load_config("NEO4J_DATABASE_NAME")
-    NEO4J_DB_USER       = Utils.load_config("NEO4J_DATABASE_USER")
-    NEO4J_DB_PWD        = Utils.load_config("NEO4J_DATABASE_PWD")
     NEO4J_POST_LABEL    = Utils.load_config("NEO4J_POST_LABEL")
     NEO4J_USER_LABEL    = Utils.load_config("NEO4J_USER_LABEL")
     NEO4J_PLACE_LABEL    = Utils.load_config("NEO4J_PLACE_LABEL")
@@ -36,8 +31,8 @@ class FlickrPostFactory:
 
     neo_driver = NeoConnectionManager.get_static_obj() #GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_DB_USER, NEO4J_DB_PWD))
 
-    POSTS_COLLECTION                = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][POSTS_COLLECTION_NAME]
-    FLICKR_DETAILS_COLLECTION       = pymongo.MongoClient(CONNECTION_STRING)[DATABASE_NAME][FLICKR_DETAILS_COLLECTION_NAME]
+    POSTS_COLLECTION                = MongoConnectionManager.get_database()[POSTS_COLLECTION_NAME]
+    FLICKR_DETAILS_COLLECTION       = MongoConnectionManager.get_database()[FLICKR_DETAILS_COLLECTION_NAME]
 
 
     def posts_in_given_place(place_name, place_lon, place_lat, place_id, place_country_code):
