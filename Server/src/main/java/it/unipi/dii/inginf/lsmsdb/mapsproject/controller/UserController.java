@@ -10,7 +10,9 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.model.JwtResponse;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.Place;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlaceService;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
@@ -639,6 +641,56 @@ public class UserController {
 			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly added the visited place\"}");
 		}catch (Exception e) {
 			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting visited place\"}");
+		}
+
+		return result;
+	}
+
+
+	// add a like to a post
+	@ApiOperation(value = "adds the specified post to the liked ones of the currently logged in user")
+	@PostMapping(value = "user/posts/{postId}/likes", produces = "application/json")
+	public ResponseEntity<?> addLikeToPost(@PathVariable(name="postId") String postId) {
+		ResponseEntity<?> result;
+
+		try {
+			//should retrieve the place object (and check if it exists)
+			Post post = PostService.getPostFromId(postId);
+			if (post == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified post does not exist\"}");
+			}
+			//retrieve the current user
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User u = userSpring.getApplicationUser();
+			PostService.likePost(u, post);
+			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly added "+post.getTitle()+" to the liked posts\"}");
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in inserting like to post\"}");
+		}
+
+		return result;
+	}
+
+
+	// remove like to a post (wants the id of the post)
+	@ApiOperation(value = "removes the specified post to the liked ones of the currently logged in user")
+	@DeleteMapping(value = "user/posts/liked/{postId}", produces = "application/json")
+	public ResponseEntity<?> removeLikeFromPost(@PathVariable(name="postId") String postId) {
+		ResponseEntity<?> result;
+
+		try {
+			//should retrieve the post object (and check if it exists)
+			Post post = PostService.getPostFromId(postId);
+			if (post == null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"the specified post does not exist\"}");
+			}
+			//retrieve the current user
+			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User u = userSpring.getApplicationUser();
+			PostService.unlikePost(u, post);
+			result = ResponseEntity.status(HttpStatus.OK).body("{\"Success\":\" correctly removed from liked posts\"}");
+		}catch (Exception e) {
+			result = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"Error\":\"something went wrong in removing like to post\"}");
 		}
 
 		return result;

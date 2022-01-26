@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
 import org.bson.Document;
@@ -16,6 +17,8 @@ public class PostPreview {
 
     private static final int POST_PREVIEW_DESCRIPTION_MAX_LENGTH = 75;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String authorId;
     private String _id;
     private String authorUsername;
     private String title;
@@ -33,6 +36,7 @@ public class PostPreview {
     public PostPreview(Post post){
         this._id = post.getId();
         this.authorUsername = post.getAuthorUsername();
+        this.authorId = post.getAuthorId();
         this.title = post.getTitle();
         this.description = (post.getDescription().length() > POST_PREVIEW_DESCRIPTION_MAX_LENGTH) ? post.getDescription().substring(0,POST_PREVIEW_DESCRIPTION_MAX_LENGTH) : post.getDescription();
         this.thumbnail = post.getThumbnail();
@@ -45,8 +49,9 @@ public class PostPreview {
      * @param authorUsername corresponds to the username value gathered from the User node in Neo4j
      */
     public PostPreview(Value valueFromPostNode, Value authorId, Value authorUsername) {
-        this._id =  authorId.asString();
+        this._id =  valueFromPostNode.get(Post.NEO_KEY_ID).asString();
         this.authorUsername = authorUsername.asString();
+        this.authorId = authorId.asString();
         this.title = valueFromPostNode.get(Post.NEO_KEY_TITLE).asString();
         this.description = valueFromPostNode.get(Post.NEO_KEY_DESC).asString();
         this.thumbnail = valueFromPostNode.get(Post.NEO_KEY_THUMBNAIL).asString();
@@ -72,6 +77,7 @@ public class PostPreview {
     public Document createDocument(){
         Document postPreviewDoc = new Document(Post.KEY_TITLE, this.title)
                 .append(Post.KEY_AUTHOR_USERNAME, this.authorUsername)
+                .append(Post.KEY_AUTHOR_ID, this.authorId)
                 .append(Post.KEY_DESCRIPTION, this.description)
                 .append(Post.KEY_THUMBNAIL, this.thumbnail);
 
@@ -109,6 +115,8 @@ public class PostPreview {
     public void setDescription(String des) {
         this.description = des;
     }
+
+    public String getAuthorId(){ return this.authorId; }
 
     /**
      * if the thumbanil is stored on our platform, converts the image id to image link (an absolute path)

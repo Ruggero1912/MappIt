@@ -165,7 +165,6 @@ public class PostService {
      * @param post post that received the appreciation
      * @return true if the like was delivered successfully, else false
      */
-    //TODO: add endpoint method
     public static boolean likePost(User user, Post post){
         if(user == null || post == null){
             return false;
@@ -196,7 +195,6 @@ public class PostService {
      * @param post post for which we delete the appreciation
      * @return true if the like was deleted successfully, else false
      */
-    //TODO: add endpoint method
     public static boolean unlikePost(User user, Post post){
         if(user == null || post == null){
             return false;
