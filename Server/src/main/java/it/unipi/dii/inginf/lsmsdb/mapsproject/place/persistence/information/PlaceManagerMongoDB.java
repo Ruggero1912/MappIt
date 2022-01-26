@@ -199,8 +199,8 @@ public class PlaceManagerMongoDB implements PlaceManager{
             return null;
 
         List<Place> matchingPlaces = new ArrayList<>();
-        Pattern regex = Pattern.compile(placeNameSuffix, Pattern.CASE_INSENSITIVE);
-        Bson suffixFilter = Filters.eq(Place.KEY_NAME, regex);
+        //Pattern regex = Pattern.compile(placeNameSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.text(placeNameSuffix);
         MongoCursor<Document> cursor = placeCollection.find(suffixFilter).limit(howMany).cursor();
         if(!cursor.hasNext()){
             cursor.close();

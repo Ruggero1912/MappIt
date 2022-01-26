@@ -197,8 +197,8 @@ public class UserManagerMongoDB implements UserManager{
             return null;
 
         List<User> matchingUsers = new ArrayList<>();
-        Pattern regex = Pattern.compile(usernameSuffix, Pattern.CASE_INSENSITIVE);
-        Bson suffixFilter = Filters.eq(User.KEY_USERNAME, regex);
+        //Pattern regex = Pattern.compile(usernameSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.text(usernameSuffix);
         MongoCursor<Document> cursor = userCollection.find(suffixFilter).limit(howMany).cursor();
         if(!cursor.hasNext()){
             cursor.close();
