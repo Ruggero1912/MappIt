@@ -36,6 +36,7 @@ public class UserService {
     public static final String noActivityFilterKey = "any";
     public static final int DEFAULT_MAXIMUM_QUANTITY = 20;
     public static final int LIMIT_MAXIMUM_QUANTITY = 50;
+    public static final int LIMIT_MAXIMUM_QUANTITY_SOCIAL = 200;
 
 
     /**
@@ -439,26 +440,20 @@ public class UserService {
      * @param user the User that asks for new users to start following
      * @return a list of User
      */
-    public static List<User> getSuggestedFollowers(User user, int howMany){
+    public static List<UserPreview> getSuggestedFollowers(User user, int howMany){
         if(user == null){
             return null;
         }
         howMany = (howMany<=0 || howMany>DEFAULT_MAX_HOW_MANY_SUGGESTED) ? DEFAULT_MAX_HOW_MANY_SUGGESTED : howMany;
         UserSocialManager um = UserSocialManagerFactory.getUserManager();
-        List<String> suggestedFollowersIds = um.getSuggestedFollowersIds(user, howMany);
+        List<UserPreview> suggestedFollowers = um.getSuggestedFollowers(user, howMany);
 
-        if(suggestedFollowersIds.size()==0){
+        if(suggestedFollowers.size()==0){
             LOGGER.log(Level.INFO, "No suggestion about users to follow");
             return null;
         }
 
-        List<User> userToFollow = new ArrayList<>();
-        for(String uId: suggestedFollowersIds){
-            User u = UserService.getUserFromId(uId);
-            userToFollow.add(u);
-        }
-
-        return userToFollow;
+        return suggestedFollowers;
     }
 
 
@@ -511,24 +506,19 @@ public class UserService {
      * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that follow the one specified")
      */
-    public static List<User> getFollowers(String userId, int howMany) {
+    public static List<UserPreview> getFollowers(String userId, int howMany) {
         if(userId.equals("") || userId == null){
             return null;
         }
         if(howMany <= 0){
             howMany = DEFAULT_MAXIMUM_QUANTITY;
-        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
-            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY_SOCIAL){
+            howMany = LIMIT_MAXIMUM_QUANTITY_SOCIAL;
         }
 
-        List<User> followers = new ArrayList<>();
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        List<String> followersIds;
-        followersIds = usm.retrieveFollowers(userId, howMany);
-        for(String id : followersIds){
-            User follower = UserService.getUserFromId(id);
-            followers.add(follower);
-        }
+        List<UserPreview> followers;
+        followers = usm.retrieveFollowers(userId, howMany);
 
         return followers;
     }
@@ -538,24 +528,19 @@ public class UserService {
      * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that are followed by the one specified")
      */
-    public static List<User> getFollowedUsers(String userId, int howMany) {
+    public static List<UserPreview> getFollowedUsers(String userId, int howMany) {
         if(userId.equals("") || userId == null){
             return null;
         }
         if(howMany <= 0){
             howMany = DEFAULT_MAXIMUM_QUANTITY;
-        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
-            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY_SOCIAL){
+            howMany = LIMIT_MAXIMUM_QUANTITY_SOCIAL;
         }
 
-        List<User> followedUsers = new ArrayList<>();
         UserSocialManager usm = UserSocialManagerFactory.getUserManager();
-        List<String> followedUsersIds;
-        followedUsersIds = usm.retrieveFollowedUsers(userId, howMany);
-        for(String id : followedUsersIds){
-            User follower = UserService.getUserFromId(id);
-            followedUsers.add(follower);
-        }
+        List<UserPreview> followedUsers;
+        followedUsers = usm.retrieveFollowedUsers(userId, howMany);
 
         return followedUsers;
     }
@@ -571,8 +556,8 @@ public class UserService {
         }
         if(howMany <= 0){
             howMany = DEFAULT_MAXIMUM_QUANTITY;
-        }else if(howMany > LIMIT_MAXIMUM_QUANTITY){
-            howMany = LIMIT_MAXIMUM_QUANTITY;
+        }else if(howMany > LIMIT_MAXIMUM_QUANTITY_SOCIAL){
+            howMany = LIMIT_MAXIMUM_QUANTITY_SOCIAL;
         }
 
         List<PostPreview> likedPosts;

@@ -7,6 +7,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.place.PlacePreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.Post;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserPreview;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.Neo4jException;
@@ -120,14 +121,15 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", id );
                 params.put( "howMany", howMany );
-                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace LIMIT $howMany";
+                String query = "MATCH (u:"+ User.NEO_USER_LABEL +")-[r:"+ User.NEO_RELATION_VISITED +"]->(pl:"+ Place.NEO_PLACE_LABEL +") WHERE u." + User.NEO_KEY_ID +"= $id RETURN pl as VisitedPlace, r as VisitInfos LIMIT $howMany";
                 Result result = tx.run(query,params);
                 ArrayList<PlacePreview> places = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
                     Value place=r.get("VisitedPlace");
-                    PlacePreview p = new PlacePreview(place);
+                    Value visitInfos=r.get("VisitInfos");
+                    PlacePreview p = new PlacePreview(place, visitInfos);
                     places.add(p);
                 }
                 return places;
@@ -252,11 +254,11 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<String> getSuggestedFollowersIds(User user, int maxHowMany) {
+    public List<UserPreview> getSuggestedFollowers(User user, int maxHowMany) {
         Neo4jConnection neo4jConnection = Neo4jConnection.getObj();
 
         try (Session session = neo4jConnection.getDriver().session()) {
-            return session.writeTransaction((TransactionWork<List<String>>) tx -> {
+            return session.writeTransaction((TransactionWork<List<UserPreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "USER_ID", user.getId() );
                 params.put("HOW_MANY", maxHowMany);
@@ -267,20 +269,19 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
                 "WHERE u."+User.NEO_KEY_ID+"<>s."+User.NEO_KEY_ID+" AND NOT((u)-[:"+ User.NEO_RELATION_FOLLOWS +"]->(s)) ",
                 "WITH DISTINCT s AS suggestedUsers ",
                 "MATCH (suggestedUsers)<-[r:"+ User.NEO_RELATION_FOLLOWS +"]-(:"+ User.NEO_USER_LABEL +") ",
-                "WITH suggestedUsers.id AS id, suggestedUsers."+User.NEO_KEY_ID+" AS userId, COUNT(DISTINCT r) AS followers ",
+                "WITH suggestedUsers, COUNT(DISTINCT r) AS followers ",
                 "ORDER BY followers DESC ",
                 "LIMIT $HOW_MANY ",
-                "RETURN id, userId, followers");
+                "RETURN suggestedUsers, followers");
 
                 Result res = tx.run(query, params);
-                List<String> suggestedFollowersIds = new ArrayList<>();
+                List<UserPreview> suggestedFollowers = new ArrayList<>();
                 while(res.hasNext()){
                     Record r = res.next();
-                    Value v = r.get("id");
-                    String userIdToFollow = v.asString();
-                    suggestedFollowersIds.add(userIdToFollow);
+                    Value v = r.get("suggestedUsers");
+                    suggestedFollowers.add(new UserPreview(v));
                 }
-                return suggestedFollowersIds;
+                return suggestedFollowers;
             });
         } catch (Neo4jException ne){
             LOGGER.log(Level.SEVERE, "Neo4j Error during retrieve suggested followers ids: "+ne.getMessage());
@@ -329,26 +330,26 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<String> retrieveFollowers(String userId, int howMany) {
-        List<String> followers;
+    public List<UserPreview> retrieveFollowers(String userId, int howMany) {
+        List<UserPreview> followers;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            followers = session.readTransaction((TransactionWork<List<String>>) tx -> {
+            followers = session.readTransaction((TransactionWork<List<UserPreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", userId );
                 params.put( "howMany", howMany );
                 String query = "MATCH (followers:"+ User.NEO_USER_LABEL +")-[follows:"+ User.NEO_RELATION_FOLLOWS +
                         "]->(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." +
-                        User.NEO_KEY_ID +"= $id RETURN followers.id as FollowersIds LIMIT $howMany";
+                        User.NEO_KEY_ID +"= $id RETURN followers as Followers LIMIT $howMany";
                 Result result = tx.run(query,params);
-                ArrayList<String> ids = new ArrayList<>();
+                ArrayList<UserPreview> followersList = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
-                    ids.add(r.get("FollowersIds").asString());
+                    followersList.add(new UserPreview(r.get("Followers")));
                 }
-                return ids;
+                return followersList;
             });
 
             return followers;
@@ -359,26 +360,26 @@ public class UserSocialManagerNeo4j implements UserSocialManager{
     }
 
     @Override
-    public List<String> retrieveFollowedUsers(String userId, int howMany) {
-        List<String> followedUsers;
+    public List<UserPreview> retrieveFollowedUsers(String userId, int howMany) {
+        List<UserPreview> followedUsers;
 
         try ( Session session = Neo4jConnection.getDriver().session() )
         {
-            followedUsers = session.readTransaction((TransactionWork<List<String>>) tx -> {
+            followedUsers = session.readTransaction((TransactionWork<List<UserPreview>>) tx -> {
                 Map<String,Object> params = new HashMap<>();
                 params.put( "id", userId );
                 params.put( "howMany", howMany );
                 String query = "MATCH (followedUser:"+ User.NEO_USER_LABEL +")<-[follows:"+ User.NEO_RELATION_FOLLOWS +
                         "]-(targetUser:"+ User.NEO_USER_LABEL +") WHERE targetUser." +
-                        User.NEO_KEY_ID +"= $id RETURN followedUser.id as FollowedUsersIds LIMIT $howMany";
+                        User.NEO_KEY_ID +"= $id RETURN followedUser as FollowedUsers LIMIT $howMany";
                 Result result = tx.run(query,params);
-                ArrayList<String> ids = new ArrayList<>();
+                ArrayList<UserPreview> users = new ArrayList<>();
                 while(result.hasNext())
                 {
                     Record r = result.next();
-                    ids.add(r.get("FollowedUsersIds").asString());
+                    users.add(new UserPreview(r.get("FollowedUsers")));
                 }
-                return ids;
+                return users;
             });
 
             return followedUsers;

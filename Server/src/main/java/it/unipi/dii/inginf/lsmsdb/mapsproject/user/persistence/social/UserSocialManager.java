@@ -9,6 +9,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManager;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.persistence.information.PostManagerFactory;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserPreview;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,9 +92,9 @@ public interface UserSocialManager {
      * returns a list of suggested User to follow, based on the ones followed by followed users
      * @param user the User that asks for new users to start following
      * @param maxHowMany: the maximum number of User instances to be returned
-     * @return a list of string containing the id of the user to follow
+     * @return a list of user preview to follow
      */
-    List<String> getSuggestedFollowersIds(User user, int maxHowMany);
+    List<UserPreview> getSuggestedFollowers(User user, int maxHowMany);
 
 
     /**
@@ -110,7 +111,7 @@ public interface UserSocialManager {
      * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that follow the one specified")
      */
-    List<String> retrieveFollowers(String userId, int howMany);
+    List<UserPreview> retrieveFollowers(String userId, int howMany);
 
 
     /**
@@ -118,7 +119,7 @@ public interface UserSocialManager {
      * @param howMany is the quantity to be returned
      * notes = "This method return the list of the users that are followed by the one specified")
      */
-    List<String> retrieveFollowedUsers(String userId, int howMany);
+    List<UserPreview> retrieveFollowedUsers(String userId, int howMany);
 
     /**
      * @param userId is the id of the user for which we want to gather the liked posts

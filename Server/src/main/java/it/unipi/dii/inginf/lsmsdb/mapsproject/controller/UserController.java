@@ -15,6 +15,7 @@ import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.post.PostService;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.RegistrationUser;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.User;
+import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserPreview;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.user.UserService;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -295,7 +296,7 @@ public class UserController {
 		try {
 			UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			User currentUser = userSpring.getApplicationUser();
-			List<User> suggestedFollowers = UserService.getSuggestedFollowers(currentUser, howMany);
+			List<UserPreview> suggestedFollowers = UserService.getSuggestedFollowers(currentUser, howMany);
 
 			if(suggestedFollowers==null || suggestedFollowers.size()==0)
 				return ResponseEntity.status(HttpStatus.OK).body("{\"Message\" : \"No suggestion about new users to follow\"}");
@@ -395,7 +396,7 @@ public class UserController {
 		}
 
 		try {
-			List<User> followers = UserService.getFollowers(userId, maxQuantity);
+			List<UserPreview> followers = UserService.getFollowers(userId, maxQuantity);
 			result = ResponseEntity.status(HttpStatus.OK).body(followers);
 		}catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the followers of the user specified "+e.getMessage());
@@ -424,7 +425,7 @@ public class UserController {
 		}
 
 		try {
-			List<User> followedUsers = UserService.getFollowedUsers(userId, maxQuantity);
+			List<UserPreview> followedUsers = UserService.getFollowedUsers(userId, maxQuantity);
 			result = ResponseEntity.status(HttpStatus.OK).body(followedUsers);
 		}catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error: an exception has occurred in getting the followers of the user specified "+e.getMessage());
@@ -482,6 +483,11 @@ public class UserController {
 		}
 
 		return result;
+	}
+
+	@GetMapping(value = "/user/posts/liked", produces = "application/json")
+	public ResponseEntity<?> likedPostsOfCurrentUser(@RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
+		return likedPosts("current", maxQuantity);
 	}
 
 
@@ -649,7 +655,7 @@ public class UserController {
 
 	// add a like to a post
 	@ApiOperation(value = "adds the specified post to the liked ones of the currently logged in user")
-	@PostMapping(value = "user/posts/{postId}/likes", produces = "application/json")
+	@PostMapping(value = "user/post/{postId}/like", produces = "application/json")
 	public ResponseEntity<?> addLikeToPost(@PathVariable(name="postId") String postId) {
 		ResponseEntity<?> result;
 
@@ -674,7 +680,7 @@ public class UserController {
 
 	// remove like to a post (wants the id of the post)
 	@ApiOperation(value = "removes the specified post to the liked ones of the currently logged in user")
-	@DeleteMapping(value = "user/posts/liked/{postId}", produces = "application/json")
+	@DeleteMapping(value = "user/post/{postId}/like", produces = "application/json")
 	public ResponseEntity<?> removeLikeFromPost(@PathVariable(name="postId") String postId) {
 		ResponseEntity<?> result;
 
