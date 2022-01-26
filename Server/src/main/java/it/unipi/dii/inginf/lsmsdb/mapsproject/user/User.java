@@ -38,7 +38,7 @@ public class User implements Serializable {
 	public static final String NEO_RELATION_FAVOURITES = PropertyPicker.getGraphRelationKey("favourites");
 	public static final String NEO_RELATION_LIKES = PropertyPicker.getGraphRelationKey("likes");
 
-	public enum Role {USER,MODERATOR,ADMIN}
+	public enum Role {USER,ADMIN}
 
 	protected String _id;
 	protected String username;

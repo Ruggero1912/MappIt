@@ -64,14 +64,11 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Registration not completed:" + e.getMessage());
 		}
 
-		//TODO: decide if combining some controllers
-		//TODO: update the controller properly
-
 		if(insertedUser != null) {
 			insertedUser.setPassword("");
 			return ResponseEntity.ok(insertedUser);
 		} else {
-			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Username or Email already taken");
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Username or Email already taken or password not valid");
 		}
 	}
 
@@ -101,13 +98,9 @@ public class UserController {
 		/*
 		 * UsernamePasswordAuthenticationToken is a class that implements Authentication and that lets you
 		 * store the principal object (in this case, the current logged in User instance) and the credentials used to login
-		 * NOTE: TODO: maybe it is better to store in this object the password as already hashed for security purposes...
-		 *      it is unuseful to store the password in the authentication token, so we use null as second parameter
+		 * NOTE: we do not store the pwd in the AuthToken   
 		 */
-		//UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, null);
 		//the call to setAuthentication stores in the session the authentication information for the current user
-		//SecurityContextHolder.getContext().setAuthentication(upat);
-
 		UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(u, "STATIC");
 		SecurityContextHolder.getContext().setAuthentication(upat);
 
@@ -163,12 +156,11 @@ public class UserController {
 	 * //@ApiOperation(value = "Delete users having _id=id",
 	 * notes = "This method deletes a specific user")
 	 */
-	//TODO: only an admin can delete a user, we need to check role level
 	@DeleteMapping(value={"/user/{id}"})
 	public ResponseEntity<?> deleteUser(@PathVariable(value = "id") String id){
 		UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User currentUser = userSpring.getApplicationUser();
-		if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
+		if(!currentUser.getUserRole().contains(ADMIN_ROLE) && ! currentUser.getId().equals(id)){
 			LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
 		}

@@ -22,18 +22,6 @@ public class PostSubmission {
     //private MultipartFile thumbnail;
     //private List<MultipartFile> pics;
 
-    public Document createDocument(){
-
-        Document postDoc = new Document(Post.KEY_PLACE_ID, placeId)
-                .append(Post.KEY_TITLE,title)
-                .append(Post.KEY_DESCRIPTION, description)
-                .append(Post.KEY_DATE, experienceDate)
-                .append(Post.KEY_ACTIVITY, activity)
-                .append(Post.KEY_TAGS, tags);
-
-        return postDoc;
-    }
-
     public String getTitle(){ return title; }
 
     public String getDescription(){ return description; }

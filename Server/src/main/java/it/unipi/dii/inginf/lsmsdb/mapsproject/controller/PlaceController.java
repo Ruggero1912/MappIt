@@ -61,8 +61,14 @@ public class PlaceController {
         List<Place> nearbyPlaces;
 
         try {
-            //TODO: check the validity of the given activity
             // check the validity of the given radius (in km)
+            if(radius > 100){
+                result = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\" : \"The specified radius '" + radius + "' km is too high!\"}");
+                return result;
+            }else if(radius < 0){
+                result = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\" : \"The specified radius '" + radius + "' is a negative number\"}");
+                return result;
+            }
             // parse the coordinates from lon, lat
             Coordinate coordinates = new Coordinate(lat, lon);
 

@@ -120,7 +120,13 @@ public class PostController {
     @DeleteMapping(value={"/posts/author/{author-id}"})
     public ResponseEntity<?> deletePostsOfGivenUser(@PathVariable(value = "author-id") String userId){
         ResponseEntity<?> result;
-        //TODO: check the privileges of the currently logged in user: only an admin can delete the posts of someone else
+        //check the privileges of the currently logged in user: only an admin can delete the posts of someone else
+        UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User currentUser = userSpring.getApplicationUser();
+        if(! currentUser.getUserRole().contains(ADMIN_ROLE) && ! currentUser.getId().equals(userId)){
+			LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
+		}
         try{
             User user = UserService.getUserFromId(userId);
             if(user != null) {

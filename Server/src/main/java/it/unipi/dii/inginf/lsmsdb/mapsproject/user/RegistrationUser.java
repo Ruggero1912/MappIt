@@ -13,6 +13,7 @@ public class RegistrationUser {
     private String surname;
     private Date birthDate;
     private String countryCode;
+    private String profilePic;
 
     public String getUsername() {
         return username;
@@ -64,9 +65,12 @@ public class RegistrationUser {
 
     public String getCountryCode(){ return this.countryCode; }
 
+    public String getProfilePic(){
+        return this.profilePic;
+    }
+
     public Document createDocument(){
         String passwordHash = UserService.passwordEncryption(password);
-        Image img = new Image(); // add a default profile pic for the new user
 
         Document userDoc = new Document(User.KEY_USERNAME,username)
                 .append(User.KEY_PASSWORD, passwordHash)
@@ -76,7 +80,7 @@ public class RegistrationUser {
                 .append(User.KEY_BIRTHDATE, birthDate)
                 .append(User.KEY_ROLE, User.Role.USER.toString())
                 .append(User.KEY_COUNTRY_CODE, countryCode)
-                .append(User.KEY_PROFILE_PIC, img.getPath());
+                .append(User.KEY_PROFILE_PIC, profilePic);
 
         return userDoc;
     }
