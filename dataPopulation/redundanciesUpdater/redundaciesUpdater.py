@@ -178,6 +178,7 @@ class RedundanciesUpdater:
         modified_posts_docs = self.__update_likes_counters_in_post_documents()
         if modified_posts_docs > 0:
             modified_places_docs = self.__update_total_likes_counters_in_place_documents()
+        print(f"'__update_likes_counters': Updated {modified_posts_docs} posts and {modified_places_docs} places documents")
         return modified_posts_docs, modified_places_docs
 
     def __update_likes_counters_in_post_documents(self):

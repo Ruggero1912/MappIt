@@ -70,6 +70,7 @@ public class UserService {
         //check restrictions on password
         String password = newRegistrationUser.getPassword();
         if( password == null || password.length() <= 4){
+            LOGGER.info("The specified password is not valid for the UserRegistration request of: username=" + newRegistrationUser.getUsername());
             return null;
         }
 
@@ -186,7 +187,6 @@ public class UserService {
 
         String userId = userToDelete.getId();
 
-        //TODO: call to PostService.deletePostsOfGivenUser instead of using the PostManager's methods
         PostManager pm = PostManagerFactory.getPostManager();
         boolean PostsDeletedFromMongo = pm.deletePostsOfGivenUser(userToDelete);
 
@@ -206,8 +206,11 @@ public class UserService {
         try{
             PostsDeletedFromNeo4j = psm.deleteAllPostsOfGivenUser(userToDelete);
             UserDeletedFromNeo4j = usm.deleteUserFromId(userId);
-            //TODO: mongo rollback if neo4j failed
-            //if(!PostsDeletedFromNeo4j || !UserDeletedFromNeo4j) {storeUser(userToDelete) + reinsert deleted posts(?) }
+            // no mongo rollback if neo4j failed, log the error
+            if(!PostsDeletedFromNeo4j || !UserDeletedFromNeo4j) {
+                LOGGER.severe("UserService.delete : cannot delete posts and user from Neo! UserId: " + userId);
+                return false;
+            }
         } catch (Exception e){
             LOGGER.log(Level.SEVERE, "Error during delete: Neo4j user deletion failed!");
             return false;

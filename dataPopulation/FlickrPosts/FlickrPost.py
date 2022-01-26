@@ -5,10 +5,6 @@ from posts.Post import Post
 
 class FlickrPost(Post):
 
-    #TODO: write here possible additional attribute to be added for flickr posts
-    #(i. e.):
-    # - flickr post link / flickr post id
-    # - ??
 
     KEY_FLICKR_POST_ID      = Utils.load_config("POST_FLICKR_POST_ID")
 
