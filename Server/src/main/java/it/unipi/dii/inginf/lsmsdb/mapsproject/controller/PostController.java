@@ -94,21 +94,22 @@ public class PostController {
     public ResponseEntity<?> deletePost(@PathVariable(value = "id") String id){
         UserSpring userSpring = (UserSpring) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User currentUser = userSpring.getApplicationUser();
-        if(!currentUser.getUserRole().contains(ADMIN_ROLE)){
+
+        Post postToDelete = PostService.getPostFromId(id);
+        if(postToDelete == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find Post (id=" + id + ")");
+        }
+
+        if(!currentUser.getUserRole().contains(ADMIN_ROLE)  && ! currentUser.getId().equals(postToDelete.getAuthorId())){
             LOGGER.log(Level.SEVERE, "Permission Error: endpoint access is not granted for normal users");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"Permission Error\":\" endpoint access is not granted for normal users\"}");
         }
 
         ResponseEntity<?> result;
         try{
-            Post postToDelete = PostService.getPostFromId(id);
-            if(postToDelete != null) {
-                PostService.deletePost(postToDelete);
-                result = ResponseEntity.ok("Post successfully deleted (id="+id+ ")");
-                LOGGER.log(Level.INFO, "Post successfully deleted: (id="+id+ ")");
-            } else {
-                result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not find Post (id=" + id + ")");
-            }
+            PostService.deletePost(postToDelete);
+            result = ResponseEntity.ok("Post successfully deleted (id="+id+ ")");
+            LOGGER.log(Level.INFO, "Post successfully deleted: (id="+id+ ")");
         }
         catch (Exception e){
             result = ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: could not delete Post (id=" + id + ")");
