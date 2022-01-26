@@ -164,24 +164,24 @@ public class UserManagerMongoDB implements UserManager{
 
     @Override
     public List<Document> retrieveMostActiveUsers(String activityName, int maxQuantity) {
-        MongoCollection<Document> userColl = MongoConnection.getCollection(MongoConnection.Collections.USERS.toString());
+        MongoCollection<Document> postColl = MongoConnection.getCollection(MongoConnection.Collections.POSTS.toString());
 
-        Document addFields = new Document("$addFields", new Document("userId", new Document("$toString", "$_id")));
-        Document lookup = new Document("$lookup", new Document("from", "post").append("localField", "userId").append("foreignField", "author").append("as", "posts"));
-        Document unwind = new Document("$unwind", "$posts");
-        Document match = new Document("$match", new Document("posts.activity", activityName));
-        Document group = new Document("$group", new Document("_id", "$username").append("publishedPosts", new Document("$sum", 1)));
+        Document match = new Document("$match", new Document("activity", activityName));
+        Document group = new Document("$group", new Document("_id", "$author").append("publishedPosts", new Document("$sum", 1)));
         Document sort = new Document("$sort", new Document("publishedPosts", -1));
         Document limit = new Document("$limit", maxQuantity);
+        Document addFields = new Document("$addFields", new Document("authorId", new Document("$toObjectId", "$_id")));
+        Document lookup = new Document("$lookup", new Document("from", "user").append("localField", "authorId").append("foreignField", "_id").append("as", "userInfos"));
+        Document unwind = new Document("$unwind", "$userInfos");
 
         List<Document> results = new ArrayList<>();
         List<Document> pipeline;
         try{
             if(activityName.equals("any"))
-                pipeline = Arrays.asList(addFields,lookup,unwind,group,sort,limit);
+                pipeline = Arrays.asList(group, sort, limit, addFields, lookup, unwind);
             else
-                pipeline = Arrays.asList(addFields,lookup,unwind,match,group,sort,limit);
-            AggregateIterable<Document> cursor = userColl.aggregate(pipeline);
+                pipeline = Arrays.asList(match,group, sort, limit, addFields, lookup, unwind);
+            AggregateIterable<Document> cursor = postColl.aggregate(pipeline);
             for(Document doc : cursor) { results.add(doc); }
         } catch (MongoException ex){
             ex.printStackTrace();
