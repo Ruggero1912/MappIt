@@ -56,7 +56,7 @@ public class PlaceController {
                                     @RequestParam( defaultValue = "10.0") Double radius,
                                     @RequestParam( defaultValue = "any") String activityFilter,
                                     @RequestParam( defaultValue = "distance") String orderBy,
-                                    @RequestParam(defaultValue = "0", name = "limit") int maxQuantity) {
+                                    @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
         List<Place> nearbyPlaces;
 
@@ -92,7 +92,7 @@ public class PlaceController {
     // most popular places for given category
     @ApiOperation(value = "returns a list of popular places")
     @GetMapping(value = "/places/most-popular", produces = "application/json")
-    public ResponseEntity<?> popularPlaces(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "0", name = "limit") int maxQuantity) {
+    public ResponseEntity<?> popularPlaces(@RequestParam( defaultValue = "any", name = "activity") String activityFilter, @RequestParam(defaultValue = "10", name = "limit") int maxQuantity) {
         ResponseEntity<?> result;
 
         try {

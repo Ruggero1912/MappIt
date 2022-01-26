@@ -28,9 +28,9 @@ public class FileController {
         if(imageObjId == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\" unsupported file type\"}");
         return ResponseEntity.status(HttpStatus.OK).body(imageObjId);
-    }*/
+    }
 
-    @GetMapping("/api/files/images/{id}")
+    @GetMapping("/files/images/{id}")
     public ResponseEntity<ByteArrayResource> download(@PathVariable String id) throws IOException {
         ImageFileService imageFileService = new ImageFileService();
         ImageFile imageFile = imageFileService.downloadImage(id);
@@ -40,4 +40,5 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageFile.getFilename() + "\"")
                 .body(new ByteArrayResource(imageFile.getFile()));
     }
+     */
 }
