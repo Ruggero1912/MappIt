@@ -373,8 +373,8 @@ public class PostManagerMongoDB implements PostManager {
             return null;
 
         List<Post> matchingPosts = new ArrayList<>();
-        Pattern regex = Pattern.compile(postTitleSuffix, Pattern.CASE_INSENSITIVE);
-        Bson suffixFilter = Filters.eq(Post.KEY_TITLE, regex);
+        //Pattern regex = Pattern.compile(postTitleSuffix, Pattern.CASE_INSENSITIVE);
+        Bson suffixFilter = Filters.text(postTitleSuffix);
         MongoCursor<Document> cursor = postCollection.find(suffixFilter).limit(howMany).cursor();
         if(!cursor.hasNext()){
             cursor.close();
