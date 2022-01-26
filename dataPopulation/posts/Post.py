@@ -99,7 +99,7 @@ class Post:
             act_tags = activity['tags']
             for act_tag in act_tags:
                 assert isinstance(act_tag, str)
-                if(act_tag.lower() in self.get_title().lower() or act_tag.lower() in self.get_description().lower() or act_tag.lower() in self.get_tags_array()):
+                if(act_tag.lower() in self.get_title().lower().split(" ") or act_tag.lower() in self.get_description().lower().split(" ") or act_tag.lower() in self.get_tags_array()):
                     return act_name
 
         return Post.DEFAULT_ACTIVITY
