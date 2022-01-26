@@ -1,5 +1,6 @@
 package it.unipi.dii.inginf.lsmsdb.mapsproject.post;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.Gson;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.config.PropertyPicker;
 import it.unipi.dii.inginf.lsmsdb.mapsproject.imageFile.ImageFile;
@@ -55,6 +56,7 @@ public class Post {
     private String description;
     private String activity;
     private List<String> tags;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String videoId;
     private String thumbnail;
     private List<String> pics;
@@ -213,6 +215,9 @@ public class Post {
     public String getVideoId() {
         return this.videoId;
     }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public String getYouTubeLink() { if(this.videoId != null) return "https://www.youtube.com/watch?v=" + this.videoId; else return null;}
 
     public void setVideoId(String id) {
         this.videoId = id;
