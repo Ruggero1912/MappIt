@@ -18,6 +18,8 @@ class OsmPlaceFactory(PlaceFactory):
     PISTOIA = "Pistoia"
     FLORENCE = "Florence"
     LUCCA = "Lucca"
+    GROSSETO = "Grosseto"
+    AREZZO = "Arezzo"
     #https://gis.stackexchange.com/questions/178424/overpass-turbo-area-code-lookup/178431
     AREAS =  {
                 PISA    : "area[name=\"Pisa\"]->.searchArea;",
@@ -26,6 +28,9 @@ class OsmPlaceFactory(PlaceFactory):
                 PISTOIA : "area[name=\"Pistoia\"]->.searchArea;",
                 FLORENCE: "area[name=\"Firenze\"]->.searchArea;",
                 LUCCA   : "area[name=\"Lucca\"]->.searchArea;",
+                GROSSETO: "area[name=\"Grosseto\"]->.searchArea;",
+                AREZZO  : "area[name=\"Arezzo\"]->.searchArea;"
+
             }
     
     AREA_CODES = {
@@ -34,7 +39,9 @@ class OsmPlaceFactory(PlaceFactory):
         LEGHORN : "IT",
         PISTOIA : "IT",
         FLORENCE: "IT",
-        LUCCA   : "IT"
+        LUCCA   : "IT",
+        GROSSETO: "IT",
+        AREZZO  : "IT"
     }
 
     AREAS_SPECIAL_ATTRIBUTES = {
@@ -42,7 +49,9 @@ class OsmPlaceFactory(PlaceFactory):
         LEGHORN : {"zone" : "Livorno"   },
         PISTOIA : {"zone" : "Pistoia"   },
         FLORENCE: {"zone" : "Firenze"   },
-        LUCCA   : {"zone" : "Lucca"     }
+        LUCCA   : {"zone" : "Lucca"     },
+        GROSSETO: {"zone" : "Grosseto"  },
+        AREZZO  : {"zone" : "Arezzo"    }
     }
     
     OSM_KEY_NAME = "name"

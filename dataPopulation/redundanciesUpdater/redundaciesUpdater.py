@@ -39,6 +39,7 @@ class RedundanciesUpdater:
         users_doc_updated   = 0
         places_doc_updated  = 0
         posts_doc_updated   = 0
+        places_docs_updated_total_like_attr = 0
 
         start_time = datetime.now()
 
@@ -51,7 +52,7 @@ class RedundanciesUpdater:
             places_doc_updated  = self.__update_favourites_counters()
 
         if update_likes:
-            posts_doc_updated   = self.__update_likes_counters()
+            posts_doc_updated, places_docs_updated_total_like_attr = self.__update_likes_counters()
 
         end_time = datetime.now()
 
@@ -169,10 +170,15 @@ class RedundanciesUpdater:
         return places_docs_updated
 
     def __update_likes_counters(self):
+        """
+        returns the number of modified posts docs and of modified places docs
+        - :return (modified_posts_docs, modified_places_docs)
+        """
+        modified_places_docs = 0
         modified_posts_docs = self.__update_likes_counters_in_post_documents()
         if modified_posts_docs > 0:
-            self.__update_total_likes_counters_in_place_documents()
-        pass
+            modified_places_docs = self.__update_total_likes_counters_in_place_documents()
+        return modified_posts_docs, modified_places_docs
 
     def __update_likes_counters_in_post_documents(self):
         """
