@@ -149,9 +149,6 @@ RETURN suggestedPosts.id, likeReceived, suggestedPosts.title
 ```
 
 
-### Data population service
-
-
 <!-- ### UML use case diagram
 ![image](https://user-images.githubusercontent.com/63967908/201122582-78d117dd-38e8-45ad-9261-50646ea84e37.png) -->
 
@@ -169,5 +166,6 @@ We analyzed deeper and more broadly the aforementioned aspects and even others, 
 - **Application use cases**
 - **Functional requirements**
 - **Non-Functional requirements**
+- **Data population service**
 
 Have a look at the full project documentation [at this link](/documentation/MappIt-documentation.pdf)
