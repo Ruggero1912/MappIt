@@ -2,3 +2,4 @@
 notification.mp3
 notifications*
 notifications/
+.env
