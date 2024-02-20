@@ -1,0 +1,97 @@
+jwt.secret=redacted
+jwt.get.token.uri=/authenticate
+springdoc.api-docs.path = /api-docs
+
+global.server.domain.name=
+
+logging.level.org.springframework=ERROR
+logging.level.org.mongodb=warn
+
+persistence.db.kind.information = mongodb
+persistence.db.kind.social = neo4j
+
+defaults.user.profilepic =
+
+#----------------------MONGO DB----------------------------
+
+persistence.db.mongo.URI = 
+persistence.db.mongo.dbName = mappit
+
+persistence.db.mongo.collection.place.collectionName="place"
+persistence.db.mongo.collection.place.id = _id
+persistence.db.mongo.collection.place.name = name
+persistence.db.mongo.collection.place.fits = fits
+persistence.db.mongo.collection.place.image = image
+persistence.db.mongo.collection.place.osmID = osmID
+persistence.db.mongo.collection.place.postsArray = posts
+persistence.db.mongo.collection.place.favouritesCounter = favs
+persistence.db.mongo.collection.place.loc = loc
+persistence.db.mongo.collection.place.coordinates = coordinates
+persistence.db.mongo.collection.place.totalLikes = totalLikes
+persistence.db.mongo.collection.place.countryCode = countryCode
+
+persistence.db.mongo.collection.user.collectionName="user"
+persistence.db.mongo.collection.user.id = _id
+persistence.db.mongo.collection.user.username = username
+persistence.db.mongo.collection.user.email = email
+persistence.db.mongo.collection.user.password = password
+persistence.db.mongo.collection.user.name = name
+persistence.db.mongo.collection.user.surname = surname
+persistence.db.mongo.collection.user.birthdate = birthDate
+persistence.db.mongo.collection.user.roles = roles
+persistence.db.mongo.collection.user.countryCode = countryCode
+persistence.db.mongo.collection.user.profilepic = profilePic
+persistence.db.mongo.collection.user.postsArray = posts
+persistence.db.mongo.collection.user.followers = followers
+persistence.db.mongo.collection.user.ytVideoId = YTVideoId
+persistence.db.mongo.collection.user.flickrAccountId = FlickrAccountId
+
+persistence.db.mongo.collection.post.collectionName="post"
+persistence.db.mongo.collection.post.id = _id
+persistence.db.mongo.collection.post.authorUsername = authorUsername
+persistence.db.mongo.collection.post.authorId = author
+persistence.db.mongo.collection.post.placeId = place
+persistence.db.mongo.collection.post.placeName= placeName
+persistence.db.mongo.collection.post.title = title
+persistence.db.mongo.collection.post.date = date
+persistence.db.mongo.collection.post.postDate = postDate
+persistence.db.mongo.collection.post.description = desc
+persistence.db.mongo.collection.post.activity = activity
+persistence.db.mongo.collection.post.tags = tags
+persistence.db.mongo.collection.post.thumbnail = thumb
+persistence.db.mongo.collection.post.videoId = YTVideoId
+persistence.db.mongo.collection.post.pics = pics
+persistence.db.mongo.collection.post.likes = likes
+persistence.db.mongo.collection.post.countryCode = countryCode
+
+persistence.db.mongo.collection.activity.id = _id
+persistence.db.mongo.collection.activity.name = name
+persistence.db.mongo.collection.activity.category = category
+persistence.db.mongo.collection.activity.tags = tags
+
+#----------------------NEO4J----------------------------
+
+persistence.db.neo4j.URI =
+persistence.db.neo4j.username = 
+persistence.db.neo4j.password = 
+
+persistence.db.neo4j.entity.user.label=User
+persistence.db.neo4j.entity.user.id=id
+persistence.db.neo4j.entity.user.username=username
+
+persistence.db.neo4j.entity.post.label=Post
+persistence.db.neo4j.entity.post.id=id
+persistence.db.neo4j.entity.post.title=title
+persistence.db.neo4j.entity.post.desc=description
+persistence.db.neo4j.entity.post.thumb=thumbnail
+
+persistence.db.neo4j.entity.place.label=Place
+persistence.db.neo4j.entity.place.id=id
+persistence.db.neo4j.entity.place.name=name
+
+persistence.db.neo4j.relation.author=AUTHOR
+persistence.db.neo4j.relation.location=LOCATION
+persistence.db.neo4j.relation.visited=VISITED
+persistence.db.neo4j.relation.favourites=FAVOURITES
+persistence.db.neo4j.relation.follows=FOLLOWS
+persistence.db.neo4j.relation.likes=LIKES
