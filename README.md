@@ -151,7 +151,30 @@ RETURN suggestedPosts.id, likeReceived, suggestedPosts.title
 
 <!-- ### UML use case diagram
 ![image](https://user-images.githubusercontent.com/63967908/201122582-78d117dd-38e8-45ad-9261-50646ea84e37.png) -->
+### Managing redundancies
 
+
+Since MappIt is a service that exploits two kinds of databases <!-- , one documental and the other a graph-based database, -->the data population procedures must be in charge also of handling the storage of information in the two systems.
+
+The creation of a new place, for example, not only consists in inserting a document in MongoDB, but also a node in Neo4j, while the generation of social relations mainly consists in accessing the Neo4j entities. By the way there are some redundancies, like for example the total likes counter, that are cross-database.
+
+Those redundancies were designed in order to improve the execution time of frequent database operations, but can introduce inconsitencies of the data.
+
+In order to restore eventual inconsistencies that could be present, we implemented the redundancies updater procedure, which is
+ responsible to update the redundancies counters that we inserted in the documents of some
+entities in Mongo like the field “likes” in the Post documents, the field “followers” in the User documents or
+the fields “favourites” and “totalLikes” in the Place documents.
+
+<!-- The procedure to update these redundancies is to retrieve the number of relations of each kind for each
+redundant attribute and for each node. Then, it is sufficient to set this value in the Mongo documents.
+The field “totalLikes” of each place is instead calculated using an aggregation on the “likes” attribute of each
+post for a given place. -->
+
+The update of these redundancies is needed only when a user, all the posts of a user, or a post are deleted
+from the application, because the consistency in this case is demanded to this procedure, to prevent too much
+load on the server for the entities’ deletion.
+
+This procedure is scheduled periodically.
 
 ### Full project documentation
 
